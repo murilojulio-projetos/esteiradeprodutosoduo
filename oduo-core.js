@@ -229,20 +229,20 @@
         mensalEquivalentTotal += mensalRef;
         const savingsPerMonth = Math.max(0, mensalRef - finalPrice);
 
-        // Subtitle enxuto e padrão consistente: "Modalidade · forma de pagamento"
-        let subtitle;
-        if (followsBase) {
-          subtitle =
-            cadence === "anual"
-              ? "Acompanha o plano · 12× no cartão"
-              : cadence === "semestral"
-              ? "Acompanha o plano · 6× no cartão"
-              : "Acompanha o plano";
-        } else if (cadence === "mensal" || mod.id === "mensal") {
-          subtitle = `${mod.customLabel || mod.label} · boleto ou Pix`;
-        } else {
-          subtitle = `${mod.customLabel || mod.label} · ${parcelas}× no cartão`;
-        }
+        // Subtitle padronizado pra TODOS os items recurring/hybrid:
+        // "Cadência efetiva · forma de pagamento". Itens só-mensal que
+        // seguem o plano-base em anual/semestral usam a cadência da proposta
+        // (não há distinção visual — pro cliente, todos são "12× no cartão"
+        // quando a proposta é anual).
+        const effectiveCadence = followsBase ? cadence : (mod.id === "mensal" ? "mensal" : cadence);
+        const cadenceLabel = effectiveCadence === "anual"
+          ? "Anual"
+          : effectiveCadence === "semestral"
+          ? "Semestral"
+          : "Mensal";
+        const subtitle = effectiveCadence === "mensal"
+          ? `${cadenceLabel} · boleto ou Pix`
+          : `${cadenceLabel} · ${parcelas}× no cartão`;
 
         groups.mensal.items.push({
           id: item.id,
