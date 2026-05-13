@@ -43,11 +43,11 @@
         "Anúncios geo-segmentados no Google e Meta para pessoas da sua região " +
         "pesquisando exatamente pelas suas locações.",
       features: [
-        { icon: "search", title: "Estudo de palavras-chave", desc: "Mapeamos o que sua cidade busca." },
-        { icon: "site", title: "Site multipages", desc: "Um equipamento por página, otimizado pra Google." },
-        { icon: "target", title: "Tráfego pago profissional", desc: "Google Ads + Meta Ads geo-segmentados." },
-        { icon: "pin", title: "Google Meu Negócio", desc: "Aparece nas buscas locais primeiro." },
-        { icon: "chart", title: "Relatório semanal", desc: "Investimento, leads, custo por lead e benchmark." },
+        { icon: "bolt", title: "IA + dados de +500 locadoras", desc: "Cruzamos os termos que sua cidade busca com a base de 500+ locadoras atendidas. Acerto em cheio nas palavras-chave.", highlight: true },
+        { icon: "site", title: "Landing page profissional", desc: "Otimizada pra converter tráfego pago em lead qualificado." },
+        { icon: "target", title: "Tráfego pago profissional", desc: "Google Ads + Meta Ads geo-segmentados na sua região." },
+        { icon: "pin", title: "Google Meu Negócio", desc: "Aparece nas buscas locais antes do concorrente." },
+        { icon: "chart", title: "Relatório semanal", desc: "Investimento, leads, custo por lead e benchmark de mercado." },
       ],
       cases: [
         { name: "CLM Locações", metric: "R$ 18 mil → R$ 310 mil em locações fechadas" },
@@ -61,10 +61,10 @@
         "Sua IA atendendo no WhatsApp dia e noite. Filtra o curioso do " +
         "comprador, qualifica e agenda direto com o seu vendedor.",
       features: [
-        { icon: "bolt", title: "Treinamento da IA", desc: "60 dias de ajuste fino com seu catálogo e regras." },
-        { icon: "chat", title: "WhatsApp 24/7", desc: "Mesmo número que seus clientes já conhecem." },
-        { icon: "filter", title: "Qualificação automática", desc: "Valida orçamento, prazo e região do lead." },
-        { icon: "handshake", title: "Handoff pro vendedor", desc: "Lead quente vai com o contexto da conversa." },
+        { icon: "bolt", title: "IA treinada com +500 locadoras", desc: "Scripts de qualificação refinados com benchmark do setor.", highlight: true },
+        { icon: "chat", title: "WhatsApp 24/7", desc: "Mesmo número que seus clientes já conhecem, atendendo dia e noite." },
+        { icon: "filter", title: "Qualificação automática", desc: "Valida orçamento, prazo e região antes de passar pro vendedor." },
+        { icon: "handshake", title: "Handoff pro vendedor", desc: "Lead quente chega com o contexto inteiro da conversa." },
       ],
       cases: [
         { name: "Locadora B2B no Sul", metric: "+20% na taxa de conversão respondendo mais rápido" },
@@ -78,7 +78,8 @@
         "Sua base de clientes é seu maior ativo. A Loctus reativa " +
         "automaticamente quem já alugou de você — é onde mora o lucro real.",
       features: [
-        { icon: "users", title: "Análise da base", desc: "IA identifica padrões de recompra dos seus clientes." },
+        { icon: "bolt", title: "Padrões de recompra de +500 locadoras", desc: "IA cruza o histórico da sua base com benchmark do setor pra prever quem volta a alugar e quando.", highlight: true },
+        { icon: "users", title: "Análise da sua base", desc: "Identifica quem já alugou, quanto tempo faz e qual a chance de retorno." },
         { icon: "clock", title: "Cadência inteligente", desc: "Lembrete no momento certo de cada recompra." },
         { icon: "gift", title: "Ofertas personalizadas", desc: "Cupom de retorno e oferta sazonal automática." },
         { icon: "chart", title: "Mensuração do impacto", desc: "Quanto da receita veio de cliente recorrente." },
@@ -103,7 +104,8 @@
         ${data.features
           .map(
             (f) => `
-          <div class="pilar-feature">
+          <div class="pilar-feature${f.highlight ? " pilar-feature-moat" : ""}">
+            ${f.highlight ? '<span class="pilar-feature-flag">MOAT ODuo</span>' : ""}
             <div class="pilar-feature-icon">${ICONS[f.icon] || ""}</div>
             <strong>${escapeHtml(f.title)}</strong>
             <span>${escapeHtml(f.desc)}</span>

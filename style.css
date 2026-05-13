@@ -28,6 +28,44 @@
   box-sizing: border-box;
 }
 
+/* ====================================================================
+   Scroll reveal · IntersectionObserver liga ".is-visible" quando o
+   elemento entra na viewport. Stagger via data-reveal-delay.
+   ==================================================================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.75s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.75s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal[data-reveal-delay="1"] { transition-delay: 0.08s; }
+.reveal[data-reveal-delay="2"] { transition-delay: 0.16s; }
+.reveal[data-reveal-delay="3"] { transition-delay: 0.24s; }
+.reveal[data-reveal-delay="4"] { transition-delay: 0.32s; }
+.reveal[data-reveal-delay="5"] { transition-delay: 0.4s; }
+
+/* Variação: reveal sem deslocamento, apenas fade */
+.reveal-fade {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal[data-reveal-delay] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 html,
 body {
   margin: 0;
@@ -254,6 +292,52 @@ button {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.hero-moat {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+  padding: 12px 18px 12px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 188, 122, 0.35);
+  backdrop-filter: blur(10px);
+  text-decoration: none;
+  color: var(--paper);
+  max-width: 540px;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.hero-moat:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--orange);
+  transform: translateY(-1px);
+}
+
+.hero-moat-flag {
+  flex-shrink: 0;
+  background: var(--orange);
+  color: #fff;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.hero-moat-text {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: rgba(244, 246, 252, 0.92);
+}
+
+.hero-moat-text b {
+  color: #fff;
+  font-weight: 700;
 }
 
 /* ----- Botões ----- */
@@ -2155,6 +2239,38 @@ section {
   font-size: 13.5px;
   color: rgba(7, 32, 74, 0.7);
   line-height: 1.45;
+}
+
+.pilar-feature-moat {
+  position: relative;
+  background: linear-gradient(160deg, #fff7ee, #ffe8d2);
+  border: 1.5px solid var(--orange);
+  box-shadow: 0 14px 28px -18px rgba(247, 127, 0, 0.55);
+}
+
+.pilar-feature-moat .pilar-feature-icon {
+  background: linear-gradient(160deg, var(--orange), #ff9a3c);
+}
+
+.pilar-feature-moat:hover {
+  border-color: var(--orange);
+  box-shadow: 0 18px 32px -16px rgba(247, 127, 0, 0.55);
+}
+
+.pilar-feature-flag {
+  position: absolute;
+  top: -10px;
+  left: 14px;
+  background: var(--orange);
+  color: #fff;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  box-shadow: 0 6px 14px -6px rgba(247, 127, 0, 0.55);
 }
 
 .pilar-modal-cases {
