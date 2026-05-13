@@ -10,7 +10,7 @@
   const CADENCE_KEY = "oduo_cadence_v1";
 
   // Desconto adicional no item protagonista quando QUALQUER cupom estiver ativo.
-  const COUPON_PERCENT = 10;
+  const COUPON_PERCENT = 5;
   const COUPON_TARGET_ID = "avanca";
 
   // Cadências válidas globalmente. Quem manda na soma anual é esta lista.
@@ -192,6 +192,9 @@
     // Total que o cliente pagaria se tudo fosse contratado em modalidade
     // mensal — usado para mostrar a economia da cadência atual.
     let mensalEquivalentTotal = 0;
+    // Desconto total do cupom aplicado nesta cadência (soma os `discount`
+    // de cada linha — hoje só o item protagonista, mas a soma é genérica).
+    let couponDiscountTotal = 0;
 
     Object.keys(cart).forEach((id) => {
       const found = findItem(id);
@@ -205,6 +208,7 @@
 
         const discount = couponDiscountFor(item.id, mod.price, coupon);
         const finalPrice = mod.price - discount;
+        couponDiscountTotal += discount;
 
         // Para a economia: preço mensal de referência do item (se existir).
         // Cupom é só do item protagonista e só conta uma vez — aqui o mensal
@@ -306,6 +310,9 @@
       totalMensalEquivalente,
       savingsPerMonth,
       savingsTotal,
+      couponCode: coupon || null,
+      couponDiscountPerMonth: couponDiscountTotal,
+      couponDiscountTotal: couponDiscountTotal * parcelas,
       paymentLabel:
         cadence === "mensal"
           ? "Boleto ou Pix · sem fidelidade"

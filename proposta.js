@@ -72,6 +72,9 @@
         const removeBtn = row.removable
           ? `<button type="button" class="proposta-item-remove" data-remove="${row.id}" aria-label="Remover ${ODUO.escapeHtml(row.name)}">×</button>`
           : "";
+        const couponPill = row.couponNote
+          ? `<span class="proposta-item-coupon">${ODUO.escapeHtml(row.couponNote)}</span>`
+          : "";
         const baseStrike = row.basePriceText
           ? `<span class="proposta-item-strike">${ODUO.escapeHtml(row.basePriceText)}</span>`
           : "";
@@ -98,6 +101,7 @@
           <div class="proposta-item-main">
             <div class="proposta-item-title">${ODUO.escapeHtml(row.name)}</div>
             <div class="proposta-item-sub">${ODUO.escapeHtml(row.subtitle)}</div>
+            ${couponPill}
             ${deliverablesToggle}
             ${deliverablesList}
           </div>
@@ -246,6 +250,13 @@
         </div>
       `;
     } else {
+      const couponLine = bundle.couponDiscountTotal > 0
+        ? `
+          <div class="proposta-bundle-coupon">
+            <span>Cupom ${ODUO.escapeHtml(bundle.couponCode)} aplicado</span>
+            <strong>−${ODUO.escapeHtml(BRL.format(bundle.couponDiscountTotal))}</strong>
+          </div>`
+        : "";
       const savings = bundle.savingsTotal > 0
         ? `
           <div class="proposta-bundle-savings">
@@ -262,6 +273,7 @@
           <span>Total contratado</span>
           <strong>${ODUO.escapeHtml(BRL.format(bundle.totalContratado))}</strong>
         </div>
+        ${couponLine}
         ${savings}
       `;
     }

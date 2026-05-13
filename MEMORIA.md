@@ -37,9 +37,9 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
   Cliente Destrava existente adiciona IA **sem setup**.
 - SDR ODuo: aviso prévio **60 dias** (o resto do catálogo é 30 dias).
 - Hunter de RH e SDR fecham em **2ª reunião** com Isabelly (CRO).
-- Cupom: hoje aplica `−10%` em cima do **Avança Locações** (item
-  protagonista). Constantes: `COUPON_PERCENT` e `COUPON_TARGET_ID` em
-  `oduo-core.js`.
+- Cupom: hoje aplica `−5%` em cima do **Avança Locações** (item
+  protagonista). Constantes: `COUPON_PERCENT = 5` e `COUPON_TARGET_ID`
+  em `oduo-core.js`. Foi 10% antes; reduzido em 2026-05-13.
 - **Cadência global da proposta** (mensal · semestral · anual): a proposta
   inteira fecha numa mesma forma de pagamento. Trocar o seletor sincroniza
   todos os recorrentes; itens só-mensal (Pacote de Artes) acompanham o
@@ -73,6 +73,19 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
   GitHub PAT, Google, Asaas (produção), n8n, Supabase.
 
 ## Histórico de sessões
+
+### 2026-05-13 (parte 7 · cupom 5% e evidente)
+- `COUPON_PERCENT` mudou de **10 → 5** em `oduo-core.js`. Cliente reduziu
+  o valor e quis o cupom mais evidente na UI.
+- Pill verde do cupom restaurada no item (drawer + proposta): chip
+  "Cupom X · −R$ Y/mês" abaixo do subtitle do item protagonista, no item
+  afetado. Pill foi removida na parte 5 (clean-up) e voltou agora porque
+  evidência > minimalismo neste caso.
+- Bundle card ganhou linha verde **"Cupom X aplicado · −R$ Y"** entre o
+  "Total contratado" e a "Economia no anual". `Y` é o desconto somado
+  por todas as parcelas da cadência (ex.: 12 × R$ 148 = R$ 1.776).
+- Core agora expõe `bundle.couponCode`, `couponDiscountPerMonth` e
+  `couponDiscountTotal`.
 
 ### 2026-05-13 (parte 6 · simplifica resumo + entregáveis visíveis)
 - Page head do `/proposta.html` reduzido pra um único título centralizado:
