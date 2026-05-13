@@ -1,12 +1,40 @@
 /* =====================================================================
    ODuo · Esteira de Produtos · pilares.js
-   Modal expandido dos 3 pilares (Aquisição · Filtro · Monetização).
-   Quando o cliente clica num pilar do método, abre um modal com:
-   - O processo passo-a-passo
-   - Cases relacionados ao pilar (números concretos)
+   Modal visual dos 3 pilares (Aquisição · Filtro · Monetização).
+   Grade de features com ícones grandes + título curto + 1 linha.
+   Imagem vale mais que mil palavras.
    ===================================================================== */
 
 (() => {
+  /* Ícones inline SVG estilo Lucide. Cada um é uma string que vai dentro
+     do .pilar-feature-icon. */
+  const ICONS = {
+    search:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>',
+    site:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 6.5h.01"/><path d="M11 6.5h.01"/></svg>',
+    target:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>',
+    pin:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
+    chart:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 6-7"/></svg>',
+    chat:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+    bolt:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/></svg>',
+    filter:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>',
+    handshake:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5 5 0 0 1 7.06 0l1.06 1.06"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></svg>',
+    users:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    clock:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    gift:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>',
+  };
+
   const PILARES = {
     aquisicao: {
       kicker: "Pilar 1 · Aquisição",
@@ -14,37 +42,12 @@
       lead:
         "Anúncios geo-segmentados no Google e Meta para pessoas da sua região " +
         "pesquisando exatamente pelas suas locações.",
-      steps: [
-        {
-          title: "1 · Estudo da região e do catálogo",
-          text:
-            "Mapeamos as palavras-chave que sua cidade busca (escora, betoneira, " +
-            "andaime, etc) e validamos seu catálogo de equipamentos.",
-        },
-        {
-          title: "2 · Landing page profissional otimizada",
-          text:
-            "Site multipages no ar em 30 dias com cada equipamento como página " +
-            "individual — pronto pra ranquear no Google e converter tráfego pago.",
-        },
-        {
-          title: "3 · Campanhas de tráfego pago",
-          text:
-            "Google Ads (Search + Display) e Meta Ads com criativos próprios. " +
-            "Geo-segmentação fina pra atender o raio que sua locadora cobre.",
-        },
-        {
-          title: "4 · Google Meu Negócio otimizado",
-          text:
-            "Ficha do GMN configurada pra aparecer nas buscas locais — quem " +
-            "procura locadora perto de mim encontra você primeiro.",
-        },
-        {
-          title: "5 · Relatório semanal com benchmark",
-          text:
-            "Você vê todas as semanas onde está o investimento, quantos leads " +
-            "chegaram, custo por lead e comparação com a média do mercado.",
-        },
+      features: [
+        { icon: "search", title: "Estudo de palavras-chave", desc: "Mapeamos o que sua cidade busca." },
+        { icon: "site", title: "Site multipages", desc: "Um equipamento por página, otimizado pra Google." },
+        { icon: "target", title: "Tráfego pago profissional", desc: "Google Ads + Meta Ads geo-segmentados." },
+        { icon: "pin", title: "Google Meu Negócio", desc: "Aparece nas buscas locais primeiro." },
+        { icon: "chart", title: "Relatório semanal", desc: "Investimento, leads, custo por lead e benchmark." },
       ],
       cases: [
         { name: "CLM Locações", metric: "R$ 18 mil → R$ 310 mil em locações fechadas" },
@@ -53,35 +56,15 @@
     },
     filtro: {
       kicker: "Pilar 2 · Filtro Inteligente",
-      title: "Loctus IA atende seus leads 24/7 e só passa os quentes",
+      title: "Loctus IA atende 24/7 e só passa lead quente",
       lead:
         "Sua IA atendendo no WhatsApp dia e noite. Filtra o curioso do " +
         "comprador, qualifica e agenda direto com o seu vendedor.",
-      steps: [
-        {
-          title: "1 · Treinamento da IA com seu catálogo",
-          text:
-            "60 dias de ajuste fino pra IA conhecer seu mix, regras de locação, " +
-            "calçamento, valores, prazos e regiões atendidas.",
-        },
-        {
-          title: "2 · WhatsApp Business integrado",
-          text:
-            "Loctus assume seu WhatsApp Business e responde no mesmo número que " +
-            "seus clientes já conhecem. Atende 24/7, sem fila.",
-        },
-        {
-          title: "3 · Qualificação automática",
-          text:
-            "A IA descobre o que o lead precisa, valida orçamento, prazo e " +
-            "região. Lead frio recebe info; lead quente vai direto pro vendedor.",
-        },
-        {
-          title: "4 · Handoff pro vendedor",
-          text:
-            "Quando o lead tá pronto pra fechar, a IA passa o contexto inteiro " +
-            "da conversa pro vendedor humano — sem retrabalho.",
-        },
+      features: [
+        { icon: "bolt", title: "Treinamento da IA", desc: "60 dias de ajuste fino com seu catálogo e regras." },
+        { icon: "chat", title: "WhatsApp 24/7", desc: "Mesmo número que seus clientes já conhecem." },
+        { icon: "filter", title: "Qualificação automática", desc: "Valida orçamento, prazo e região do lead." },
+        { icon: "handshake", title: "Handoff pro vendedor", desc: "Lead quente vai com o contexto da conversa." },
       ],
       cases: [
         { name: "Locadora B2B no Sul", metric: "+20% na taxa de conversão respondendo mais rápido" },
@@ -94,33 +77,11 @@
       lead:
         "Sua base de clientes é seu maior ativo. A Loctus reativa " +
         "automaticamente quem já alugou de você — é onde mora o lucro real.",
-      steps: [
-        {
-          title: "1 · Análise da base",
-          text:
-            "Importamos todos os clientes históricos da sua locadora. A IA " +
-            "identifica padrões de recompra (sazonalidade, ticket médio, " +
-            "frequência).",
-        },
-        {
-          title: "2 · Cadência inteligente de reativação",
-          text:
-            "Mensagens automáticas no momento certo: cliente que aluga betoneira " +
-            "a cada 6 meses recebe lembrete no 5º. Quem alugou andaime no inverno " +
-            "passado recebe oferta no início do inverno seguinte.",
-        },
-        {
-          title: "3 · Ofertas personalizadas",
-          text:
-            "Cupom de retorno, condição especial pra cliente fiel, lançamento de " +
-            "equipamento novo na linha que ele costuma alugar.",
-        },
-        {
-          title: "4 · Mensuração do impacto",
-          text:
-            "Você vê quanto da receita do mês veio de cliente recorrente vs novo. " +
-            "Métrica que separa locadora amadora de locadora profissional.",
-        },
+      features: [
+        { icon: "users", title: "Análise da base", desc: "IA identifica padrões de recompra dos seus clientes." },
+        { icon: "clock", title: "Cadência inteligente", desc: "Lembrete no momento certo de cada recompra." },
+        { icon: "gift", title: "Ofertas personalizadas", desc: "Cupom de retorno e oferta sazonal automática." },
+        { icon: "chart", title: "Mensuração do impacto", desc: "Quanto da receita veio de cliente recorrente." },
       ],
       cases: [
         { name: "Locadora de Equipamentos · MG", metric: "+20% no faturamento vendendo pra base própria" },
@@ -138,17 +99,18 @@
     $("#pilarModalTitle").textContent = data.title;
     $("#pilarModalLead").textContent = data.lead;
     $("#pilarModalContent").innerHTML = `
-      <ol class="pilar-modal-steps">
-        ${data.steps
+      <div class="pilar-features">
+        ${data.features
           .map(
-            (s) => `
-          <li>
-            <strong>${escapeHtml(s.title)}</strong>
-            <span>${escapeHtml(s.text)}</span>
-          </li>`
+            (f) => `
+          <div class="pilar-feature">
+            <div class="pilar-feature-icon">${ICONS[f.icon] || ""}</div>
+            <strong>${escapeHtml(f.title)}</strong>
+            <span>${escapeHtml(f.desc)}</span>
+          </div>`
           )
           .join("")}
-      </ol>
+      </div>
       <div class="pilar-modal-cases">
         <span class="pilar-modal-cases-head">Cases relacionados</span>
         ${data.cases

@@ -2101,38 +2101,60 @@ section {
   margin: 0 0 24px;
 }
 
-.pilar-modal-steps {
-  list-style: none;
-  counter-reset: step;
-  padding: 0;
-  margin: 0 0 28px;
-  display: flex;
-  flex-direction: column;
+/* Grade visual de features (substitui a lista numerada de steps) */
+.pilar-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 14px;
+  margin: 0 0 28px;
 }
 
-.pilar-modal-steps li {
-  padding: 16px 18px;
+.pilar-feature {
+  padding: 20px 18px 18px;
   border-radius: var(--radius-md);
   background: var(--paper);
-  border-left: 3px solid var(--blue-400);
+  border: 1px solid rgba(11, 40, 89, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  transition: transform 0.15s, box-shadow 0.2s, border-color 0.15s;
 }
 
-.pilar-modal-steps li strong {
+.pilar-feature:hover {
+  transform: translateY(-2px);
+  border-color: var(--blue-400);
+  box-shadow: 0 12px 24px -14px rgba(11, 40, 89, 0.25);
+}
+
+.pilar-feature-icon {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(160deg, var(--blue-500), var(--blue-400));
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.pilar-feature-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.pilar-feature strong {
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 15px;
+  font-size: 15.5px;
   font-weight: 700;
   color: var(--ink-900);
-  letter-spacing: -0.005em;
+  letter-spacing: -0.01em;
 }
 
-.pilar-modal-steps li span {
-  font-size: 14.5px;
-  color: rgba(7, 32, 74, 0.72);
-  line-height: 1.5;
+.pilar-feature span {
+  font-size: 13.5px;
+  color: rgba(7, 32, 74, 0.7);
+  line-height: 1.45;
 }
 
 .pilar-modal-cases {
