@@ -10,6 +10,10 @@
   const ODUO = window.ODUO;
   const { BRL, COUPON_PERCENT, COUPON_TARGET_ID, LABEL_BY_CADENCE } = ODUO;
 
+  /** Plano-base manda na cadência global da proposta. */
+  const PLANO_BASE_IDS = ["avanca", "destrava"];
+  const isPlanoBase = (id) => PLANO_BASE_IDS.includes(id);
+
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
@@ -198,6 +202,12 @@
         cardModality[item.id] = mod.id;
         if (cart[item.id]) {
           cart[item.id] = mod.id;
+          // Se o cliente trocou a modalidade do plano-base, alinha a
+          // cadência global da proposta (carrinho/proposta) pra mesma.
+          if (isPlanoBase(item.id) && ODUO.CADENCES.includes(mod.id)) {
+            setGlobalCadence(mod.id);
+            return;
+          }
           ODUO.persistCart(cart);
           renderCart();
         }
@@ -213,6 +223,12 @@
         delete cart[item.id];
       } else {
         cart[item.id] = cardModality[item.id];
+        // Se adicionou o plano-base, alinha cadência global à modalidade dele.
+        if (isPlanoBase(item.id) && ODUO.CADENCES.includes(cart[item.id])) {
+          activeCadence = cart[item.id];
+          ODUO.persistCadence(activeCadence);
+          ODUO.applyCadence(cart, activeCadence);
+        }
       }
       ODUO.persistCart(cart);
       updateCardState(card, item);
