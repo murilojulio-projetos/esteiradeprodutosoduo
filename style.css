@@ -2244,6 +2244,9 @@ section {
   display: flex;
   flex-direction: column;
   gap: 22px;
+  margin: 0;
+  padding: 0;
+  align-self: start;
 }
 
 .proposta-group {
@@ -2384,6 +2387,9 @@ section {
 /* ---- Side sticky ---- */
 .proposta-side {
   position: relative;
+  margin: 0;
+  padding: 0;
+  align-self: start;
 }
 
 .proposta-side-sticky {
@@ -2392,6 +2398,8 @@ section {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  margin: 0;
+  padding: 0;
 }
 
 .proposta-total-card {
