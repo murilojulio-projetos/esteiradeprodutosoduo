@@ -68,8 +68,13 @@
   }
 
   function renderUpsell() {
-    const root = $("#propostaItens");
-    if (!root) return;
+    // Render do upsell na sticky bar à direita, depois do CTA.
+    // Remove instância anterior se houver (re-render).
+    const sticky = $(".proposta-side-sticky");
+    if (!sticky) return;
+    const previous = sticky.querySelector(".proposta-upsell");
+    if (previous) previous.remove();
+    const root = sticky;
     const candidates = Object.keys(UPSELL_TIERS)
       .map((groupKey) => {
         const id = getNextUpsellId(groupKey);
@@ -116,11 +121,11 @@
         return `
           <div class="proposta-upsell-card">
             ${kicker}
-            <strong class="proposta-upsell-card-name">${ODUO.escapeHtml(item.name)}</strong>
+            <div class="proposta-upsell-card-name-row">
+              <strong class="proposta-upsell-card-name">${ODUO.escapeHtml(item.name)}</strong>
+              <span class="proposta-upsell-card-price">${ODUO.escapeHtml(BRL.format(mod.price))}<small>/mês</small></span>
+            </div>
             <span class="proposta-upsell-card-tagline">${ODUO.escapeHtml(item.tagline)}</span>
-            <span class="proposta-upsell-card-price">
-              ${ODUO.escapeHtml(BRL.format(mod.price))}<small>/mês</small>
-            </span>
             <button type="button" class="proposta-upsell-card-add" data-add-upsell="${item.id}">
               ${btnLabel}
             </button>

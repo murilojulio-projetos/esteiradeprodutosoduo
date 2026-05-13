@@ -721,18 +721,20 @@ section {
 
 .cat-section-head h2 {
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 34px;
-  letter-spacing: -0.02em;
+  font-size: clamp(32px, 3.8vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
   margin: 0;
   color: var(--ink-900);
-  line-height: 1.1;
+  line-height: 1.05;
 }
 
 .cat-section-head p {
-  margin: 0;
+  margin: 4px 0 0;
   color: rgba(7, 32, 74, 0.7);
   font-size: 18px;
   line-height: 1.55;
+  max-width: 700px;
 }
 
 .cat-grid {
@@ -905,19 +907,26 @@ section {
 
 .cat-divider-title {
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 22px;
-  font-weight: 700;
+  font-size: clamp(30px, 3.6vw, 44px);
+  font-weight: 800;
   color: var(--ink-900);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  display: block;
+  margin-top: 6px;
 }
 
 .cat-divider-sub {
   display: block;
-  font-size: 13.5px;
-  color: rgba(7, 32, 74, 0.6);
-  margin-top: 2px;
+  font-size: 17px;
+  color: rgba(7, 32, 74, 0.65);
+  margin-top: 10px;
   font-family: "Inter", sans-serif;
   font-weight: 400;
+  line-height: 1.5;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ----- Card de produto ----- */
@@ -2520,16 +2529,15 @@ section {
 }
 
 /* ====================================================================
-   "Turbine seu projeto" · upsell compacto dentro da coluna de items.
-   Aparece logo abaixo dos cards do resumo. Sem fundo, header inline,
-   cards bem compactos pra caber junto na mesma dobra.
+   "Turbine seu projeto" · upsell vertical dentro da sticky direita.
+   Cards 1 por linha pra economizar largura. Aparece após o CTA.
    ==================================================================== */
 .proposta-upsell {
-  margin-top: 16px;
-  padding: 20px 24px 22px;
-  background: linear-gradient(180deg, #f5f8fd 0%, #fff 70%);
+  margin-top: 18px;
+  padding: 16px 16px 18px;
+  background: linear-gradient(180deg, #f5f8fd 0%, #fff 80%);
   border: 1px solid rgba(49, 122, 224, 0.22);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
 }
 
 .proposta-upsell-head {
@@ -2539,20 +2547,20 @@ section {
 .proposta-upsell-kicker {
   display: inline-block;
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--blue-500);
   margin-bottom: 4px;
-  padding: 3px 10px;
+  padding: 3px 9px;
   border-radius: 999px;
   background: rgba(49, 122, 224, 0.12);
 }
 
 .proposta-upsell-head h3 {
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.015em;
   margin: 2px 0 2px;
@@ -2561,32 +2569,38 @@ section {
 
 .proposta-upsell-head p {
   margin: 0;
-  font-size: 13px;
+  font-size: 12.5px;
   color: rgba(7, 32, 74, 0.65);
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 .proposta-upsell-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .proposta-upsell-card {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  padding: 12px 14px 14px;
+  padding: 11px 13px 12px;
   border-radius: var(--radius-md);
   background: #fff;
   border: 1px solid rgba(11, 40, 89, 0.12);
-  transition: border-color 0.15s, transform 0.15s, box-shadow 0.2s;
+  transition: border-color 0.15s, box-shadow 0.2s;
 }
 
 .proposta-upsell-card:hover {
   border-color: var(--blue-400);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 22px -10px rgba(11, 40, 89, 0.22);
+  box-shadow: 0 8px 18px -10px rgba(11, 40, 89, 0.2);
+}
+
+.proposta-upsell-card-name-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .proposta-upsell-card-group,
@@ -2615,33 +2629,33 @@ section {
   font-weight: 700;
   color: var(--ink-900);
   letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
 .proposta-upsell-card-tagline {
   font-size: 12px;
   color: rgba(7, 32, 74, 0.65);
   line-height: 1.35;
-  margin-bottom: 2px;
+  margin-bottom: 6px;
 }
 
 .proposta-upsell-card-price {
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 800;
   color: var(--ink-900);
   letter-spacing: -0.01em;
-  margin: 2px 0 8px;
+  white-space: nowrap;
 }
 
 .proposta-upsell-card-price small {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 500;
   color: rgba(7, 32, 74, 0.55);
   margin-left: 2px;
 }
 
 .proposta-upsell-card-add {
-  margin-top: auto;
   width: 100%;
   padding: 7px 10px;
   border-radius: 999px;

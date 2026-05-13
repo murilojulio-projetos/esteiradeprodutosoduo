@@ -152,6 +152,16 @@ window.ODUO_CATALOG = [
       "O combo do tráfego orgânico: SEO técnico contínuo + Site otimizado pra Google. Pode acompanhar o plano anual no cartão.",
     items: [
       {
+        id: "site",
+        name: "Site Multipages",
+        tagline: "Profissional, otimizado para tráfego pago. Até 100 equipamentos. No ar em 30–45 dias.",
+        type: "project",
+        modalities: [
+          { id: "avista", label: "À vista", price: 4500, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
+          { id: "parcelado", label: "Parcelado", price: 833, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 5.000", discount: 0 },
+        ],
+      },
+      {
         id: "seo",
         name: "Pacote SEO",
         tagline: "SEO técnico, conteúdo e backlinks. Otimização orgânica para Google.",
@@ -160,16 +170,6 @@ window.ODUO_CATALOG = [
           { id: "mensal", label: "Mensal", price: 1250, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
           { id: "semestral", label: "Semestral", price: 1125, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
           { id: "anual", label: "Anual", price: 1062, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
-        ],
-      },
-      {
-        id: "site",
-        name: "Site Multipages",
-        tagline: "Profissional, otimizado para tráfego pago. Até 100 equipamentos. No ar em 30–45 dias.",
-        type: "project",
-        modalities: [
-          { id: "avista", label: "À vista", price: 4500, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
-          { id: "parcelado", label: "Parcelado", price: 833, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 5.000", discount: 0 },
         ],
       },
     ],
