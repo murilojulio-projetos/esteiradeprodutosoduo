@@ -2614,7 +2614,7 @@ section {
   top: 100px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 22px;
   margin: 0;
   padding: 0;
 }
@@ -3268,6 +3268,15 @@ section {
 .proposta-bundle-card.is-cadence-anual {
   border-color: var(--blue-500);
   background: linear-gradient(180deg, #eef3fc 0%, #fff 60%);
+}
+
+/* No bundle, o kicker vai em cima e o valor grande embaixo (igual ao
+   drawer). O .proposta-total-top normal (Investimento Inicial) continua
+   em row pra label+valor lado a lado. */
+.proposta-bundle-card .proposta-total-top {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
 }
 
 .proposta-bundle-card .proposta-total-top span {

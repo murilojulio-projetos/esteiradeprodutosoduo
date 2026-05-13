@@ -77,6 +77,13 @@ window.ODUO_CATALOG = [
         tagline: "4 publicações no mês",
         type: "recurring",
         addon: true,
+        deliverables: [
+          "4 publicações no mês",
+          "Design profissional alinhado à marca",
+          "Calendário editorial mensal",
+          "Roteiros e copy customizados",
+          "Relatório de performance",
+        ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 500, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
           { id: "semestral", label: "Semestral", price: 450, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
@@ -92,6 +99,14 @@ window.ODUO_CATALOG = [
         recommended: true,
         type: "recurring",
         addon: true,
+        deliverables: [
+          "8 publicações no mês · 2 por semana",
+          "Design profissional alinhado à marca",
+          "Calendário editorial mensal",
+          "Roteiros e copy customizados",
+          "Stories complementares",
+          "Relatório de performance",
+        ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 750, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
           { id: "semestral", label: "Semestral", price: 675, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
@@ -106,6 +121,15 @@ window.ODUO_CATALOG = [
         upgradeBenefit: "3 posts por semana · presença máxima no Instagram.",
         type: "recurring",
         addon: true,
+        deliverables: [
+          "12 publicações no mês · 3 por semana",
+          "Design profissional alinhado à marca",
+          "Calendário editorial mensal",
+          "Roteiros e copy customizados",
+          "Stories complementares + boxes de destaques",
+          "Engajamento ativo (curtidas e comentários)",
+          "Relatório de performance",
+        ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 1000, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
           { id: "semestral", label: "Semestral", price: 900, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
@@ -132,6 +156,13 @@ window.ODUO_CATALOG = [
         tagline: "Vídeos curtos até 60s, edição profissional",
         type: "recurring",
         addon: true,
+        deliverables: [
+          "4 reels no mês · 1 por semana",
+          "Edição profissional · vídeos até 60s",
+          "Roteiro + captions otimizadas",
+          "Trilha sonora e cortes alinhados a tendências",
+          "Otimização para Instagram, TikTok e YouTube Shorts",
+        ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 800, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
           { id: "semestral", label: "Semestral", price: 720, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
@@ -147,6 +178,14 @@ window.ODUO_CATALOG = [
         recommended: true,
         type: "recurring",
         addon: true,
+        deliverables: [
+          "8 reels no mês · 2 por semana",
+          "Edição profissional · vídeos até 60s",
+          "Roteiro + captions otimizadas",
+          "Trilha sonora e cortes alinhados a tendências",
+          "Otimização para Instagram, TikTok e YouTube Shorts",
+          "Frequência ideal pra surfar viralização",
+        ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 1500, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
           { id: "semestral", label: "Semestral", price: 1350, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
@@ -184,6 +223,14 @@ window.ODUO_CATALOG = [
         upgradeBenefit: "Seu site aparece nas primeiras orgânicas do Google.",
         requires: { id: "site", reason: "O SEO só funciona com Site Multipages (não roda em landing page)." },
         type: "recurring",
+        deliverables: [
+          "SEO técnico contínuo · auditoria + correções",
+          "Produção de conteúdo otimizado pra Google",
+          "Construção de backlinks de qualidade",
+          "Otimização das páginas de equipamentos",
+          "Acompanhamento do ranking nas palavras-chave",
+          "Relatório mensal de posições e tráfego",
+        ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 1250, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
           { id: "semestral", label: "Semestral", price: 1125, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
