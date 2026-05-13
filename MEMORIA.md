@@ -1,0 +1,80 @@
+# Memória do projeto · ODuo Esteira de Produtos
+
+Arquivo vivo. Toda sessão de trabalho atualiza aqui: decisões, pendências,
+contexto que **não dá pra deduzir lendo o código** e o que foi feito por último.
+
+## Stack
+- Site estático: HTML + CSS + JS puro (sem build, sem framework).
+- jsPDF via CDN para gerar o PDF da proposta no client.
+- Deploy: Vercel (link automático com a branch `main`).
+- Persistência local: `localStorage` (carrinho, cupom, forma de pagamento).
+
+## URLs
+- Produção: https://oduo-esteira.vercel.app/
+- Repositório: https://github.com/murilojulio-projetos/esteiradeprodutosoduo
+- Spec fonte: **Cardápio de Upsells V2.11** (PDF, fora do repo)
+
+## Arquivos
+| Arquivo            | Papel                                                    |
+| ------------------ | -------------------------------------------------------- |
+| `index.html`       | Landing + cardápio                                       |
+| `proposta.html`    | Checkout dedicado · gera PDF                             |
+| `product-data.js`  | Catálogo (`window.ODUO_CATALOG`)                         |
+| `oduo-core.js`     | Helpers compartilhados (cart, cupom, grupos do carrinho) |
+| `app.js`           | Render do catálogo + drawer do carrinho na index         |
+| `proposta.js`      | Render do checkout + geração de PDF                      |
+| `style.css`        | CSS único                                                |
+| `assets/`          | Logo + imagem de clientes                                |
+
+## Regras de produto (V2.11)
+- **Avança Locações** é o carro-chefe. **Destrava Loc** só entra como downsell
+  quando o cliente recusa o Avança.
+- 3 modalidades nos recorrentes: mensal (cheio) · semestral · anual.
+  - Avança/Destrava: −5% (sem) · −10% (anual).
+  - Demais recorrentes: −10% (sem) · −15% (anual).
+- Projetos: 10% off à vista **ou** 6× sem juros no cartão.
+- IAs Loctus standalone: setup único R$ 5.000 (3× sem juros).
+  Cliente Destrava existente adiciona IA **sem setup**.
+- SDR ODuo: aviso prévio **60 dias** (o resto do catálogo é 30 dias).
+- Hunter de RH e SDR fecham em **2ª reunião** com Isabelly (CRO).
+- Cupom: hoje aplica `−10%` em cima do **Avança Locações** (item
+  protagonista). Constantes: `COUPON_PERCENT` e `COUPON_TARGET_ID` em
+  `oduo-core.js` e `app.js`.
+
+## Decisões de implementação
+- Cardápio abre sempre na modalidade **mensal** pra ancorar preço cheio antes
+  de mostrar o desconto da anual.
+- Card do plano-base renderiza **horizontal** (full-width); demais são cards
+  verticais em grid.
+- Setup nasce junto da mensalidade no carrinho — não é removível separadamente,
+  some quando a mensalidade-pai é removida.
+- PDF é gerado 100% client-side (sem backend).
+- `app.js` carrega depois de `product-data.js` + `oduo-core.js` na index.
+  Na proposta o trio é `product-data.js` → `oduo-core.js` → `proposta.js`.
+
+## Conhecidas a olho nu (sem prioridade definida)
+- `app.js` contém uma função `generatePdf` antiga (~250 linhas) que **não é
+  mais chamada** — o PDF real sai de `proposta.js`. Pode limpar quando der.
+- `buildCartGroups` está duplicado entre `app.js` (linha ~262) e
+  `oduo-core.js`. Faz a mesma coisa. Idealmente o `app.js` consome o de
+  `oduo-core.js`.
+- `app.js` sobrescreve `window.ODUO` que `oduo-core.js` montou — funciona
+  porque a index não depende dos helpers de core, mas é confuso.
+- Texto das condições padrão diverge entre os dois PDFs: `app.js` diz
+  "projetos em 6×", `proposta.js` diz "até 12×". O que vai pro cliente é
+  o do `proposta.js`.
+
+## Pendências / próximos passos
+- (vazio — adicionar quando surgirem)
+
+## Histórico de sessões
+
+### 2026-05-13
+- Repositório git inicializado e publicado em
+  github.com/murilojulio-projetos/esteiradeprodutosoduo (branch `main`).
+- Commit inicial `90422d8`: V2.11 completa, 10 arquivos, ~5.080 linhas.
+- `gh` CLI instalado direto em `~/.local/bin/gh` (binário oficial, sem
+  Homebrew). PATH atualizado em `~/.zshrc`.
+- Autenticação no GitHub via `gh auth login --web` (conta
+  `murilojulio-projetos`).
+- Criado este `MEMORIA.md`.
