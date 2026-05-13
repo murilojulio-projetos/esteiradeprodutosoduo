@@ -211,6 +211,13 @@ window.ODUO_CATALOG = [
         tagline: "Profissional, otimizado para tráfego pago. Até 100 equipamentos. No ar em 30–45 dias.",
         upgradeBenefit: "Site profissional otimizado pra converter tráfego pago e SEO. Até 100 equipamentos · no ar em 30 dias.",
         type: "project",
+        deliverables: [
+          "Site profissional otimizado pra tráfego pago e conversão",
+          "Cadastro de até 100 equipamentos com página individual",
+          "Estrutura preparada pra SEO (pré-requisito do Pacote SEO)",
+          "Briefing aprovado → no ar em 30–45 dias",
+          "Manutenção pós-entrega à parte (R$ 200/h de desenvolvedor)",
+        ],
         modalities: [
           { id: "avista", label: "À vista", price: 4500, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
           { id: "parcelado", label: "Parcelado", price: 833, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 5.000", discount: 0 },
@@ -254,6 +261,14 @@ window.ODUO_CATALOG = [
         name: "Branding Completo",
         tagline: "Logo, paleta, tipografia, manual, papelaria e identidade digital. 30–45 dias.",
         type: "project",
+        deliverables: [
+          "Logo + variações (principal, simplificada, monocromática)",
+          "Paleta de cores e tipografia oficial",
+          "Manual de marca (regras de uso e aplicação)",
+          "Papelaria (cartão, assinatura de e-mail, padrão de orçamento)",
+          "Identidade digital (avatares, capas de rede social)",
+          "Entrega em 30–45 dias após briefing aprovado",
+        ],
         modalities: [
           { id: "avista", label: "À vista", price: 6750, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
           { id: "parcelado", label: "Parcelado", price: 1250, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 7.500", discount: 0 },
@@ -264,6 +279,11 @@ window.ODUO_CATALOG = [
         name: "Vídeo Institucional",
         tagline: "1 vídeo de 1–2 minutos. Para site, apresentações, lançamentos.",
         type: "project",
+        deliverables: [
+          "1 vídeo institucional de 1–2 minutos",
+          "Roteiro + edição profissional",
+          "Pronto pra site, apresentações e lançamentos",
+        ],
         modalities: [
           { id: "avista", label: "À vista", price: 2250, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
           { id: "parcelado", label: "Parcelado", price: 417, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 2.500", discount: 0 },
@@ -274,6 +294,12 @@ window.ODUO_CATALOG = [
         name: "Vídeo Premium",
         tagline: "1 vídeo de 3–5 minutos, gravação no cliente.",
         type: "project",
+        deliverables: [
+          "1 vídeo premium de 3–5 minutos",
+          "Gravação presencial no cliente (equipamento profissional)",
+          "Roteiro, direção e edição profissional",
+          "Pra cases de sucesso, lançamentos e apresentações comerciais",
+        ],
         modalities: [
           { id: "avista", label: "À vista", price: 4500, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
           { id: "parcelado", label: "Parcelado", price: 833, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 5.000", discount: 0 },
@@ -299,6 +325,14 @@ window.ODUO_CATALOG = [
         type: "recurring",
         setup: 5000,
         setupNote: "Setup único · 3× sem juros no cartão",
+        deliverables: [
+          "Loctus IA atendendo no WhatsApp 24/7",
+          "Qualificação automática (orçamento, prazo, região)",
+          "Handoff pro vendedor com contexto da conversa",
+          "Setup: configuração técnica + catálogo + fluxos WhatsApp Business",
+          "Onboarding com Lucas Pereira + 60 dias de ajuste fino",
+          "Cliente Destrava existente: sem setup (mesma infra)",
+        ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 1000, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
           { id: "semestral", label: "Semestral", price: 900, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
@@ -312,6 +346,14 @@ window.ODUO_CATALOG = [
         type: "recurring",
         setup: 5000,
         setupNote: "Setup único · 3× sem juros no cartão",
+        deliverables: [
+          "IA analisa sua base e identifica padrões de recompra",
+          "Cadência inteligente: lembrete no momento certo de cada cliente",
+          "Ofertas personalizadas (cupom de retorno, sazonal)",
+          "Setup: integração com sua base + catálogo + WhatsApp Business",
+          "Onboarding com Lucas Pereira + 60 dias de ajuste fino",
+          "Cliente Destrava existente: sem setup (mesma infra)",
+        ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 1000, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
           { id: "semestral", label: "Semestral", price: 900, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
@@ -326,6 +368,13 @@ window.ODUO_CATALOG = [
         type: "recurring",
         setup: 5000,
         setupNote: "Setup único · 3× sem juros no cartão",
+        deliverables: [
+          "Loctus IA de Atendimento (WhatsApp 24/7) — qualificação automática",
+          "Loctus IA de Reativação — análise da base + cadência inteligente",
+          "Setup único cobre AS DUAS IAs (mesma infra · economia de 50%)",
+          "Onboarding com Lucas Pereira + 60 dias de ajuste fino",
+          "Cliente Destrava existente: sem setup",
+        ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 2000, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
           { id: "semestral", label: "Semestral", price: 1800, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
@@ -350,6 +399,11 @@ window.ODUO_CATALOG = [
         name: "Diagnóstico Express",
         tagline: "Diagnóstico geral + reunião de descoberta + treinamento geral.",
         type: "project",
+        deliverables: [
+          "Diagnóstico geral da área comercial",
+          "Reunião de descoberta com o time",
+          "Treinamento geral",
+        ],
         modalities: [
           { id: "avista", label: "À vista", price: 4500, suffix: "", pay: "10% off · total R$ 4.500", discount: 10, best: true },
           { id: "parcelado", label: "Parcelado", price: 833, suffix: " × 6", pay: "6× sem juros · total R$ 5.000", discount: 0 },
@@ -361,6 +415,14 @@ window.ODUO_CATALOG = [
         tagline: "Diagnóstico + raio-X + coach técnico + 90 dias de acompanhamento.",
         recommended: true,
         type: "project",
+        deliverables: [
+          "Diagnóstico geral da área comercial",
+          "Reunião de descoberta com o time",
+          "Treinamento geral",
+          "Acompanhamento raio-X",
+          "Coach técnico geral",
+          "Acompanhamento por 90 dias",
+        ],
         modalities: [
           { id: "avista", label: "À vista", price: 9000, suffix: "", pay: "10% off · total R$ 9.000", discount: 10, best: true },
           { id: "parcelado", label: "Parcelado", price: 1667, suffix: " × 6", pay: "6× sem juros · total R$ 10.000", discount: 0 },
@@ -371,6 +433,15 @@ window.ODUO_CATALOG = [
         name: "Acompanhamento 6 meses",
         tagline: "Premium. Reunião individual com cada membro + análise contínua.",
         type: "project",
+        deliverables: [
+          "Diagnóstico geral da área comercial",
+          "Reunião de descoberta com o time",
+          "Reunião individual com cada membro + coach técnico",
+          "Treinamento geral",
+          "Acompanhamento raio-X",
+          "Análise contínua de evolução",
+          "Acompanhamento por 6 meses",
+        ],
         modalities: [
           { id: "avista", label: "À vista", price: 16200, suffix: "", pay: "10% off · total R$ 16.200", discount: 10, best: true },
           { id: "parcelado", label: "Parcelado", price: 3000, suffix: " × 6", pay: "6× sem juros · total R$ 18.000", discount: 0 },
@@ -399,6 +470,15 @@ window.ODUO_CATALOG = [
         setupNote: "Setup único · treinamento do SDR no seu negócio",
         commission: "10% sobre a 1ª locação fechada via lead do SDR",
         secondMeeting: true,
+        deliverables: [
+          "SDR humano alocado prospectando sua base + mercado",
+          "30h/mês dedicadas · meta de 12 a 20 reuniões qualificadas/mês",
+          "Setup: treinamento no seu negócio (catálogo, ICP, scripts, CRM)",
+          "Suporte de gestor + ferramentas inclusos no fixo",
+          "Variável: 10% sobre a 1ª locação fechada via lead do SDR",
+          "SDR compartilhado entre até 3 clientes (exclusivo via Isabelly)",
+          "Aviso prévio 60 dias (não 30 como o plano-base)",
+        ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 3000, suffix: "/mês fixo", pay: "Boleto/Pix mensal", discount: 0 },
           { id: "semestral", label: "Semestral", price: 2700, suffix: "/mês fixo", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
@@ -413,6 +493,14 @@ window.ODUO_CATALOG = [
           "Recrutamento de vendedor, atendente, gerente comercial. 100% do 1º salário do contratado.",
         type: "performance",
         secondMeeting: true,
+        deliverables: [
+          "Recrutamento especializado (vendedor, atendente, gerente comercial)",
+          "Triagem e entrevistas técnicas com candidatos",
+          "Apresentação dos finalistas pra você decidir",
+          "Garantia: paga quando candidato contratado passar do período de experiência",
+          "Pagamento: entrada no início + saldo no fechamento da vaga",
+          "Boleto em 2 parcelas sob negociação na 2ª reunião",
+        ],
         modalities: [
           {
             id: "perf",

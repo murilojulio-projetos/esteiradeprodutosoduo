@@ -13,3 +13,6 @@ apis.local.md
 .DS_Store
 .idea/
 .vscode/
+
+# Node portátil local (não commitar)
+.tools/
