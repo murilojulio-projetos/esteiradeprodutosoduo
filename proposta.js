@@ -68,13 +68,10 @@
   }
 
   function renderUpsell() {
-    // Render do upsell na sticky bar à direita, depois do CTA.
-    // Remove instância anterior se houver (re-render).
-    const sticky = $(".proposta-side-sticky");
-    if (!sticky) return;
-    const previous = sticky.querySelector(".proposta-upsell");
-    if (previous) previous.remove();
-    const root = sticky;
+    // Render do upsell na coluna do meio (entre items e bundle/CTA).
+    const root = $("#propostaUpsellCol");
+    if (!root) return;
+    root.innerHTML = "";
     const candidates = Object.keys(UPSELL_TIERS)
       .map((groupKey) => {
         const id = getNextUpsellId(groupKey);

@@ -70,7 +70,7 @@ button {
 
 .brand-logo {
   display: block;
-  height: 56px;
+  height: 78px;
   width: auto;
   object-fit: contain;
 }
@@ -2209,7 +2209,7 @@ section {
 }
 
 .proposta-main {
-  max-width: 1000px;
+  max-width: 1240px;
   margin: 0 auto;
   padding: 50px 28px 80px;
 }
@@ -2229,11 +2229,27 @@ section {
   color: var(--ink-900);
 }
 
+/* 3 colunas em desktop: items · Turbine seu projeto · bundle/CTA */
 .proposta-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) 280px 320px;
+  gap: 20px;
   align-items: start;
+}
+
+.proposta-upsell-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.proposta-upsell-col:empty {
+  display: none;
+}
+
+/* Quando o upsell-col está vazio, faz items + side ocupar todo o grid */
+.proposta-grid:has(.proposta-upsell-col:empty) {
+  grid-template-columns: minmax(0, 1fr) 340px;
 }
 
 .proposta-itens {
@@ -2746,11 +2762,31 @@ section {
   margin: 0 0 24px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
+  /* Em telas médias, vira 2 colunas: items + sticky, com upsell-col indo
+     pra largura cheia abaixo */
+  .proposta-grid {
+    grid-template-columns: minmax(0, 1fr) 320px;
+  }
+  .proposta-upsell-col {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .proposta-upsell-col .proposta-upsell {
+    flex: 1;
+    min-width: 280px;
+  }
+}
+
+@media (max-width: 760px) {
   .proposta-grid {
     grid-template-columns: 1fr;
   }
-
+  .proposta-upsell-col {
+    grid-column: auto;
+    flex-direction: column;
+  }
   .proposta-side-sticky {
     position: static;
   }
