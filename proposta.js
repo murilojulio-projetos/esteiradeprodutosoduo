@@ -61,7 +61,6 @@
       block.innerHTML = `
         <header class="proposta-group-head">
           <h3>${ODUO.escapeHtml(g.title)}</h3>
-          <span>${ODUO.escapeHtml(g.sub)}</span>
         </header>
       `;
 
@@ -71,21 +70,17 @@
         if (row.followsBase) item.dataset.followsBase = "true";
 
         const removeBtn = row.removable
-          ? `<button type="button" class="proposta-item-remove" data-remove="${row.id}">Remover</button>`
-          : "";
-        const couponTag = row.couponNote
-          ? `<span class="proposta-item-coupon">${ODUO.escapeHtml(row.couponNote)}</span>`
+          ? `<button type="button" class="proposta-item-remove" data-remove="${row.id}" aria-label="Remover ${ODUO.escapeHtml(row.name)}">×</button>`
           : "";
         const baseStrike = row.basePriceText
           ? `<span class="proposta-item-strike">${ODUO.escapeHtml(row.basePriceText)}</span>`
           : "";
 
         item.innerHTML = `
+          ${removeBtn}
           <div class="proposta-item-main">
             <div class="proposta-item-title">${ODUO.escapeHtml(row.name)}</div>
             <div class="proposta-item-sub">${ODUO.escapeHtml(row.subtitle)}</div>
-            ${couponTag}
-            ${removeBtn}
           </div>
           <div class="proposta-item-price-block">
             ${baseStrike}
@@ -197,9 +192,7 @@
             </button>`;
         }).join("")}
       </div>
-      <small class="cadence-selector-hint">
-        Sincroniza todos os recorrentes. Itens só-mensal acompanham o cartão do plano-base.
-      </small>
+      <small class="cadence-selector-hint">Sincroniza toda a proposta na mesma forma de pagamento.</small>
     `;
     $$(".cadence-btn", wrap).forEach((btn) => {
       btn.addEventListener("click", () => setGlobalCadence(btn.dataset.cadence));

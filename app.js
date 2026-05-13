@@ -137,7 +137,6 @@
             <span class="price" data-role="price"></span>
             <span class="suffix" data-role="suffix"></span>
           </div>
-          <p class="pay" data-role="pay"></p>
           <div class="savings-row" data-role="savings" hidden></div>
           ${setup}
           ${commission}
@@ -222,7 +221,6 @@
 
     const priceEl = $('[data-role="price"]', card);
     const suffixEl = $('[data-role="suffix"]', card);
-    const payEl = $('[data-role="pay"]', card);
 
     if (item.type === "performance") {
       priceEl.textContent = mod.customLabel || "Sob consulta";
@@ -231,7 +229,6 @@
       priceEl.textContent = BRL.format(mod.price);
       suffixEl.textContent = mod.suffix || "";
     }
-    payEl.textContent = ODUO.payText(item, mod);
 
     // "Economiza R$ X/mês" quando a modalidade selecionada bate desconto
     // contra o preço mensal de referência. Só faz sentido em recorrentes/híbridos.
@@ -311,20 +308,16 @@
         item.className = "cart-item";
         if (row.followsBase) item.dataset.followsBase = "true";
         const removeBtn = row.removable
-          ? `<button type="button" class="cart-item-remove" data-remove="${row.id}">remover</button>`
-          : "";
-        const couponTag = row.couponNote
-          ? `<span class="cart-item-coupon">${ODUO.escapeHtml(row.couponNote)}</span>`
+          ? `<button type="button" class="cart-item-remove" data-remove="${row.id}" aria-label="Remover ${ODUO.escapeHtml(row.name)}">×</button>`
           : "";
         const baseStrike = row.basePriceText
           ? `<span class="cart-item-strike">${ODUO.escapeHtml(row.basePriceText)}</span>`
           : "";
         item.innerHTML = `
+          ${removeBtn}
           <div class="cart-item-main">
             <div class="cart-item-title">${ODUO.escapeHtml(row.name)}</div>
             <div class="cart-item-sub">${ODUO.escapeHtml(row.subtitle)}</div>
-            ${couponTag}
-            ${removeBtn}
           </div>
           <div class="cart-item-price-block">
             ${baseStrike}
@@ -411,9 +404,7 @@
             </button>`;
         }).join("")}
       </div>
-      <small class="cadence-selector-hint">
-        Sincroniza todos os recorrentes. Itens só-mensal acompanham o cartão do plano-base.
-      </small>
+      <small class="cadence-selector-hint">Sincroniza toda a proposta na mesma forma de pagamento.</small>
     `;
     $$(".cadence-btn", wrap).forEach((btn) => {
       btn.addEventListener("click", () => setGlobalCadence(btn.dataset.cadence));

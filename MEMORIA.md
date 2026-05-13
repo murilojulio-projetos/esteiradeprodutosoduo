@@ -74,6 +74,38 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
 
 ## Histórico de sessões
 
+### 2026-05-13 (parte 5 · clean-up + paleta clara)
+- **3 bugs visuais corrigidos**:
+  - `.savings-row[hidden]` aparecia como faixa vazia (display:flex
+    sobrescrevia o atributo `hidden`) — adicionado
+    `[hidden] { display: none !important }` no escopo.
+  - `.card-hero .modality-pay` ficava invisível (cor escura em fundo
+    escuro). Override pra `rgba(244, 246, 252, 0.72)`.
+  - O `.pay` text duplicava a info da modalidade ativa — removido do
+    template do card, junto com a referência em `updateCardState`.
+- **Repaginação do bundle card** seguindo a direção "claro com detalhes
+  azul":
+  - Fundo branco com borda azul (`blue-400` no semestral, `blue-500` no
+    anual). Em anual/semestral, gradiente sutil azul-claro como wash.
+  - Kicker em azul-marinho. Número grande em ink-900. Total contratado
+    com borda fina por cima.
+  - Card de economia interno: fundo `rgba(49, 122, 224, 0.1)` com
+    `dashed` azul. Valor da economia em `blue-500`.
+- **Savings inline (card do catálogo)** mudou de verde pra azul também,
+  pra unificar a paleta de "destaque positivo".
+- **Clean-up adicional pra "mais clean, mais fácil de entender"**:
+  - Removido o subtitle dos headers dos grupos no checkout
+    ("MENSALIDADE" sem "Fechando 1 ano · 12× no cartão" embaixo) —
+    bundle card lateral já comunica.
+  - Removida a `.cart-item-coupon` / `.proposta-item-coupon` tag inline
+    nos items — o strike + novo preço já mostra o desconto, e o card
+    "Cupom aplicado" lateral mostra o contexto.
+  - Botão "Remover" / "remover" textual virou `×` circular discreto no
+    canto direito de cada item (proposta + drawer). Menos vertical, mais
+    affordance de UI universal.
+  - Hint do cadence selector encurtado pra uma linha:
+    "Sincroniza toda a proposta na mesma forma de pagamento."
+
 ### 2026-05-13 (parte 4 · legibilidade + economia visível)
 - **Bug fix**: `app.js` iterava `Object.values(groups)` que agora inclui
   `bundle` (sem `.items`). Throw silencioso quebrava DOMContentLoaded e o

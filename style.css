@@ -934,14 +934,22 @@ section {
 
 .card.card-hero .modality {
   background: rgba(244, 246, 252, 0.06);
-  border-color: rgba(244, 246, 252, 0.15);
+  border-color: rgba(244, 246, 252, 0.18);
   color: var(--paper);
+}
+
+.card.card-hero .modality .modality-pay {
+  color: rgba(244, 246, 252, 0.72);
 }
 
 .card.card-hero .modality.is-active {
   background: var(--orange);
   border-color: var(--orange);
   color: #fff;
+}
+
+.card.card-hero .modality.is-active .modality-pay {
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .card.card-hero .price {
@@ -1216,7 +1224,7 @@ section {
   line-height: 1.45;
 }
 
-/* Linha "Economiza R$ X/mês" no card do catálogo */
+/* Linha "Economiza R$ X/mês" no card do catálogo · paleta azul */
 .savings-row {
   display: flex;
   align-items: baseline;
@@ -1225,10 +1233,15 @@ section {
   padding: 9px 12px;
   margin: -6px 0 16px;
   border-radius: var(--radius-md);
-  background: rgba(46, 194, 126, 0.12);
-  color: #1f8a5b;
+  background: rgba(49, 122, 224, 0.1);
+  border: 1px dashed rgba(49, 122, 224, 0.42);
+  color: var(--ink-700);
   font-size: 14px;
   font-weight: 600;
+}
+
+.savings-row[hidden] {
+  display: none !important;
 }
 
 .savings-row strong {
@@ -1236,11 +1249,17 @@ section {
   font-weight: 800;
   font-size: 16px;
   letter-spacing: -0.01em;
+  color: var(--blue-500);
 }
 
 .card.card-hero .savings-row {
-  background: rgba(46, 194, 126, 0.22);
-  color: #b5f0d1;
+  background: rgba(85, 157, 250, 0.18);
+  border-color: rgba(85, 157, 250, 0.55);
+  color: rgba(244, 246, 252, 0.92);
+}
+
+.card.card-hero .savings-row strong {
+  color: var(--blue-300);
 }
 
 .card.card-hero .note {
@@ -1500,9 +1519,10 @@ section {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 10px;
-  padding: 12px 0;
+  padding: 14px 28px 14px 0;
   border-top: 1px solid rgba(11, 40, 89, 0.08);
-  align-items: flex-start;
+  align-items: center;
+  position: relative;
 }
 
 .cart-group .cart-item:first-of-type {
@@ -1565,20 +1585,29 @@ section {
 }
 
 .cart-item-remove {
+  position: absolute;
+  top: 50%;
+  right: -4px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
   background: transparent;
-  border: 0;
+  border: 1px solid rgba(11, 40, 89, 0.2);
   color: rgba(7, 32, 74, 0.55);
-  font-size: 13.5px;
+  font-size: 16px;
+  line-height: 1;
   cursor: pointer;
   padding: 0;
-  margin-top: 6px;
-  text-align: left;
-  width: fit-content;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .cart-item-remove:hover {
+  background: rgba(227, 111, 26, 0.1);
+  border-color: rgba(227, 111, 26, 0.5);
   color: var(--orange-strong);
 }
 
@@ -2071,9 +2100,10 @@ section {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 18px;
-  padding: 16px 0;
+  padding: 18px 38px 18px 0;
   border-top: 1px solid rgba(11, 40, 89, 0.08);
-  align-items: start;
+  align-items: center;
+  position: relative;
 }
 
 .proposta-group .proposta-item:first-of-type {
@@ -2135,18 +2165,29 @@ section {
 }
 
 .proposta-item-remove {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   background: transparent;
-  border: 0;
+  border: 1px solid rgba(11, 40, 89, 0.18);
   color: rgba(7, 32, 74, 0.5);
-  font-size: 13px;
+  font-size: 18px;
+  line-height: 1;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
-  margin-top: 4px;
-  text-align: left;
-  width: fit-content;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .proposta-item-remove:hover {
+  background: rgba(227, 111, 26, 0.1);
+  border-color: rgba(227, 111, 26, 0.45);
   color: var(--orange-strong);
 }
 
@@ -2468,20 +2509,22 @@ section {
 .cart-bundle-card {
   border-radius: var(--radius-md);
   padding: 18px 20px 20px;
-  background: linear-gradient(160deg, var(--ink-900), var(--ink-700));
-  color: var(--paper);
-  border: 0;
+  background: #fff;
+  color: var(--ink-900);
+  border: 1.5px solid rgba(11, 40, 89, 0.12);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.cart-bundle-card.is-cadence-anual {
-  background: linear-gradient(160deg, var(--orange-strong), var(--orange));
+  gap: 12px;
 }
 
 .cart-bundle-card.is-cadence-semestral {
-  background: linear-gradient(160deg, var(--blue-500), var(--blue-400));
+  border-color: var(--blue-400);
+  background: linear-gradient(180deg, #f3f7ff 0%, #fff 60%);
+}
+
+.cart-bundle-card.is-cadence-anual {
+  border-color: var(--blue-500);
+  background: linear-gradient(180deg, #eef3fc 0%, #fff 60%);
 }
 
 .cart-bundle-top {
@@ -2493,11 +2536,19 @@ section {
 
 .cart-bundle-kicker {
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(244, 246, 252, 0.85);
+  color: var(--blue-500);
+}
+
+.cart-bundle-card.is-cadence-anual .cart-bundle-kicker {
+  color: var(--ink-700);
+}
+
+.cart-bundle-card.is-cadence-mensal .cart-bundle-kicker {
+  color: rgba(7, 32, 74, 0.65);
 }
 
 .cart-bundle-value {
@@ -2505,14 +2556,14 @@ section {
   font-weight: 800;
   font-size: 30px;
   letter-spacing: -0.02em;
-  color: #fff;
+  color: var(--ink-900);
   line-height: 1.05;
 }
 
 .cart-bundle-value span {
   font-size: 15px;
   font-weight: 500;
-  color: rgba(244, 246, 252, 0.8);
+  color: rgba(7, 32, 74, 0.55);
   margin-left: 4px;
 }
 
@@ -2521,16 +2572,16 @@ section {
   align-items: baseline;
   justify-content: space-between;
   padding-top: 10px;
-  border-top: 1px solid rgba(244, 246, 252, 0.2);
+  border-top: 1px solid rgba(11, 40, 89, 0.1);
   font-size: 14.5px;
-  color: rgba(244, 246, 252, 0.9);
+  color: rgba(7, 32, 74, 0.7);
 }
 
 .cart-bundle-total-row strong {
   font-family: "Sora", "Inter", sans-serif;
   font-weight: 700;
   font-size: 19px;
-  color: #fff;
+  color: var(--ink-900);
 }
 
 .cart-bundle-savings {
@@ -2538,12 +2589,13 @@ section {
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  padding: 8px 12px;
+  padding: 10px 14px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(49, 122, 224, 0.1);
+  border: 1px dashed rgba(49, 122, 224, 0.45);
   font-size: 14px;
   font-weight: 600;
-  color: #fff;
+  color: var(--ink-700);
 }
 
 .cart-bundle-savings strong {
@@ -2551,11 +2603,12 @@ section {
   font-weight: 800;
   font-size: 17px;
   letter-spacing: -0.01em;
+  color: var(--blue-500);
 }
 
 .cart-bundle-card small {
   font-size: 13px;
-  color: rgba(244, 246, 252, 0.8);
+  color: rgba(7, 32, 74, 0.6);
   line-height: 1.5;
 }
 
@@ -2566,30 +2619,40 @@ section {
 }
 
 .proposta-bundle-card {
-  background: linear-gradient(160deg, var(--ink-900), var(--ink-700));
-  color: var(--paper);
-  border-color: transparent;
-}
-
-.proposta-bundle-card.is-cadence-anual {
-  background: linear-gradient(160deg, var(--orange-strong), var(--orange));
+  background: #fff;
+  color: var(--ink-900);
+  border: 1.5px solid rgba(11, 40, 89, 0.12);
 }
 
 .proposta-bundle-card.is-cadence-semestral {
-  background: linear-gradient(160deg, var(--blue-500), var(--blue-400));
+  border-color: var(--blue-400);
+  background: linear-gradient(180deg, #f3f7ff 0%, #fff 60%);
+}
+
+.proposta-bundle-card.is-cadence-anual {
+  border-color: var(--blue-500);
+  background: linear-gradient(180deg, #eef3fc 0%, #fff 60%);
 }
 
 .proposta-bundle-card .proposta-total-top span {
-  color: rgba(244, 246, 252, 0.75);
+  color: var(--blue-500);
+}
+
+.proposta-bundle-card.is-cadence-anual .proposta-total-top span {
+  color: var(--ink-700);
+}
+
+.proposta-bundle-card.is-cadence-mensal .proposta-total-top span {
+  color: rgba(7, 32, 74, 0.65);
 }
 
 .proposta-bundle-card .proposta-total-top strong {
-  color: #fff;
-  font-size: 26px;
+  color: var(--ink-900);
+  font-size: 28px;
 }
 
 .proposta-bundle-card small {
-  color: rgba(244, 246, 252, 0.75);
+  color: rgba(7, 32, 74, 0.65);
 }
 
 .proposta-bundle-total {
@@ -2598,16 +2661,16 @@ section {
   justify-content: space-between;
   padding: 12px 0 8px;
   margin-top: 6px;
-  border-top: 1px solid rgba(244, 246, 252, 0.22);
+  border-top: 1px solid rgba(11, 40, 89, 0.12);
   font-size: 15px;
-  color: rgba(244, 246, 252, 0.9);
+  color: rgba(7, 32, 74, 0.7);
 }
 
 .proposta-bundle-total strong {
   font-family: "Sora", "Inter", sans-serif;
   font-weight: 800;
   font-size: 22px;
-  color: #fff;
+  color: var(--ink-900);
   letter-spacing: -0.01em;
 }
 
@@ -2619,10 +2682,11 @@ section {
   margin-top: 8px;
   padding: 10px 14px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(49, 122, 224, 0.1);
+  border: 1px dashed rgba(49, 122, 224, 0.45);
   font-size: 15px;
   font-weight: 600;
-  color: #fff;
+  color: var(--ink-700);
 }
 
 .proposta-bundle-savings strong {
@@ -2630,6 +2694,7 @@ section {
   font-weight: 800;
   font-size: 19px;
   letter-spacing: -0.01em;
+  color: var(--blue-500);
 }
 
 /* Indicação visual para itens que "acompanham o plano-base" */
