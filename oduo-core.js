@@ -165,19 +165,19 @@
         sub:
           cadence === "mensal"
             ? "Você paga todo mês"
-            : `Você fecha 1 ano · ${parcelas}× no cartão`,
+            : `Fechando 1 ano · ${parcelas}× no cartão`,
         items: [],
         total: 0,
       },
       setups: {
         title: "Implantação",
-        sub: "Pagamento único de setup, no início do contrato",
+        sub: "Setup único · cobrado no início",
         items: [],
         total: 0,
       },
       projetos: {
         title: "Projetos pontuais",
-        sub: "Entrega única — à vista ou parcelado",
+        sub: "Entrega única · à vista ou parcelado",
         items: [],
         total: 0,
       },
@@ -188,6 +188,10 @@
         total: 0,
       },
     };
+
+    // Total que o cliente pagaria se tudo fosse contratado em modalidade
+    // mensal — usado para mostrar a economia da cadência atual.
+    let mensalEquivalentTotal = 0;
 
     Object.keys(cart).forEach((id) => {
       const found = findItem(id);
@@ -201,6 +205,14 @@
 
         const discount = couponDiscountFor(item.id, mod.price, coupon);
         const finalPrice = mod.price - discount;
+
+        // Para a economia: preço mensal de referência do item (se existir).
+        // Cupom é só do item protagonista e só conta uma vez — aqui o mensal
+        // de referência também desconta o cupom pra comparar "maçã com maçã".
+        const mensalMod = item.modalities.find((m) => m.id === "mensal");
+        const mensalRef = mensalMod ? mensalMod.price - couponDiscountFor(item.id, mensalMod.price, coupon) : finalPrice;
+        mensalEquivalentTotal += mensalRef;
+        const savingsPerMonth = Math.max(0, mensalRef - finalPrice);
 
         let subtitle;
         if (followsBase) {
@@ -219,6 +231,8 @@
           basePrice: mod.price,
           finalPrice,
           discount,
+          mensalRef,
+          savingsPerMonth,
           priceText: BRL.format(finalPrice) + "/mês",
           basePriceText: discount > 0 ? BRL.format(mod.price) + "/mês" : null,
           couponNote:
@@ -277,16 +291,23 @@
 
     const parcelaPrice = groups.mensal.total;
     const totalContratado = parcelaPrice * parcelas;
+    const totalMensalEquivalente = mensalEquivalentTotal * parcelas;
+    const savingsPerMonth = Math.max(0, mensalEquivalentTotal - parcelaPrice);
+    const savingsTotal = savingsPerMonth * parcelas;
     const bundle = {
       cadence,
       cadenceLabel: LABEL_BY_CADENCE[cadence],
       parcelas,
       parcelaPrice,
       totalContratado,
+      mensalEquivalentPerMonth: mensalEquivalentTotal,
+      totalMensalEquivalente,
+      savingsPerMonth,
+      savingsTotal,
       paymentLabel:
         cadence === "mensal"
-          ? "Boleto ou Pix mensal"
-          : `${parcelas}× no cartão de crédito · sem juros`,
+          ? "Boleto ou Pix · sem fidelidade"
+          : `${parcelas}× no cartão · sem juros`,
       contractLabel:
         cadence === "anual"
           ? "Fechando 1 ano com a ODuo"

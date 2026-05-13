@@ -1136,8 +1136,8 @@ section {
 }
 
 .modality-pay {
-  font-size: 13.5px;
-  color: rgba(7, 32, 74, 0.65);
+  font-size: 14.5px;
+  color: rgba(7, 32, 74, 0.7);
 }
 
 .modality-badge {
@@ -1210,9 +1210,37 @@ section {
 }
 
 .note {
-  font-size: 12.5px;
-  color: rgba(7, 32, 74, 0.55);
+  font-size: 14px;
+  color: rgba(7, 32, 74, 0.65);
   margin: 0 0 16px;
+  line-height: 1.45;
+}
+
+/* Linha "Economiza R$ X/mês" no card do catálogo */
+.savings-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 12px;
+  margin: -6px 0 16px;
+  border-radius: var(--radius-md);
+  background: rgba(46, 194, 126, 0.12);
+  color: #1f8a5b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.savings-row strong {
+  font-family: "Sora", "Inter", sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.card.card-hero .savings-row {
+  background: rgba(46, 194, 126, 0.22);
+  color: #b5f0d1;
 }
 
 .card.card-hero .note {
@@ -1454,18 +1482,18 @@ section {
 
 .cart-group-head h4 {
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 13px;
-  letter-spacing: 0.14em;
+  font-size: 14px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--blue-500);
-  margin: 0 0 2px;
+  margin: 0 0 3px;
 }
 
 .cart-group-head span {
   display: block;
-  font-size: 12.5px;
-  color: rgba(7, 32, 74, 0.55);
-  line-height: 1.4;
+  font-size: 14px;
+  color: rgba(7, 32, 74, 0.65);
+  line-height: 1.45;
 }
 
 .cart-item {
@@ -1490,26 +1518,26 @@ section {
 
 .cart-item-title {
   font-weight: 600;
-  font-size: 16px;
+  font-size: 17px;
   color: var(--ink-900);
   line-height: 1.3;
 }
 
 .cart-item-sub {
-  font-size: 13.5px;
-  color: rgba(7, 32, 74, 0.65);
+  font-size: 14.5px;
+  color: rgba(7, 32, 74, 0.7);
   line-height: 1.45;
 }
 
 .cart-item-coupon {
   display: inline-block;
   width: fit-content;
-  margin-top: 2px;
+  margin-top: 4px;
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  padding: 3px 8px;
+  padding: 4px 10px;
   border-radius: 999px;
   background: rgba(46, 194, 126, 0.15);
   color: #1f8a5b;
@@ -1527,11 +1555,11 @@ section {
   font-family: "Sora", "Inter", sans-serif;
   font-weight: 700;
   color: var(--ink-900);
-  font-size: 16.5px;
+  font-size: 18px;
 }
 
 .cart-item-strike {
-  font-size: 12px;
+  font-size: 13px;
   color: rgba(7, 32, 74, 0.4);
   text-decoration: line-through;
 }
@@ -1539,13 +1567,15 @@ section {
 .cart-item-remove {
   background: transparent;
   border: 0;
-  color: rgba(7, 32, 74, 0.45);
-  font-size: 12px;
+  color: rgba(7, 32, 74, 0.55);
+  font-size: 13.5px;
   cursor: pointer;
   padding: 0;
-  margin-top: 4px;
+  margin-top: 6px;
   text-align: left;
   width: fit-content;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .cart-item-remove:hover {
@@ -1587,11 +1617,11 @@ section {
 
 .cart-total-card-row span {
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(7, 32, 74, 0.55);
+  color: rgba(7, 32, 74, 0.65);
 }
 
 .cart-total-card.is-highlight .cart-total-card-row span {
@@ -1601,7 +1631,7 @@ section {
 .cart-total-card-row strong {
   font-family: "Sora", "Inter", sans-serif;
   font-weight: 700;
-  font-size: 22px;
+  font-size: 24px;
   color: var(--ink-900);
   letter-spacing: -0.01em;
 }
@@ -1612,14 +1642,14 @@ section {
 
 .cart-total-card small {
   display: block;
-  margin-top: 4px;
-  font-size: 11.5px;
-  color: rgba(7, 32, 74, 0.55);
-  line-height: 1.4;
+  margin-top: 6px;
+  font-size: 13.5px;
+  color: rgba(7, 32, 74, 0.65);
+  line-height: 1.45;
 }
 
 .cart-total-card.is-highlight small {
-  color: rgba(244, 246, 252, 0.65);
+  color: rgba(244, 246, 252, 0.75);
 }
 
 /* ----- Cupom ----- */
@@ -1709,8 +1739,9 @@ section {
 
 .cart-foot-note {
   margin: 0;
-  font-size: 12px;
-  color: rgba(7, 32, 74, 0.55);
+  font-size: 13.5px;
+  color: rgba(7, 32, 74, 0.6);
+  line-height: 1.45;
 }
 
 /* ----- Modal ----- */
@@ -2027,13 +2058,13 @@ section {
   font-size: 18px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  margin: 0 0 4px;
+  margin: 0 0 6px;
   color: var(--blue-500);
 }
 
 .proposta-group-head span {
-  font-size: 14.5px;
-  color: rgba(7, 32, 74, 0.6);
+  font-size: 15.5px;
+  color: rgba(7, 32, 74, 0.7);
 }
 
 .proposta-item {
@@ -2058,14 +2089,14 @@ section {
 .proposta-item-title {
   font-family: "Sora", "Inter", sans-serif;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 19px;
   color: var(--ink-900);
 }
 
 .proposta-item-sub {
-  font-size: 15px;
-  color: rgba(7, 32, 74, 0.7);
-  line-height: 1.45;
+  font-size: 16px;
+  color: rgba(7, 32, 74, 0.72);
+  line-height: 1.5;
 }
 
 .proposta-item-coupon {
@@ -2156,11 +2187,11 @@ section {
 
 .proposta-total-top span {
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(7, 32, 74, 0.55);
+  color: rgba(7, 32, 74, 0.65);
 }
 
 .proposta-total-card.is-highlight .proposta-total-top span {
@@ -2181,9 +2212,10 @@ section {
 
 .proposta-total-card small {
   display: block;
-  font-size: 13px;
-  color: rgba(7, 32, 74, 0.55);
-  line-height: 1.45;
+  margin-top: 6px;
+  font-size: 14px;
+  color: rgba(7, 32, 74, 0.65);
+  line-height: 1.5;
 }
 
 .proposta-total-card.is-highlight small {
@@ -2374,21 +2406,21 @@ section {
 .cadence-selector {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 12px 12px 14px;
+  gap: 10px;
+  padding: 16px 16px 18px;
   border-radius: var(--radius-md);
   background: #fff;
   border: 1px solid rgba(11, 40, 89, 0.1);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .cadence-selector-label {
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(7, 32, 74, 0.55);
+  color: rgba(7, 32, 74, 0.65);
 }
 
 .cadence-selector-buttons {
@@ -2396,19 +2428,19 @@ section {
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   background: var(--paper);
-  padding: 4px;
+  padding: 5px;
   border-radius: 999px;
 }
 
 .cadence-btn {
   border: 0;
   background: transparent;
-  padding: 9px 8px;
+  padding: 11px 10px;
   border-radius: 999px;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 600;
-  color: rgba(7, 32, 74, 0.65);
+  color: rgba(7, 32, 74, 0.7);
   cursor: pointer;
   transition: background 0.15s, color 0.15s, box-shadow 0.15s;
 }
@@ -2425,9 +2457,9 @@ section {
 }
 
 .cadence-selector-hint {
-  font-size: 11.5px;
-  color: rgba(7, 32, 74, 0.5);
-  line-height: 1.45;
+  font-size: 13px;
+  color: rgba(7, 32, 74, 0.6);
+  line-height: 1.5;
   margin: 0;
 }
 
@@ -2435,13 +2467,13 @@ section {
 
 .cart-bundle-card {
   border-radius: var(--radius-md);
-  padding: 14px 16px;
+  padding: 18px 20px 20px;
   background: linear-gradient(160deg, var(--ink-900), var(--ink-700));
   color: var(--paper);
   border: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .cart-bundle-card.is-cadence-anual {
@@ -2454,57 +2486,77 @@ section {
 
 .cart-bundle-top {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .cart-bundle-kicker {
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(244, 246, 252, 0.75);
+  color: rgba(244, 246, 252, 0.85);
 }
 
 .cart-bundle-value {
   font-family: "Sora", "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 22px;
-  letter-spacing: -0.01em;
+  font-weight: 800;
+  font-size: 30px;
+  letter-spacing: -0.02em;
   color: #fff;
-  white-space: nowrap;
+  line-height: 1.05;
 }
 
 .cart-bundle-value span {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
-  color: rgba(244, 246, 252, 0.7);
-  margin-left: 2px;
+  color: rgba(244, 246, 252, 0.8);
+  margin-left: 4px;
 }
 
 .cart-bundle-total-row {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding-top: 6px;
-  border-top: 1px solid rgba(244, 246, 252, 0.18);
-  font-size: 13px;
-  color: rgba(244, 246, 252, 0.85);
+  padding-top: 10px;
+  border-top: 1px solid rgba(244, 246, 252, 0.2);
+  font-size: 14.5px;
+  color: rgba(244, 246, 252, 0.9);
 }
 
 .cart-bundle-total-row strong {
   font-family: "Sora", "Inter", sans-serif;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 19px;
   color: #fff;
 }
 
+.cart-bundle-savings {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.cart-bundle-savings strong {
+  font-family: "Sora", "Inter", sans-serif;
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+
 .cart-bundle-card small {
-  font-size: 11.5px;
-  color: rgba(244, 246, 252, 0.75);
-  line-height: 1.45;
+  font-size: 13px;
+  color: rgba(244, 246, 252, 0.8);
+  line-height: 1.5;
 }
 
 /* ----- Variante na página /proposta.html ----- */
@@ -2544,18 +2596,39 @@ section {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding: 10px 0 6px;
-  margin-top: 4px;
-  border-top: 1px solid rgba(244, 246, 252, 0.2);
-  font-size: 13.5px;
-  color: rgba(244, 246, 252, 0.85);
+  padding: 12px 0 8px;
+  margin-top: 6px;
+  border-top: 1px solid rgba(244, 246, 252, 0.22);
+  font-size: 15px;
+  color: rgba(244, 246, 252, 0.9);
 }
 
 .proposta-bundle-total strong {
   font-family: "Sora", "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 20px;
+  font-weight: 800;
+  font-size: 22px;
   color: #fff;
+  letter-spacing: -0.01em;
+}
+
+.proposta-bundle-savings {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.proposta-bundle-savings strong {
+  font-family: "Sora", "Inter", sans-serif;
+  font-weight: 800;
+  font-size: 19px;
   letter-spacing: -0.01em;
 }
 

@@ -124,7 +124,7 @@
       const card = totalCard({
         kicker: "Investimento inicial",
         value: BRL.format(inicial),
-        hint: "Setups e projetos pagos no início. Escolha abaixo como prefere pagar.",
+        hint: "Setups e projetos. Escolha abaixo como prefere pagar.",
       });
 
       // Bloco de forma de pagamento
@@ -161,8 +161,7 @@
         totalCard({
           kicker: "Performance",
           value: "Variável",
-          hint:
-            "Cobrado por resultado da contratação. Os valores são alinhados em uma reunião dedicada.",
+          hint: "Cobrado por resultado · alinhado em reunião dedicada.",
         })
       );
     }
@@ -199,8 +198,7 @@
         }).join("")}
       </div>
       <small class="cadence-selector-hint">
-        Sincroniza todos os recorrentes da proposta. Itens só-mensal acompanham
-        o cartão do plano-base.
+        Sincroniza todos os recorrentes. Itens só-mensal acompanham o cartão do plano-base.
       </small>
     `;
     $$(".cadence-btn", wrap).forEach((btn) => {
@@ -214,16 +212,24 @@
     div.className =
       "proposta-total-card proposta-bundle-card is-cadence-" + bundle.cadence;
 
+    const isAnual = bundle.cadence === "anual";
+
     if (bundle.cadence === "mensal") {
       div.innerHTML = `
         <div class="proposta-total-top">
           <span>${ODUO.escapeHtml(bundle.contractLabel)}</span>
           <strong>${ODUO.escapeHtml(BRL.format(bundle.parcelaPrice))}/mês</strong>
         </div>
-        <small>${ODUO.escapeHtml(bundle.paymentLabel)} · sem fidelidade,
-        aviso prévio de 30 dias (60 no SDR).</small>
+        <small>${ODUO.escapeHtml(bundle.paymentLabel)} · aviso de 30 dias (60 no SDR).</small>
       `;
     } else {
+      const savings = bundle.savingsTotal > 0
+        ? `
+          <div class="proposta-bundle-savings">
+            <span>Você economiza no ${isAnual ? "anual" : "semestral"}</span>
+            <strong>−${ODUO.escapeHtml(BRL.format(bundle.savingsTotal))}</strong>
+          </div>`
+        : "";
       div.innerHTML = `
         <div class="proposta-total-top">
           <span>${ODUO.escapeHtml(bundle.contractLabel)}</span>
@@ -233,11 +239,8 @@
           <span>Total contratado</span>
           <strong>${ODUO.escapeHtml(BRL.format(bundle.totalContratado))}</strong>
         </div>
-        <small>${ODUO.escapeHtml(bundle.paymentLabel)}. ${
-          bundle.cadence === "anual"
-            ? "Já com os descontos da modalidade anual."
-            : "Já com os descontos da modalidade semestral."
-        }</small>
+        ${savings}
+        <small>${ODUO.escapeHtml(bundle.paymentLabel)}. Descontos da modalidade ${isAnual ? "anual" : "semestral"} já aplicados.</small>
       `;
     }
     return div;

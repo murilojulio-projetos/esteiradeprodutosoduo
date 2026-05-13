@@ -138,6 +138,7 @@
             <span class="suffix" data-role="suffix"></span>
           </div>
           <p class="pay" data-role="pay"></p>
+          <div class="savings-row" data-role="savings" hidden></div>
           ${setup}
           ${commission}
           ${note}
@@ -157,6 +158,7 @@
           <span class="suffix" data-role="suffix"></span>
         </div>
         <p class="pay" data-role="pay"></p>
+        <div class="savings-row" data-role="savings" hidden></div>
         ${setup}
         ${commission}
         ${note}
@@ -231,6 +233,33 @@
     }
     payEl.textContent = ODUO.payText(item, mod);
 
+    // "Economiza R$ X/mês" quando a modalidade selecionada bate desconto
+    // contra o preço mensal de referência. Só faz sentido em recorrentes/híbridos.
+    const savingsEl = $('[data-role="savings"]', card);
+    if (savingsEl) {
+      const mensalMod = item.modalities.find((m) => m.id === "mensal");
+      const isRecurringLike = item.type === "recurring" || item.type === "hybrid";
+      if (
+        isRecurringLike &&
+        mensalMod &&
+        mod.id !== "mensal" &&
+        mod.price > 0 &&
+        mensalMod.price > mod.price
+      ) {
+        const saveMonth = mensalMod.price - mod.price;
+        const saveYear = saveMonth * 12;
+        savingsEl.hidden = false;
+        savingsEl.innerHTML = `
+          <span>Economia ${ODUO.escapeHtml(LABEL_BY_CADENCE[mod.id] || mod.label)}</span>
+          <strong>−${ODUO.escapeHtml(BRL.format(saveMonth))}/mês</strong>
+        `;
+        savingsEl.title = `Economia anual: ${BRL.format(saveYear)}`;
+      } else {
+        savingsEl.hidden = true;
+        savingsEl.innerHTML = "";
+      }
+    }
+
     const addBtn = $('[data-role="add"]', card);
     const inCart = !!cart[item.id];
     addBtn.classList.toggle("is-added", inCart);
@@ -266,8 +295,9 @@
     const groups = ODUO.buildCartGroups(cart, activeCoupon, activeCadence);
     const hasRecurring = groups.mensal.items.length > 0;
 
-    Object.values(groups).forEach((g) => {
-      if (g.items.length === 0) return;
+    ["mensal", "setups", "projetos", "performance"].forEach((key) => {
+      const g = groups[key];
+      if (!g || g.items.length === 0) return;
       const block = document.createElement("div");
       block.className = "cart-group";
       block.innerHTML = `
@@ -319,7 +349,7 @@
         totalCard(
           "Investimento inicial",
           BRL.format(investimentoInicial),
-          "Setups e projetos pagos no início. Pode ser à vista ou parcelado conforme cada item."
+          "Setups e projetos · à vista ou parcelado no cartão."
         )
       );
     }
@@ -328,7 +358,7 @@
         totalCard(
           "Performance",
           "Variável",
-          "Cobrado por resultado da contratação. Os valores são alinhados em uma reunião dedicada."
+          "Cobrado por resultado · alinhado em reunião dedicada."
         )
       );
     }
@@ -382,8 +412,7 @@
         }).join("")}
       </div>
       <small class="cadence-selector-hint">
-        Trocar aqui sincroniza todos os recorrentes da proposta. Itens só-mensal
-        (como Pacote de Artes) acompanham o cartão do plano-base.
+        Sincroniza todos os recorrentes. Itens só-mensal acompanham o cartão do plano-base.
       </small>
     `;
     $$(".cadence-btn", wrap).forEach((btn) => {
@@ -398,7 +427,6 @@
     div.className = "cart-bundle-card is-cadence-" + bundle.cadence;
 
     const isAnual = bundle.cadence === "anual";
-    const isSemestral = bundle.cadence === "semestral";
     const isMensal = bundle.cadence === "mensal";
 
     if (isMensal) {
@@ -409,25 +437,27 @@
             BRL.format(bundle.parcelaPrice)
           )}<span>/mês</span></strong>
         </div>
-        <small>${ODUO.escapeHtml(bundle.paymentLabel)} · sem fidelidade, aviso prévio de 30 dias (60 no SDR).</small>
+        <small>${ODUO.escapeHtml(bundle.paymentLabel)} · aviso de 30 dias (60 no SDR).</small>
       `;
     } else {
+      const savings = bundle.savingsTotal > 0
+        ? `
+          <div class="cart-bundle-savings">
+            <span>Você economiza no ${isAnual ? "anual" : "semestral"}</span>
+            <strong>−${ODUO.escapeHtml(BRL.format(bundle.savingsTotal))}</strong>
+          </div>`
+        : "";
       div.innerHTML = `
         <div class="cart-bundle-top">
           <span class="cart-bundle-kicker">${ODUO.escapeHtml(bundle.contractLabel)}</span>
-          <strong class="cart-bundle-value">${ODUO.escapeHtml(
-            String(bundle.parcelas)
-          )}× ${ODUO.escapeHtml(BRL.format(bundle.parcelaPrice))}</strong>
+          <strong class="cart-bundle-value">${bundle.parcelas}× ${ODUO.escapeHtml(BRL.format(bundle.parcelaPrice))}</strong>
         </div>
         <div class="cart-bundle-total-row">
           <span>Total contratado</span>
           <strong>${ODUO.escapeHtml(BRL.format(bundle.totalContratado))}</strong>
         </div>
-        <small>${ODUO.escapeHtml(bundle.paymentLabel)}. ${
-          isAnual
-            ? "Já com os descontos da modalidade anual."
-            : "Já com os descontos da modalidade semestral."
-        }</small>
+        ${savings}
+        <small>${ODUO.escapeHtml(bundle.paymentLabel)}. Descontos da modalidade ${isAnual ? "anual" : "semestral"} já aplicados.</small>
       `;
     }
     return div;

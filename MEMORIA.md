@@ -74,6 +74,29 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
 
 ## Histórico de sessões
 
+### 2026-05-13 (parte 4 · legibilidade + economia visível)
+- **Bug fix**: `app.js` iterava `Object.values(groups)` que agora inclui
+  `bundle` (sem `.items`). Throw silencioso quebrava DOMContentLoaded e o
+  cart toggle nunca pegava listener. Trocado por iteração explícita
+  `["mensal", "setups", "projetos", "performance"]`.
+- **Tipografia**: subi 8 fontes pequenas que estavam difíceis de ler — cart
+  item sub (13.5 → 14.5), cart total card row (11.5 → 13), cart bundle
+  kicker (11.5 → 13), cadence selector hint (11.5 → 13), cart-foot-note
+  (12 → 13.5), modality-pay (13.5 → 14.5), note (12.5 → 14), bundle value
+  (22 → 30, pra dar peso ao número-chave), bundle total row (16 → 19).
+- **Textos enxutos**: cadence hint, hints dos total cards, label do
+  payment bundle. Tira o que era ruído.
+- **Economia visível**:
+  - `oduo-core.js`: cada item recorrente ganha `mensalRef` e
+    `savingsPerMonth`. O `bundle` ganha `savingsPerMonth` e `savingsTotal`
+    (× parcelas).
+  - Card do catálogo: aparece linha verde "Economia Anual · −R$ 330/mês"
+    embaixo do preço quando o cliente seleciona uma modalidade não-mensal.
+    Some quando volta pro mensal.
+  - Bundle card (drawer + proposta): aparece bloco "Você economiza no anual
+    · −R$ 3.960" entre o total contratado e o rodapé. Pula quando a
+    economia é 0.
+
 ### 2026-05-13 (parte 3 · cadência global)
 - **Nova feature**: seletor de cadência global no carrinho lateral e no
   `/proposta.html`. Resolve a fricção de "Avança anual no cartão + Artes
