@@ -117,16 +117,17 @@
           ? `Trocar pra ${ODUO.escapeHtml(item.name)}`
           : "+ Adicionar";
 
-        // Preço · pra projeto mostra parcela ("6× R$ 833"); pra recorrente
-        // mostra mensalidade ("R$ X/mês").
+        // Preço · pra projeto mostra o valor cheio (entrega única);
+        // pra recorrente, a mensalidade ("R$ X/mês"). Quando o cliente
+        // fechar plano anual, o projeto entra embutido na parcela.
         let priceHtml;
         if (item.type === "project") {
           const parc = item.modalities.find((m) => m.id === "parcelado");
-          const display = parc || item.modalities[0];
           if (parc) {
-            priceHtml = `<span class="price-x">6×</span> ${ODUO.escapeHtml(BRL.format(parc.price))}`;
+            const total = parc.price * 6;
+            priceHtml = ODUO.escapeHtml(BRL.format(total));
           } else {
-            priceHtml = ODUO.escapeHtml(BRL.format(display.price));
+            priceHtml = ODUO.escapeHtml(BRL.format(item.modalities[0].price));
           }
         } else {
           const mod =
