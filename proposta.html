@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sua proposta · ODuo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+      defer
+    ></script>
+  </head>
+  <body class="proposta-page">
+    <header class="topbar">
+      <a class="brand brand-dark" href="index.html" aria-label="ODuo">
+        <img src="assets/oduo-logo.png" alt="ODuo" class="brand-logo" />
+      </a>
+      <nav class="topnav" aria-label="Navegação">
+        <a href="index.html">← Voltar ao cardápio</a>
+      </nav>
+    </header>
+
+    <main class="proposta-main">
+      <div class="proposta-head">
+        <span class="eyebrow eyebrow-accent">Sua proposta</span>
+        <h1>Confira os itens e gere o PDF quando estiver pronto</h1>
+        <p>
+          Revise tudo abaixo, escolha como prefere pagar o investimento
+          inicial e baixe o seu PDF personalizado.
+        </p>
+      </div>
+
+      <div class="proposta-grid">
+        <section class="proposta-itens" id="propostaItens">
+          <!-- preenchido por proposta.js -->
+        </section>
+
+        <aside class="proposta-side">
+          <div class="proposta-side-sticky">
+            <div id="propostaTotais"></div>
+
+            <div class="proposta-coupon-block" id="propostaCouponBlock"></div>
+
+            <button
+              type="button"
+              class="btn btn-primary btn-block btn-lg"
+              id="propostaPdfBtn"
+              disabled
+            >
+              Baixar proposta em PDF
+            </button>
+            <a href="index.html" class="proposta-back-link">
+              ← Continuar montando minha proposta
+            </a>
+            <p class="proposta-foot-note">
+              Você pode baixar o PDF agora e responder com calma depois.
+            </p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="proposta-empty" id="propostaEmpty" hidden>
+        <h2>Sua proposta ainda está vazia</h2>
+        <p>Volte ao cardápio e escolha os produtos que fazem sentido para você.</p>
+        <a href="index.html" class="btn btn-primary">Abrir o cardápio</a>
+      </div>
+    </main>
+
+    <footer class="rodape">
+      <div class="rodape-inner">
+        <span class="brand brand-sm">
+          <img
+            src="assets/oduo-logo.png"
+            alt="ODuo"
+            class="brand-logo brand-logo-light"
+          />
+        </span>
+        <p>A maior assessoria de Marketing para Locadoras da América Latina.</p>
+      </div>
+    </footer>
+
+    <!-- Modal de dados do cliente para o PDF -->
+    <div class="modal" id="leadModal" hidden role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <button
+          type="button"
+          class="icon-btn modal-close"
+          id="leadCancel"
+          aria-label="Fechar"
+        >
+          ×
+        </button>
+        <h3>Dados da proposta</h3>
+        <p class="muted">Esses dados aparecem no PDF que você vai baixar.</p>
+        <form id="leadForm" class="lead-form">
+          <label>
+            Nome da sua locadora
+            <input
+              type="text"
+              id="leadEmpresa"
+              placeholder="Ex.: CLM Locações"
+              required
+            />
+          </label>
+          <label>
+            Responsável
+            <input type="text" id="leadContato" placeholder="Ex.: Cristiano" />
+          </label>
+          <label>
+            Cidade / UF
+            <input
+              type="text"
+              id="leadCidade"
+              placeholder="Ex.: Belo Horizonte / MG"
+            />
+          </label>
+          <label>
+            Observações <span class="label-hint">(aparecem no PDF)</span>
+            <textarea
+              id="leadObs"
+              rows="3"
+              placeholder="Ex.: Condições especiais combinadas nesta conversa."
+            ></textarea>
+          </label>
+          <label class="inline-field">
+            <span>Proposta válida por</span>
+            <select id="leadValidade">
+              <option value="7" selected>7 dias (padrão)</option>
+              <option value="15">15 dias</option>
+              <option value="30">30 dias</option>
+              <option value="0">Sem prazo</option>
+            </select>
+          </label>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-ghost" id="leadSkip">
+              Pular e gerar
+            </button>
+            <button type="submit" class="btn btn-primary">Gerar PDF</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="product-data.js"></script>
+    <script src="oduo-core.js"></script>
+    <script src="proposta.js" defer></script>
+  </body>
+</html>
