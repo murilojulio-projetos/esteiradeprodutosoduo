@@ -74,6 +74,33 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
 
 ## Histórico de sessões
 
+### 2026-05-13 (parte 8 · reordenação + "Turbine seu projeto")
+- **Catálogo reorganizado**: a antiga seção única "Criativos" (Artes + Vídeo)
+  virou três seções separadas, agora chamadas conjuntamente de
+  **Monetização Direta** e posicionadas logo após o plano-base:
+  - `artes` · Pacote de Artes (Essencial · Profissional · Completo)
+  - `video` · Pacote de Vídeo Recorrente (4 Reels · 8 Reels)
+  - `seo` · Pacote SEO (puxado pra cá; a antiga `assinaturas` saiu)
+- **Headlines mais fortes**: cada uma agora tem header dedicado, ficando
+  visualmente separadas. Ordem do `ODUO_CATALOG`:
+  `plano-base → artes → video → seo → ia → projetos → treinamento → comercial`.
+- **Dois divisores no catálogo agora**:
+  - Antes da seção `artes`: "Recomendado pra crescimento acelerado ·
+    Turbine o seu projeto" (acento azul).
+  - Antes da seção `ia`: o antigo "Complemente o seu projeto" (acento laranja).
+- Pacote de Artes (mensal-only) ganhou texto explícito no `pay`:
+  "Acompanha o plano-base (boleto ou cartão)" — evidencia que ele segue a
+  cadência anual quando o plano-base é anual.
+- **Feature nova na proposta** · bloco "Turbine o seu projeto":
+  - Aparece no fim da coluna esquerda do `/proposta.html`.
+  - Lista mini-cards horizontais dos 6 itens recomendados (Artes ×3,
+    Vídeo ×2, SEO) que ainda NÃO estão no carrinho.
+  - Cada card: badge "Pacote de Artes" · nome · tagline · preço grande ·
+    botão `+ Adicionar`.
+  - Click no `+` adiciona ao cart usando a cadência global atual (ou
+    fallback pra mensal se o item não tiver a cadência pedida).
+  - Card linkado azul-marinho (paleta consistente com o bundle).
+
 ### 2026-05-13 (parte 7 · cupom 5% e evidente)
 - `COUPON_PERCENT` mudou de **10 → 5** em `oduo-core.js`. Cliente reduziu
   o valor e quis o cupom mais evidente na UI.

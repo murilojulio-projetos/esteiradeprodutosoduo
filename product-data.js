@@ -61,14 +61,14 @@ window.ODUO_CATALOG = [
   },
 
   // ====================================================================
-  // B · CRIATIVOS — fecha na call
+  // B · MONETIZAÇÃO DIRETA — Pacote de Artes
   // ====================================================================
   {
-    section: "criativos",
-    sectionLabel: "Criativos",
-    sectionKicker: "B · Upsell direto na call · somado ao boleto",
+    section: "artes",
+    sectionLabel: "Pacote de Artes",
+    sectionKicker: "B · Monetização direta · somado ao plano-base",
     sectionDesc:
-      "Os dois únicos upsells que o closer fecha na call do plano-base. Vão somados ao boleto mensal.",
+      "Movimente as redes da sua locadora. Pagamento acompanha o boleto ou o cartão anual do plano-base.",
     items: [
       {
         id: "artes-essencial",
@@ -77,7 +77,7 @@ window.ODUO_CATALOG = [
         tagline: "4 publicações no mês",
         type: "recurring",
         addon: true,
-        modalities: [{ id: "mensal", label: "Mensal", price: 500, suffix: "/mês", pay: "Somado ao boleto do plano-base", discount: 0 }],
+        modalities: [{ id: "mensal", label: "Mensal", price: 500, suffix: "/mês", pay: "Acompanha o plano-base (boleto ou cartão)", discount: 0 }],
       },
       {
         id: "artes-profissional",
@@ -87,7 +87,7 @@ window.ODUO_CATALOG = [
         recommended: true,
         type: "recurring",
         addon: true,
-        modalities: [{ id: "mensal", label: "Mensal", price: 750, suffix: "/mês", pay: "Somado ao boleto do plano-base", discount: 0 }],
+        modalities: [{ id: "mensal", label: "Mensal", price: 750, suffix: "/mês", pay: "Acompanha o plano-base (boleto ou cartão)", discount: 0 }],
       },
       {
         id: "artes-completo",
@@ -96,8 +96,21 @@ window.ODUO_CATALOG = [
         tagline: "12 publicações no mês",
         type: "recurring",
         addon: true,
-        modalities: [{ id: "mensal", label: "Mensal", price: 1000, suffix: "/mês", pay: "Somado ao boleto do plano-base", discount: 0 }],
+        modalities: [{ id: "mensal", label: "Mensal", price: 1000, suffix: "/mês", pay: "Acompanha o plano-base (boleto ou cartão)", discount: 0 }],
       },
+    ],
+  },
+
+  // ====================================================================
+  // C · MONETIZAÇÃO DIRETA — Pacote de Vídeo Recorrente
+  // ====================================================================
+  {
+    section: "video",
+    sectionLabel: "Pacote de Vídeo Recorrente",
+    sectionKicker: "Monetização direta",
+    sectionDesc:
+      "Vídeos curtos pra escalar autoridade nas redes. Pode acompanhar o plano anual no cartão.",
+    items: [
       {
         id: "video-4",
         group: "Pacote de Vídeo Recorrente",
@@ -123,6 +136,30 @@ window.ODUO_CATALOG = [
           { id: "mensal", label: "Mensal", price: 1500, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
           { id: "semestral", label: "Semestral", price: 1350, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
           { id: "anual", label: "Anual", price: 1275, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+        ],
+      },
+    ],
+  },
+
+  // ====================================================================
+  // D · MONETIZAÇÃO DIRETA — Pacote SEO
+  // ====================================================================
+  {
+    section: "seo",
+    sectionLabel: "Pacote SEO",
+    sectionKicker: "Monetização direta",
+    sectionDesc:
+      "Otimização orgânica contínua pra Google. Sem prazo final. Pode acompanhar o plano anual no cartão.",
+    items: [
+      {
+        id: "seo",
+        name: "Pacote SEO",
+        tagline: "SEO técnico, conteúdo e backlinks. Otimização orgânica para Google.",
+        type: "recurring",
+        modalities: [
+          { id: "mensal", label: "Mensal", price: 1250, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
+          { id: "semestral", label: "Semestral", price: 1125, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
+          { id: "anual", label: "Anual", price: 1062, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
         ],
       },
     ],
@@ -272,29 +309,6 @@ window.ODUO_CATALOG = [
         modalities: [
           { id: "avista", label: "À vista", price: 16200, suffix: "", pay: "10% off · total R$ 16.200", discount: 10, best: true },
           { id: "parcelado", label: "Parcelado", price: 3000, suffix: " × 6", pay: "6× sem juros · total R$ 18.000", discount: 0 },
-        ],
-      },
-    ],
-  },
-
-  // ====================================================================
-  // F · ASSINATURAS ADICIONAIS
-  // ====================================================================
-  {
-    section: "assinaturas",
-    sectionLabel: "Assinaturas Adicionais",
-    sectionKicker: "F · MRR",
-    sectionDesc: "Trabalho contínuo. Cancela a qualquer momento com aviso de 30 dias.",
-    items: [
-      {
-        id: "seo",
-        name: "Pacote SEO",
-        tagline: "SEO técnico, conteúdo e backlinks. Otimização orgânica para Google.",
-        type: "recurring",
-        modalities: [
-          { id: "mensal", label: "Mensal", price: 1250, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 1125, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
-          { id: "anual", label: "Anual", price: 1062, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
         ],
       },
     ],

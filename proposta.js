@@ -31,10 +31,91 @@
 
     const groups = ODUO.buildCartGroups(cart, activeCoupon, activeCadence);
     renderItens(groups);
+    renderUpsell();
     renderTotais(groups);
     renderCoupon(groups);
 
     $("#propostaPdfBtn").disabled = false;
+  }
+
+  /** Bloco "Turbine seu projeto" — mini-cards de upsell de monetização direta.
+   *  Aparece depois dos items da proposta com Artes (3 níveis), Vídeo (2) e SEO. */
+  const UPSELL_IDS = [
+    "artes-essencial",
+    "artes-profissional",
+    "artes-completo",
+    "video-4",
+    "video-8",
+    "seo",
+  ];
+  function renderUpsell() {
+    const root = $("#propostaItens");
+    // Filtra os itens recomendados que ainda NÃO estão no carrinho.
+    const candidates = UPSELL_IDS
+      .filter((id) => !cart[id])
+      .map((id) => ODUO.findItem(id))
+      .filter(Boolean)
+      .map((found) => found.item);
+
+    if (candidates.length === 0) return; // tudo já está no carrinho
+
+    const block = document.createElement("article");
+    block.className = "proposta-upsell";
+
+    const cardsHtml = candidates
+      .map((item) => {
+        // Pega a modalidade que combina com a cadência global, ou a mensal.
+        const mod =
+          item.modalities.find((m) => m.id === activeCadence) ||
+          item.modalities.find((m) => m.id === "mensal") ||
+          item.modalities[0];
+        const subTitle = item.group
+          ? `<span class="proposta-upsell-card-group">${ODUO.escapeHtml(item.group)}</span>`
+          : "";
+        return `
+          <div class="proposta-upsell-card">
+            ${subTitle}
+            <strong class="proposta-upsell-card-name">${ODUO.escapeHtml(item.name)}</strong>
+            <span class="proposta-upsell-card-tagline">${ODUO.escapeHtml(item.tagline)}</span>
+            <span class="proposta-upsell-card-price">
+              ${ODUO.escapeHtml(BRL.format(mod.price))}<small>/mês</small>
+            </span>
+            <button type="button" class="proposta-upsell-card-add" data-add-upsell="${item.id}">
+              + Adicionar
+            </button>
+          </div>
+        `;
+      })
+      .join("");
+
+    block.innerHTML = `
+      <header class="proposta-upsell-head">
+        <span class="proposta-upsell-kicker">Recomendado pra crescimento acelerado</span>
+        <h3>Turbine o seu projeto</h3>
+        <p>Pacotes que monetizam direto a sua base. Acompanham o plano anual no cartão.</p>
+      </header>
+      <div class="proposta-upsell-grid">
+        ${cardsHtml}
+      </div>
+    `;
+    root.appendChild(block);
+
+    $$("[data-add-upsell]", block).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.addUpsell;
+        const found = ODUO.findItem(id);
+        if (!found) return;
+        // Adiciona ao cart na cadência global (se o item tiver) ou na mensal.
+        const item = found.item;
+        const targetMod =
+          item.modalities.find((m) => m.id === activeCadence) ||
+          item.modalities.find((m) => m.id === "mensal") ||
+          item.modalities[0];
+        cart[id] = targetMod.id;
+        ODUO.persistCart(cart);
+        render();
+      });
+    });
   }
 
   /** Re-aplica a cadência global e re-renderiza tudo. */

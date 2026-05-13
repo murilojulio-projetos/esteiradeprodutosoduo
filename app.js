@@ -41,15 +41,28 @@
     root.innerHTML = "";
 
     window.ODUO_CATALOG.forEach((section, idx) => {
-      // Divisor "Complemente seu projeto" entre o plano-base e o restante
-      if (section.section !== "plano-base" && idx === 1) {
+      // Divisor "Crescimento acelerado" entre plano-base e monetização direta
+      if (section.section === "artes") {
+        const divider = document.createElement("div");
+        divider.className = "cat-divider cat-divider-growth";
+        divider.innerHTML = `
+          <div class="cat-divider-inner">
+            <span class="cat-divider-kicker">Recomendado pra crescimento acelerado</span>
+            <span class="cat-divider-title">Turbine o seu projeto</span>
+            <span class="cat-divider-sub">Pacotes que monetizam direto a sua base e podem acompanhar o plano anual no cartão.</span>
+          </div>
+        `;
+        root.appendChild(divider);
+      }
+      // Divisor "Complemente o seu projeto" antes da seção de IA (resto do catálogo)
+      if (section.section === "ia") {
         const divider = document.createElement("div");
         divider.className = "cat-divider";
         divider.innerHTML = `
           <div class="cat-divider-inner">
             <span class="cat-divider-kicker">Agora que você tem a base</span>
             <span class="cat-divider-title">Complemente o seu projeto</span>
-            <span class="cat-divider-sub">Adicione criativos, IAs, projetos pontuais e treinamentos comerciais conforme o seu momento.</span>
+            <span class="cat-divider-sub">IAs avulsas, projetos pontuais, treinamentos e comercial conforme o seu momento.</span>
           </div>
         `;
         root.appendChild(divider);

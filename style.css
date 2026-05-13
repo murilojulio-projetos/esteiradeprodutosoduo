@@ -866,6 +866,28 @@ section {
   );
 }
 
+.cat-divider-growth {
+  margin: 28px auto -4px;
+}
+
+.cat-divider-growth::before,
+.cat-divider-growth::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(49, 122, 224, 0.32),
+    transparent
+  );
+}
+
+.cat-divider-growth .cat-divider-kicker {
+  color: var(--blue-500);
+}
+
+.cat-divider-growth .cat-divider-title {
+  color: var(--ink-900);
+}
+
 .cat-divider-inner {
   text-align: center;
 }
@@ -2493,6 +2515,136 @@ section {
   font-size: 12.5px;
   color: rgba(7, 32, 74, 0.5);
   margin: 0;
+}
+
+/* ====================================================================
+   "Turbine seu projeto" · upsell na proposta
+   ==================================================================== */
+.proposta-upsell {
+  background: linear-gradient(180deg, #eef3fc 0%, #fff 70%);
+  border: 1.5px solid var(--blue-400);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px 24px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+.proposta-upsell-head {
+  margin-bottom: 18px;
+}
+
+.proposta-upsell-kicker {
+  display: inline-block;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue-500);
+  margin-bottom: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(49, 122, 224, 0.12);
+}
+
+.proposta-upsell-head h3 {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 4px 0 4px;
+  color: var(--ink-900);
+}
+
+.proposta-upsell-head p {
+  margin: 0;
+  font-size: 14.5px;
+  color: rgba(7, 32, 74, 0.7);
+  line-height: 1.5;
+}
+
+.proposta-upsell-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.proposta-upsell-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 14px 16px;
+  border-radius: var(--radius-md);
+  background: #fff;
+  border: 1px solid rgba(11, 40, 89, 0.1);
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.proposta-upsell-card:hover {
+  border-color: var(--blue-400);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -12px rgba(11, 40, 89, 0.2);
+}
+
+.proposta-upsell-card-group {
+  display: block;
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--blue-500);
+  margin-bottom: 2px;
+}
+
+.proposta-upsell-card-name {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink-900);
+  letter-spacing: -0.01em;
+}
+
+.proposta-upsell-card-tagline {
+  font-size: 13px;
+  color: rgba(7, 32, 74, 0.65);
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.proposta-upsell-card-price {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink-900);
+  letter-spacing: -0.02em;
+  margin: 4px 0 10px;
+}
+
+.proposta-upsell-card-price small {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(7, 32, 74, 0.55);
+  margin-left: 3px;
+}
+
+.proposta-upsell-card-add {
+  margin-top: auto;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--blue-500);
+  background: transparent;
+  color: var(--blue-500);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.proposta-upsell-card-add:hover {
+  background: var(--blue-500);
+  color: #fff;
 }
 
 .proposta-empty {
