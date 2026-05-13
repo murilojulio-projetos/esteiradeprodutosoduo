@@ -166,12 +166,64 @@ window.ODUO_CATALOG = [
   },
 
   // ====================================================================
-  // C · IA LOCTUS AVULSAS
+  // E · PROJETOS PONTUAIS
+  // ====================================================================
+  {
+    section: "projetos",
+    sectionLabel: "Projetos Pontuais",
+    sectionKicker: "E · Começo, meio e fim",
+    sectionDesc: "Entregas únicas. 10% off à vista ou 6× sem juros no cartão.",
+    items: [
+      {
+        id: "site",
+        name: "Site Multipages",
+        tagline: "Profissional, otimizado para tráfego pago. Até 100 equipamentos. No ar em 30–45 dias.",
+        type: "project",
+        modalities: [
+          { id: "avista", label: "À vista", price: 4500, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
+          { id: "parcelado", label: "Parcelado", price: 833, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 5.000", discount: 0 },
+        ],
+      },
+      {
+        id: "branding",
+        name: "Branding Completo",
+        tagline: "Logo, paleta, tipografia, manual, papelaria e identidade digital. 30–45 dias.",
+        type: "project",
+        modalities: [
+          { id: "avista", label: "À vista", price: 6750, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
+          { id: "parcelado", label: "Parcelado", price: 1250, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 7.500", discount: 0 },
+        ],
+      },
+      {
+        id: "video-inst",
+        name: "Vídeo Institucional",
+        tagline: "1 vídeo de 1–2 minutos. Para site, apresentações, lançamentos.",
+        type: "project",
+        modalities: [
+          { id: "avista", label: "À vista", price: 2250, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
+          { id: "parcelado", label: "Parcelado", price: 417, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 2.500", discount: 0 },
+        ],
+      },
+      {
+        id: "video-premium",
+        name: "Vídeo Premium",
+        tagline: "1 vídeo de 3–5 minutos, gravação no cliente.",
+        type: "project",
+        modalities: [
+          { id: "avista", label: "À vista", price: 4500, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
+          { id: "parcelado", label: "Parcelado", price: 833, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 5.000", discount: 0 },
+        ],
+      },
+    ],
+  },
+
+  // ====================================================================
+  // F · IA LOCTUS AVULSAS
   // ====================================================================
   {
     section: "ia",
     sectionLabel: "Inteligência Artificial · Loctus",
-    sectionKicker: "C · Standalone ou Upsell de Destrava",
+    sectionKicker: "F · Standalone ou Upsell de Destrava",
     sectionDesc:
       "Setup único de R$ 5.000 cobre catálogo, fluxos WhatsApp Business e 60 dias de ajuste fino. Cliente Destrava existente: sem setup.",
     items: [
@@ -219,64 +271,12 @@ window.ODUO_CATALOG = [
   },
 
   // ====================================================================
-  // D · PROJETOS PONTUAIS
-  // ====================================================================
-  {
-    section: "projetos",
-    sectionLabel: "Projetos Pontuais",
-    sectionKicker: "D · Começo, meio e fim",
-    sectionDesc: "Entregas únicas. 10% off à vista ou 6× sem juros no cartão.",
-    items: [
-      {
-        id: "site",
-        name: "Site Multipages",
-        tagline: "Profissional, otimizado para tráfego pago. Até 100 equipamentos. No ar em 30–45 dias.",
-        type: "project",
-        modalities: [
-          { id: "avista", label: "À vista", price: 4500, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
-          { id: "parcelado", label: "Parcelado", price: 833, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 5.000", discount: 0 },
-        ],
-      },
-      {
-        id: "branding",
-        name: "Branding Completo",
-        tagline: "Logo, paleta, tipografia, manual, papelaria e identidade digital. 30–45 dias.",
-        type: "project",
-        modalities: [
-          { id: "avista", label: "À vista", price: 6750, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
-          { id: "parcelado", label: "Parcelado", price: 1250, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 7.500", discount: 0 },
-        ],
-      },
-      {
-        id: "video-inst",
-        name: "Vídeo Institucional",
-        tagline: "1 vídeo de 1–2 minutos. Para site, apresentações, lançamentos.",
-        type: "project",
-        modalities: [
-          { id: "avista", label: "À vista", price: 2250, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
-          { id: "parcelado", label: "Parcelado", price: 417, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 2.500", discount: 0 },
-        ],
-      },
-      {
-        id: "video-premium",
-        name: "Vídeo Premium",
-        tagline: "1 vídeo de 3–5 minutos, gravação no cliente.",
-        type: "project",
-        modalities: [
-          { id: "avista", label: "À vista", price: 4500, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
-          { id: "parcelado", label: "Parcelado", price: 833, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 5.000", discount: 0 },
-        ],
-      },
-    ],
-  },
-
-  // ====================================================================
-  // E · TREINAMENTO COMERCIAL
+  // G · TREINAMENTO COMERCIAL
   // ====================================================================
   {
     section: "treinamento",
     sectionLabel: "Treinamento Comercial",
-    sectionKicker: "E · 3 níveis · Projeto",
+    sectionKicker: "G · 3 níveis · Projeto",
     sectionDesc:
       "Quando o cliente reclama de baixa conversão. Cliente oculto + diagnóstico + acompanhamento.",
     items: [
@@ -320,7 +320,7 @@ window.ODUO_CATALOG = [
   {
     section: "comercial",
     sectionLabel: "Produtos Comerciais",
-    sectionKicker: "G · Performance",
+    sectionKicker: "H · Performance",
     sectionDesc:
       "SDR e Hunter são apresentados aqui, mas fecham em 2ª reunião com Isabelly (CRO).",
     items: [

@@ -86,6 +86,24 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
 
 ## Histórico de sessões
 
+### 2026-05-13 (parte 11 · header "Criativos" + projetos pra cima)
+- Divider que aparece antes da seção `artes` no cardápio mudou de
+  "Turbine o seu projeto" para **"Criativos"** (kicker "Recomendado pra
+  crescimento acelerado") — agrupa visualmente Artes + Vídeo + SEO +
+  Projetos sob o mesmo guarda-chuva.
+- `projetos` (Site, Branding, Vídeo Inst/Premium) subiu no
+  `product-data.js`: agora vem **logo após `seo` e antes de `ia`**.
+  Os kickers alfabéticos foram realinhados (E=Projetos, F=IA,
+  G=Treinamento, H=Comercial).
+- Ordem final do catálogo:
+  `plano-base → artes → video → seo → projetos → ia → treinamento → comercial`.
+- O divider "Complemente o seu projeto" continua antes da `ia`, marcando
+  a quebra entre Core (plano + monetização direta + projetos) e
+  Complementos (IA, treinamento, performance).
+- Na proposta o "Turbine o seu projeto" (upsell inteligente) continua
+  com o mesmo nome — ali ele é uma chamada de upgrade, não um header
+  de catálogo.
+
 ### 2026-05-13 (parte 10 · embed + upsell inteligente + parcela acima de tudo)
 - **Regra nova · embed de setups+projetos na parcela do plano-base**:
   cliente com Avança/Destrava em anual/semestral → todos os setups
