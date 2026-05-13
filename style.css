@@ -362,6 +362,33 @@ section {
   color: var(--paper);
   box-shadow: var(--shadow-md);
   overflow: hidden;
+  border: 0;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.2s;
+}
+
+.pilar:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 30px 50px -20px rgba(4, 19, 42, 0.55);
+}
+
+.pilar-cta {
+  display: inline-block;
+  margin-top: 16px;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--orange);
+  position: relative;
+  z-index: 1;
+}
+
+.pilar-mid .pilar-cta {
+  color: #fff;
 }
 
 .pilar::after {
@@ -1980,6 +2007,124 @@ section {
   padding: 32px 28px 24px;
   width: min(440px, 100%);
   box-shadow: var(--shadow-lg);
+}
+
+.modal-card-wide {
+  width: min(720px, 100%);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 36px 36px 32px;
+}
+
+/* Conteúdo do modal dos pilares */
+.pilar-modal-kicker {
+  display: inline-block;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(240, 138, 58, 0.12);
+}
+
+.modal-card-wide h3 {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: clamp(24px, 2.6vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 6px 0 12px;
+  color: var(--ink-900);
+  line-height: 1.15;
+}
+
+#pilarModalLead {
+  font-size: 16px;
+  color: rgba(7, 32, 74, 0.72);
+  line-height: 1.55;
+  margin: 0 0 24px;
+}
+
+.pilar-modal-steps {
+  list-style: none;
+  counter-reset: step;
+  padding: 0;
+  margin: 0 0 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pilar-modal-steps li {
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  background: var(--paper);
+  border-left: 3px solid var(--blue-400);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pilar-modal-steps li strong {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink-900);
+  letter-spacing: -0.005em;
+}
+
+.pilar-modal-steps li span {
+  font-size: 14.5px;
+  color: rgba(7, 32, 74, 0.72);
+  line-height: 1.5;
+}
+
+.pilar-modal-cases {
+  background: linear-gradient(160deg, var(--ink-700), var(--ink-600));
+  color: var(--paper);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pilar-modal-cases-head {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+.pilar-modal-case {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(244, 246, 252, 0.15);
+}
+
+.pilar-modal-case:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.pilar-modal-case strong {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.pilar-modal-case span {
+  font-size: 14.5px;
+  color: rgba(244, 246, 252, 0.85);
+  line-height: 1.45;
 }
 
 .modal-card h3 {

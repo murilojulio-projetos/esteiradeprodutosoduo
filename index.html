@@ -78,43 +78,6 @@
         </div>
       </section>
 
-      <section id="metodo" class="metodo">
-        <div class="section-head">
-          <span class="eyebrow eyebrow-accent">O Método ODuo</span>
-          <h2>3 pilares fundamentais</h2>
-          <p>
-            Tudo que entregamos roda em cima destes pilares. Os produtos do
-            cardápio são as ferramentas que cada locadora usa para ativar cada
-            um deles.
-          </p>
-        </div>
-        <div class="pilares">
-          <article class="pilar">
-            <h3>Aquisição</h3>
-            <p>
-              Direcionamos anúncios geo-segmentados no Google e Meta para
-              pessoas da sua região que estão pesquisando exatamente pelas suas
-              locações.
-            </p>
-          </article>
-          <article class="pilar pilar-mid">
-            <h3>Filtro Inteligente</h3>
-            <p>
-              Nossa IA atende e qualifica os leads no WhatsApp 24/7. Seu
-              vendedor recebe apenas leads quentes, prontos para fechar.
-            </p>
-          </article>
-          <article class="pilar">
-            <h3>Monetização</h3>
-            <p>
-              Nossa IA reativa automaticamente sua base de clientes — lembra
-              deles antes do concorrente lembrar. É onde mora o lucro real do
-              locador.
-            </p>
-          </article>
-        </div>
-      </section>
-
       <section class="social-proof" aria-label="Clientes ODuo">
         <img
           src="assets/clientes.png"
@@ -198,6 +161,45 @@
               <cite>— Fabiane, FL Locações</cite>
             </blockquote>
           </article>
+        </div>
+      </section>
+
+      <section id="metodo" class="metodo">
+        <div class="section-head">
+          <span class="eyebrow eyebrow-accent">O Método ODuo</span>
+          <h2>3 pilares fundamentais</h2>
+          <p>
+            Tudo que entregamos roda em cima destes pilares. Clique em cada um
+            pra ver como funciona o processo e os cases relacionados.
+          </p>
+        </div>
+        <div class="pilares">
+          <button type="button" class="pilar" data-pilar="aquisicao">
+            <h3>Aquisição</h3>
+            <p>
+              Direcionamos anúncios geo-segmentados no Google e Meta para
+              pessoas da sua região que estão pesquisando exatamente pelas suas
+              locações.
+            </p>
+            <span class="pilar-cta">Ver como funciona →</span>
+          </button>
+          <button type="button" class="pilar pilar-mid" data-pilar="filtro">
+            <h3>Filtro Inteligente</h3>
+            <p>
+              Nossa IA atende e qualifica os leads no WhatsApp 24/7. Seu
+              vendedor recebe apenas leads quentes, prontos para fechar.
+            </p>
+            <span class="pilar-cta">Ver como funciona →</span>
+          </button>
+          <button type="button" class="pilar" data-pilar="monetizacao">
+            <h3>Monetização</h3>
+            <p>
+              Nossa IA reativa automaticamente sua base de clientes — lembra
+              deles antes do concorrente lembrar. É onde mora o lucro real do
+              locador.
+            </p>
+            <span class="pilar-cta">Ver como funciona →</span>
+          </button>
         </div>
       </section>
 
@@ -335,6 +337,24 @@
       </div>
     </footer>
 
+    <!-- Modal dos 3 pilares -->
+    <div class="modal" id="pilarModal" hidden role="dialog" aria-modal="true" aria-labelledby="pilarModalTitle">
+      <div class="modal-card modal-card-wide">
+        <button
+          type="button"
+          class="icon-btn modal-close"
+          id="pilarModalClose"
+          aria-label="Fechar"
+        >
+          ×
+        </button>
+        <span class="pilar-modal-kicker" id="pilarModalKicker"></span>
+        <h3 id="pilarModalTitle"></h3>
+        <p id="pilarModalLead"></p>
+        <div id="pilarModalContent"></div>
+      </div>
+    </div>
+
     <!-- Carrinho lateral -->
     <aside
       class="cart-drawer"
@@ -394,6 +414,7 @@
 
     <script src="product-data.js"></script>
     <script src="oduo-core.js"></script>
+    <script src="pilares.js" defer></script>
     <script src="app.js" defer></script>
   </body>
 </html>
