@@ -128,8 +128,11 @@
 
     const setup = item.setup
       ? `<div class="setup-row">
-           <span>Setup único</span>
-           <span>${BRL.format(item.setup)}</span>
+           <div class="setup-row-top">
+             <span class="setup-row-label">Setup único</span>
+             <strong class="setup-row-value">${BRL.format(item.setup)}</strong>
+           </div>
+           <small class="setup-row-sub">3× sem juros no cartão · pago no início</small>
          </div>`
       : "";
 
