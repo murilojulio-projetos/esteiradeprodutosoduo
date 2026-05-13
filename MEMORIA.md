@@ -65,7 +65,16 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
   o do `proposta.js`.
 
 ## Pendências / próximos passos
-- (vazio — adicionar quando surgirem)
+- **Rotacionar credenciais expostas na sessão de 2026-05-13** (todas as 11
+  chaves do `.env` foram digitadas em chat e devem ser tratadas como
+  comprometidas). Prioridade: Asaas → Supabase → GitHub PAT → Claude → Slack
+  → Meta x2 → Google → n8n → HCTI. Detalhe no histórico abaixo.
+
+## Variáveis de ambiente
+- `.env` (local, gitignored) guarda os valores reais. Nunca commitar.
+- `.env.example` (commitado) lista os nomes das variáveis sem valores.
+- Variáveis em uso: Meta (2 apps: Murilo + ODuo), Anthropic, HCTI, Slack,
+  GitHub PAT, Google, Asaas (produção), n8n, Supabase.
 
 ## Histórico de sessões
 
@@ -78,3 +87,12 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
 - Autenticação no GitHub via `gh auth login --web` (conta
   `murilojulio-projetos`).
 - Criado este `MEMORIA.md`.
+- Claude Code CLI v2.1.140 instalado em `~/.local/bin/claude` (instalador
+  oficial). Plugin Superpowers ainda **não** instalado — extensão do VSCode
+  não tem `/plugin`; precisa rodar `claude` no terminal.
+- `.gitignore` ampliado pra cobrir `.env`, `.env.*`, `apis.*.md`, `*.local.md`.
+  Criado `.env` local (gitignored) com 11 credenciais e `.env.example` como
+  template. Commit `67413bf` no GitHub só com o template — o `.env` real
+  fica fora do repo.
+- **Atenção:** as 11 credenciais foram coladas em chat e devem ser
+  consideradas comprometidas. Rotação pendente (ver "Pendências").
