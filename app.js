@@ -8,7 +8,7 @@
 
 (() => {
   const ODUO = window.ODUO;
-  const { BRL, COUPON_PERCENT, COUPON_TARGET_ID } = ODUO;
+  const { BRL, COUPON_PERCENT, COUPON_TARGET_ID, LABEL_BY_CADENCE } = ODUO;
 
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -19,10 +19,14 @@
   const cardModality = {};
   /** Cupom ativo (string em maiúsculas) ou null */
   let activeCoupon = ODUO.loadCoupon();
+  /** Cadência global da proposta · mensal | semestral | anual */
+  let activeCadence = ODUO.loadCadence();
 
   function defaultModality(item) {
-    // Sempre abre na modalidade mensal para ancorar o preço cheio;
-    // o cliente vê o desconto migrando para semestral/anual.
+    // Respeita a cadência global se o item tiver — assim a UI já abre alinhada
+    // com o que vai ser cobrado quando o cliente adicionar à proposta.
+    const inCadence = item.modalities.find((m) => m.id === activeCadence);
+    if (inCadence) return inCadence.id;
     const mensal = item.modalities.find((m) => m.id === "mensal");
     if (mensal) return mensal.id;
     const avista = item.modalities.find((m) => m.id === "avista");
@@ -259,7 +263,8 @@
 
     groupsEl.innerHTML = "";
 
-    const groups = ODUO.buildCartGroups(cart, activeCoupon);
+    const groups = ODUO.buildCartGroups(cart, activeCoupon, activeCadence);
+    const hasRecurring = groups.mensal.items.length > 0;
 
     Object.values(groups).forEach((g) => {
       if (g.items.length === 0) return;
@@ -274,6 +279,7 @@
       g.items.forEach((row) => {
         const item = document.createElement("div");
         item.className = "cart-item";
+        if (row.followsBase) item.dataset.followsBase = "true";
         const removeBtn = row.removable
           ? `<button type="button" class="cart-item-remove" data-remove="${row.id}">remover</button>`
           : "";
@@ -300,26 +306,20 @@
       groupsEl.appendChild(block);
     });
 
-    // -------- Totais (formato "agora vs todo mês") --------
+    // -------- Totais ("fechando o ano" + investimento inicial) --------
     totalsEl.innerHTML = "";
     const investimentoInicial = groups.setups.total + groups.projetos.total;
 
+    if (hasRecurring) {
+      totalsEl.appendChild(renderCadenceSelector(groups.bundle));
+      totalsEl.appendChild(renderBundleCard(groups.bundle));
+    }
     if (investimentoInicial > 0) {
       totalsEl.appendChild(
         totalCard(
           "Investimento inicial",
           BRL.format(investimentoInicial),
-          "Pago no início — setups e projetos. Pode ser à vista ou parcelado conforme cada item."
-        )
-      );
-    }
-    if (groups.mensal.total > 0) {
-      totalsEl.appendChild(
-        totalCard(
-          "Todo mês",
-          BRL.format(groups.mensal.total) + "/mês",
-          "Mensalidade recorrente. Sem fidelidade — aviso prévio de 30 dias (60 dias no SDR).",
-          true
+          "Setups e projetos pagos no início. Pode ser à vista ou parcelado conforme cada item."
         )
       );
     }
@@ -361,6 +361,96 @@
       <small>${ODUO.escapeHtml(hint)}</small>
     `;
     return div;
+  }
+
+  /** Trio de botões [Mensal · Semestral · Anual] que rege a proposta inteira. */
+  function renderCadenceSelector(bundle) {
+    const wrap = document.createElement("div");
+    wrap.className = "cadence-selector";
+    wrap.innerHTML = `
+      <span class="cadence-selector-label">Forma de pagamento</span>
+      <div class="cadence-selector-buttons" role="group" aria-label="Cadência da proposta">
+        ${ODUO.CADENCES.map((c) => {
+          const isActive = c === bundle.cadence;
+          return `
+            <button type="button"
+              class="cadence-btn ${isActive ? "is-active" : ""}"
+              data-cadence="${c}"
+              aria-pressed="${isActive}">
+              ${ODUO.escapeHtml(LABEL_BY_CADENCE[c])}
+            </button>`;
+        }).join("")}
+      </div>
+      <small class="cadence-selector-hint">
+        Trocar aqui sincroniza todos os recorrentes da proposta. Itens só-mensal
+        (como Pacote de Artes) acompanham o cartão do plano-base.
+      </small>
+    `;
+    $$(".cadence-btn", wrap).forEach((btn) => {
+      btn.addEventListener("click", () => setGlobalCadence(btn.dataset.cadence));
+    });
+    return wrap;
+  }
+
+  /** Card de "fechando o ano" — substitui o antigo total "Todo mês". */
+  function renderBundleCard(bundle) {
+    const div = document.createElement("div");
+    div.className = "cart-bundle-card is-cadence-" + bundle.cadence;
+
+    const isAnual = bundle.cadence === "anual";
+    const isSemestral = bundle.cadence === "semestral";
+    const isMensal = bundle.cadence === "mensal";
+
+    if (isMensal) {
+      div.innerHTML = `
+        <div class="cart-bundle-top">
+          <span class="cart-bundle-kicker">${ODUO.escapeHtml(bundle.contractLabel)}</span>
+          <strong class="cart-bundle-value">${ODUO.escapeHtml(
+            BRL.format(bundle.parcelaPrice)
+          )}<span>/mês</span></strong>
+        </div>
+        <small>${ODUO.escapeHtml(bundle.paymentLabel)} · sem fidelidade, aviso prévio de 30 dias (60 no SDR).</small>
+      `;
+    } else {
+      div.innerHTML = `
+        <div class="cart-bundle-top">
+          <span class="cart-bundle-kicker">${ODUO.escapeHtml(bundle.contractLabel)}</span>
+          <strong class="cart-bundle-value">${ODUO.escapeHtml(
+            String(bundle.parcelas)
+          )}× ${ODUO.escapeHtml(BRL.format(bundle.parcelaPrice))}</strong>
+        </div>
+        <div class="cart-bundle-total-row">
+          <span>Total contratado</span>
+          <strong>${ODUO.escapeHtml(BRL.format(bundle.totalContratado))}</strong>
+        </div>
+        <small>${ODUO.escapeHtml(bundle.paymentLabel)}. ${
+          isAnual
+            ? "Já com os descontos da modalidade anual."
+            : "Já com os descontos da modalidade semestral."
+        }</small>
+      `;
+    }
+    return div;
+  }
+
+  /** Persiste, sincroniza todos os itens do carrinho e re-renderiza. */
+  function setGlobalCadence(cadence) {
+    if (!ODUO.CADENCES.includes(cadence)) return;
+    activeCadence = cadence;
+    ODUO.persistCadence(cadence);
+    ODUO.applyCadence(cart, cadence);
+    ODUO.persistCart(cart);
+    // Realinha cardModality dos itens no cart pra UI dos cards não desviar.
+    Object.keys(cart).forEach((id) => {
+      cardModality[id] = cart[id];
+    });
+    renderCart();
+    $$(".card").forEach((card) => {
+      const id = card.dataset.itemId;
+      if (!id) return;
+      const found = ODUO.findItem(id);
+      if (found) updateCardState(card, found.item);
+    });
   }
 
   function renderCoupon() {
@@ -469,14 +559,19 @@
       if (!confirm("Limpar todos os itens da proposta?")) return;
       Object.keys(cart).forEach((k) => delete cart[k]);
       activeCoupon = null;
+      activeCadence = "mensal";
       ODUO.persistCart(cart);
       ODUO.persistCoupon(null);
+      ODUO.persistCadence("mensal");
       renderCart();
       $$(".card").forEach((card) => {
         const id = card.dataset.itemId;
         if (!id) return;
         const found = ODUO.findItem(id);
-        if (found) updateCardState(card, found.item);
+        if (found) {
+          cardModality[id] = defaultModality(found.item);
+          updateCardState(card, found.item);
+        }
       });
     });
 

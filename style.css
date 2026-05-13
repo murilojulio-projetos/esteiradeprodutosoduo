@@ -2365,3 +2365,203 @@ section {
     position: static;
   }
 }
+
+/* ====================================================================
+   SELETOR DE CADÊNCIA GLOBAL (Mensal · Semestral · Anual)
+   Aparece em cima dos totais do drawer e do /proposta.html
+   ==================================================================== */
+
+.cadence-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 12px 14px;
+  border-radius: var(--radius-md);
+  background: #fff;
+  border: 1px solid rgba(11, 40, 89, 0.1);
+  margin-bottom: 4px;
+}
+
+.cadence-selector-label {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(7, 32, 74, 0.55);
+}
+
+.cadence-selector-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  background: var(--paper);
+  padding: 4px;
+  border-radius: 999px;
+}
+
+.cadence-btn {
+  border: 0;
+  background: transparent;
+  padding: 9px 8px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: rgba(7, 32, 74, 0.65);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.cadence-btn:hover {
+  color: var(--ink-900);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.cadence-btn.is-active {
+  background: var(--ink-900);
+  color: #fff;
+  box-shadow: 0 6px 14px -8px rgba(4, 19, 42, 0.6);
+}
+
+.cadence-selector-hint {
+  font-size: 11.5px;
+  color: rgba(7, 32, 74, 0.5);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* ----- Bundle card (substitui "Todo mês" quando há recorrente) ----- */
+
+.cart-bundle-card {
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  background: linear-gradient(160deg, var(--ink-900), var(--ink-700));
+  color: var(--paper);
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cart-bundle-card.is-cadence-anual {
+  background: linear-gradient(160deg, var(--orange-strong), var(--orange));
+}
+
+.cart-bundle-card.is-cadence-semestral {
+  background: linear-gradient(160deg, var(--blue-500), var(--blue-400));
+}
+
+.cart-bundle-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cart-bundle-kicker {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(244, 246, 252, 0.75);
+}
+
+.cart-bundle-value {
+  font-family: "Sora", "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.cart-bundle-value span {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(244, 246, 252, 0.7);
+  margin-left: 2px;
+}
+
+.cart-bundle-total-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px solid rgba(244, 246, 252, 0.18);
+  font-size: 13px;
+  color: rgba(244, 246, 252, 0.85);
+}
+
+.cart-bundle-total-row strong {
+  font-family: "Sora", "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+}
+
+.cart-bundle-card small {
+  font-size: 11.5px;
+  color: rgba(244, 246, 252, 0.75);
+  line-height: 1.45;
+}
+
+/* ----- Variante na página /proposta.html ----- */
+
+.cadence-selector-proposta {
+  padding: 14px 16px 16px;
+}
+
+.proposta-bundle-card {
+  background: linear-gradient(160deg, var(--ink-900), var(--ink-700));
+  color: var(--paper);
+  border-color: transparent;
+}
+
+.proposta-bundle-card.is-cadence-anual {
+  background: linear-gradient(160deg, var(--orange-strong), var(--orange));
+}
+
+.proposta-bundle-card.is-cadence-semestral {
+  background: linear-gradient(160deg, var(--blue-500), var(--blue-400));
+}
+
+.proposta-bundle-card .proposta-total-top span {
+  color: rgba(244, 246, 252, 0.75);
+}
+
+.proposta-bundle-card .proposta-total-top strong {
+  color: #fff;
+  font-size: 26px;
+}
+
+.proposta-bundle-card small {
+  color: rgba(244, 246, 252, 0.75);
+}
+
+.proposta-bundle-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 10px 0 6px;
+  margin-top: 4px;
+  border-top: 1px solid rgba(244, 246, 252, 0.2);
+  font-size: 13.5px;
+  color: rgba(244, 246, 252, 0.85);
+}
+
+.proposta-bundle-total strong {
+  font-family: "Sora", "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+/* Indicação visual para itens que "acompanham o plano-base" */
+.cart-item[data-follows-base="true"] .cart-item-sub,
+.proposta-item[data-follows-base="true"] .proposta-item-sub {
+  color: var(--orange-strong);
+  font-weight: 500;
+}

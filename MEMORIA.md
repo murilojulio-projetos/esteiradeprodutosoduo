@@ -39,7 +39,12 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
 - Hunter de RH e SDR fecham em **2ª reunião** com Isabelly (CRO).
 - Cupom: hoje aplica `−10%` em cima do **Avança Locações** (item
   protagonista). Constantes: `COUPON_PERCENT` e `COUPON_TARGET_ID` em
-  `oduo-core.js` e `app.js`.
+  `oduo-core.js`.
+- **Cadência global da proposta** (mensal · semestral · anual): a proposta
+  inteira fecha numa mesma forma de pagamento. Trocar o seletor sincroniza
+  todos os recorrentes; itens só-mensal (Pacote de Artes) acompanham o
+  cartão do plano-base pelo mesmo preço mensal. Estado em
+  `localStorage.oduo_cadence_v1`.
 
 ## Decisões de implementação
 - Cardápio abre sempre na modalidade **mensal** pra ancorar preço cheio antes
@@ -68,6 +73,36 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
   GitHub PAT, Google, Asaas (produção), n8n, Supabase.
 
 ## Histórico de sessões
+
+### 2026-05-13 (parte 3 · cadência global)
+- **Nova feature**: seletor de cadência global no carrinho lateral e no
+  `/proposta.html`. Resolve a fricção de "Avança anual no cartão + Artes
+  no boleto mensal" — a proposta toda passa a fechar numa única forma de
+  pagamento.
+- Em `oduo-core.js`:
+  - Adicionados `CADENCE_KEY`, `loadCadence`, `persistCadence`,
+    `applyCadence(cart, cadence)`, constantes `CADENCES`,
+    `PARCELAS_BY_CADENCE`, `LABEL_BY_CADENCE`.
+  - `buildCartGroups(cart, coupon, cadence)` agora retorna também um
+    objeto `bundle` com `parcelas`, `parcelaPrice`, `totalContratado`,
+    `paymentLabel`, `contractLabel`.
+  - Itens sem a cadência pedida (Pacote de Artes só-mensal) entram com
+    `followsBase: true` e subtitle "Acompanha o plano · 12× de R$ X no
+    cartão". Preço mensal preservado.
+- Em `app.js` e `proposta.js`:
+  - Novo trio de botões `[ Mensal · Semestral · Anual ]` no topo dos
+    totais. Click sincroniza todo o carrinho e re-renderiza.
+  - Card "Todo mês" antigo virou bundle gigante: "Fechando 1 ano com a
+    ODuo · 12× R$ X · Total R$ Y". Em mensal volta ao formato
+    "R$ X/mês · Boleto ou Pix".
+  - PDF de proposta agora reflete a cadência: título do grupo
+    Mensalidade mostra "6× no cartão" ou "12× no cartão"; bloco
+    de totais inclui "Total contratado".
+  - `defaultModality` dos cards do catálogo respeita a cadência global
+    — abre sincronizado com o que o cliente já escolheu.
+- CSS: `.cadence-selector` (pill com 3 botões) + `.cart-bundle-card`
+  com gradiente laranja quando anual, azul quando semestral, preto
+  quando mensal. Variante para a página de proposta também.
 
 ### 2026-05-13 (continuação)
 - **Limpeza de `app.js`**: removidas ~546 linhas (1.035 → 489, −53%).

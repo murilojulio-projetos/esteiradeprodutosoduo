@@ -15,6 +15,7 @@
   /** Estado local */
   let cart = ODUO.loadCart();
   let activeCoupon = ODUO.loadCoupon();
+  let activeCadence = ODUO.loadCadence();
   let installments = parseInt(localStorage.getItem("oduo_installments_v1"), 10) || 1;
 
   // -------------------------- RENDER -----------------------------------
@@ -28,12 +29,22 @@
     }
     $("#propostaEmpty").hidden = true;
 
-    const groups = ODUO.buildCartGroups(cart, activeCoupon);
+    const groups = ODUO.buildCartGroups(cart, activeCoupon, activeCadence);
     renderItens(groups);
     renderTotais(groups);
     renderCoupon(groups);
 
     $("#propostaPdfBtn").disabled = false;
+  }
+
+  /** Re-aplica a cadência global e re-renderiza tudo. */
+  function setGlobalCadence(cadence) {
+    if (!ODUO.CADENCES.includes(cadence)) return;
+    activeCadence = cadence;
+    ODUO.persistCadence(cadence);
+    ODUO.applyCadence(cart, cadence);
+    ODUO.persistCart(cart);
+    render();
   }
 
   function renderItens(groups) {
@@ -57,6 +68,7 @@
       g.items.forEach((row) => {
         const item = document.createElement("div");
         item.className = "proposta-item";
+        if (row.followsBase) item.dataset.followsBase = "true";
 
         const removeBtn = row.removable
           ? `<button type="button" class="proposta-item-remove" data-remove="${row.id}">Remover</button>`
@@ -101,17 +113,11 @@
     wrap.innerHTML = "";
 
     const inicial = groups.setups.total + groups.projetos.total;
+    const hasRecurring = groups.mensal.items.length > 0;
 
-    if (groups.mensal.total > 0) {
-      wrap.appendChild(
-        totalCard({
-          kicker: "Todo mês",
-          value: BRL.format(groups.mensal.total) + "/mês",
-          hint:
-            "Mensalidade recorrente. Sem fidelidade — aviso prévio de 30 dias (60 dias no SDR).",
-          highlight: true,
-        })
-      );
+    if (hasRecurring) {
+      wrap.appendChild(renderCadenceSelector(groups.bundle));
+      wrap.appendChild(renderBundleCard(groups.bundle));
     }
 
     if (inicial > 0) {
@@ -172,6 +178,68 @@
       </div>
       <small>${ODUO.escapeHtml(hint)}</small>
     `;
+    return div;
+  }
+
+  function renderCadenceSelector(bundle) {
+    const wrap = document.createElement("div");
+    wrap.className = "cadence-selector cadence-selector-proposta";
+    wrap.innerHTML = `
+      <span class="cadence-selector-label">Forma de pagamento</span>
+      <div class="cadence-selector-buttons" role="group" aria-label="Cadência da proposta">
+        ${ODUO.CADENCES.map((c) => {
+          const isActive = c === bundle.cadence;
+          return `
+            <button type="button"
+              class="cadence-btn ${isActive ? "is-active" : ""}"
+              data-cadence="${c}"
+              aria-pressed="${isActive}">
+              ${ODUO.escapeHtml(ODUO.LABEL_BY_CADENCE[c])}
+            </button>`;
+        }).join("")}
+      </div>
+      <small class="cadence-selector-hint">
+        Sincroniza todos os recorrentes da proposta. Itens só-mensal acompanham
+        o cartão do plano-base.
+      </small>
+    `;
+    $$(".cadence-btn", wrap).forEach((btn) => {
+      btn.addEventListener("click", () => setGlobalCadence(btn.dataset.cadence));
+    });
+    return wrap;
+  }
+
+  function renderBundleCard(bundle) {
+    const div = document.createElement("div");
+    div.className =
+      "proposta-total-card proposta-bundle-card is-cadence-" + bundle.cadence;
+
+    if (bundle.cadence === "mensal") {
+      div.innerHTML = `
+        <div class="proposta-total-top">
+          <span>${ODUO.escapeHtml(bundle.contractLabel)}</span>
+          <strong>${ODUO.escapeHtml(BRL.format(bundle.parcelaPrice))}/mês</strong>
+        </div>
+        <small>${ODUO.escapeHtml(bundle.paymentLabel)} · sem fidelidade,
+        aviso prévio de 30 dias (60 no SDR).</small>
+      `;
+    } else {
+      div.innerHTML = `
+        <div class="proposta-total-top">
+          <span>${ODUO.escapeHtml(bundle.contractLabel)}</span>
+          <strong>${bundle.parcelas}× ${ODUO.escapeHtml(BRL.format(bundle.parcelaPrice))}</strong>
+        </div>
+        <div class="proposta-bundle-total">
+          <span>Total contratado</span>
+          <strong>${ODUO.escapeHtml(BRL.format(bundle.totalContratado))}</strong>
+        </div>
+        <small>${ODUO.escapeHtml(bundle.paymentLabel)}. ${
+          bundle.cadence === "anual"
+            ? "Já com os descontos da modalidade anual."
+            : "Já com os descontos da modalidade semestral."
+        }</small>
+      `;
+    }
     return div;
   }
 
@@ -346,9 +414,14 @@
     }
 
     // Itens
-    const groups = ODUO.buildCartGroups(cart, activeCoupon);
+    const groups = ODUO.buildCartGroups(cart, activeCoupon, activeCadence);
+    const mensalTitleByCadence = {
+      mensal: "Mensalidade · pago todo mês",
+      semestral: "Mensalidade · 6× no cartão",
+      anual: "Mensalidade · 12× no cartão",
+    };
     const grpDefs = [
-      { key: "mensal", title: "Mensalidade · pago todo mês" },
+      { key: "mensal", title: mensalTitleByCadence[groups.bundle.cadence] || mensalTitleByCadence.mensal },
       { key: "setups", title: "Implantação · pagamento único de setup" },
       { key: "projetos", title: "Projetos pontuais · entrega única" },
       { key: "performance", title: "Performance · variável" },
@@ -395,7 +468,25 @@
 
     // Totais
     const inicial = groups.setups.total + groups.projetos.total;
+    const bundle = groups.bundle;
     const totalLines = [];
+    if (bundle.parcelaPrice > 0) {
+      if (bundle.cadence === "mensal") {
+        totalLines.push([
+          "Mensalidade (boleto/Pix)",
+          BRL.format(bundle.parcelaPrice) + "/mês",
+        ]);
+      } else {
+        totalLines.push([
+          bundle.contractLabel,
+          `${bundle.parcelas}× ${BRL.format(bundle.parcelaPrice)} no cartão`,
+        ]);
+        totalLines.push([
+          "Total contratado",
+          BRL.format(bundle.totalContratado),
+        ]);
+      }
+    }
     if (inicial > 0) {
       let label = "Investimento inicial";
       let value;
@@ -407,8 +498,6 @@
       }
       totalLines.push([label, value]);
     }
-    if (groups.mensal.total > 0)
-      totalLines.push(["Todo mês", BRL.format(groups.mensal.total) + "/mês"]);
     if (groups.performance.items.length > 0)
       totalLines.push(["Performance", "Variável conforme contratação"]);
 

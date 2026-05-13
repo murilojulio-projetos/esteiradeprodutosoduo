@@ -7,10 +7,20 @@
 (() => {
   const STORAGE_KEY = "oduo_cart_v1";
   const COUPON_KEY = "oduo_coupon_v1";
+  const CADENCE_KEY = "oduo_cadence_v1";
 
   // Desconto adicional no item protagonista quando QUALQUER cupom estiver ativo.
   const COUPON_PERCENT = 10;
   const COUPON_TARGET_ID = "avanca";
+
+  // Cadências válidas globalmente. Quem manda na soma anual é esta lista.
+  const CADENCES = ["mensal", "semestral", "anual"];
+  const PARCELAS_BY_CADENCE = { mensal: 1, semestral: 6, anual: 12 };
+  const LABEL_BY_CADENCE = {
+    mensal: "Mensal",
+    semestral: "Semestral",
+    anual: "Anual",
+  };
 
   const BRL = new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -56,6 +66,24 @@
     }
   }
 
+  function loadCadence() {
+    try {
+      const raw = localStorage.getItem(CADENCE_KEY);
+      if (CADENCES.includes(raw)) return raw;
+    } catch {}
+    return "mensal";
+  }
+
+  function persistCadence(cadence) {
+    try {
+      if (CADENCES.includes(cadence)) {
+        localStorage.setItem(CADENCE_KEY, cadence);
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
   function findItem(itemId) {
     if (!window.ODUO_CATALOG) return null;
     for (const section of window.ODUO_CATALOG) {
@@ -96,14 +124,48 @@
   }
 
   /**
-   * Constrói os 4 grupos do carrinho a partir de `cart` + `coupon`.
-   * Mesma estrutura usada pelo drawer e pela página de proposta.
+   * Sincroniza todos os itens recorrentes/híbridos do `cart` para a `cadence`
+   * pedida. Itens que NÃO têm a modalidade pedida (ex.: Pacote de Artes só
+   * vem em mensal) ficam inalterados — eles vão acompanhar o plano-base na
+   * apresentação. Muta `cart` e retorna o mesmo objeto.
    */
-  function buildCartGroups(cart, coupon) {
+  function applyCadence(cart, cadence) {
+    if (!CADENCES.includes(cadence)) return cart;
+    Object.keys(cart).forEach((id) => {
+      const found = findItem(id);
+      if (!found) return;
+      const { item } = found;
+      if (item.type !== "recurring" && item.type !== "hybrid") return;
+      const target = item.modalities.find((m) => m.id === cadence);
+      if (target) cart[id] = target.id;
+    });
+    return cart;
+  }
+
+  /**
+   * Constrói os grupos do carrinho a partir de `cart`, `coupon` e a
+   * `globalCadence` que rege a apresentação do bloco "fechando o ano".
+   *
+   * Retorna além dos 4 grupos um objeto `bundle` com a leitura B2B:
+   *   - parcelas       → 1, 6 ou 12 conforme a cadência
+   *   - parcelaPrice   → soma de (mensalidade final) de todos os recorrentes
+   *   - totalContratado→ parcelaPrice × parcelas (o valor total do contrato)
+   *   - paymentLabel   → "Boleto/Pix mensal" ou "12× no cartão"
+   *
+   * Itens que não têm a cadência pedida (Pacote de Artes etc.) entram no
+   * cálculo do bundle pelo preço mensal, mas com nota "Acompanha o plano".
+   */
+  function buildCartGroups(cart, coupon, globalCadence) {
+    const cadence = CADENCES.includes(globalCadence) ? globalCadence : "mensal";
+    const parcelas = PARCELAS_BY_CADENCE[cadence];
+
     const groups = {
       mensal: {
         title: "Mensalidade",
-        sub: "Você paga todo mês",
+        sub:
+          cadence === "mensal"
+            ? "Você paga todo mês"
+            : `Você fecha 1 ano · ${parcelas}× no cartão`,
         items: [],
         total: 0,
       },
@@ -134,10 +196,22 @@
       const mod = modalityOf(item, cart[id]);
 
       if (item.type === "recurring" || item.type === "hybrid") {
-        const baseLabel = mod.customLabel || mod.label;
-        const subtitle = `${baseLabel} · ${payText(item, mod)}`;
+        const hasRequestedCadence = item.modalities.some((m) => m.id === cadence);
+        const followsBase = cadence !== "mensal" && !hasRequestedCadence;
+
         const discount = couponDiscountFor(item.id, mod.price, coupon);
         const finalPrice = mod.price - discount;
+
+        let subtitle;
+        if (followsBase) {
+          subtitle = `Acompanha o plano · ${parcelas}× de ${BRL.format(
+            finalPrice
+          )} no cartão`;
+        } else {
+          const baseLabel = mod.customLabel || mod.label;
+          subtitle = `${baseLabel} · ${payText(item, mod)}`;
+        }
+
         groups.mensal.items.push({
           id: item.id,
           name: item.name,
@@ -151,6 +225,7 @@
             discount > 0
               ? `Cupom ${coupon} · -${BRL.format(discount)}/mês`
               : null,
+          followsBase,
           removable: true,
         });
         groups.mensal.total += finalPrice;
@@ -200,7 +275,27 @@
       }
     });
 
-    return groups;
+    const parcelaPrice = groups.mensal.total;
+    const totalContratado = parcelaPrice * parcelas;
+    const bundle = {
+      cadence,
+      cadenceLabel: LABEL_BY_CADENCE[cadence],
+      parcelas,
+      parcelaPrice,
+      totalContratado,
+      paymentLabel:
+        cadence === "mensal"
+          ? "Boleto ou Pix mensal"
+          : `${parcelas}× no cartão de crédito · sem juros`,
+      contractLabel:
+        cadence === "anual"
+          ? "Fechando 1 ano com a ODuo"
+          : cadence === "semestral"
+          ? "Fechando 6 meses com a ODuo"
+          : "Mês a mês com a ODuo",
+    };
+
+    return { ...groups, bundle };
   }
 
   function escapeHtml(str) {
@@ -232,13 +327,20 @@
   window.ODUO = {
     STORAGE_KEY,
     COUPON_KEY,
+    CADENCE_KEY,
     COUPON_PERCENT,
     COUPON_TARGET_ID,
+    CADENCES,
+    PARCELAS_BY_CADENCE,
+    LABEL_BY_CADENCE,
     BRL,
     loadCart,
     persistCart,
     loadCoupon,
     persistCoupon,
+    loadCadence,
+    persistCadence,
+    applyCadence,
     findItem,
     modalityOf,
     payText,
