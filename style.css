@@ -829,9 +829,7 @@ section {
   min-width: 0;
 }
 
-.card-horizontal.card-hero .card-right {
-  border-left-color: rgba(244, 246, 252, 0.15);
-}
+/* (card-hero claro · usa a mesma borda padrão) */
 
 .card-horizontal .card-name {
   font-size: 32px;
@@ -874,8 +872,8 @@ section {
 }
 
 .card-horizontal .add-btn {
-  font-size: 17px;
-  padding: 17px 20px;
+  font-size: 15.5px;
+  padding: 13px 20px;
 }
 
 @media (max-width: 900px) {
@@ -890,10 +888,6 @@ section {
     border-left: 0;
     padding-top: 26px;
     border-top: 1px solid rgba(11, 40, 89, 0.1);
-  }
-
-  .card-horizontal.card-hero .card-right {
-    border-top-color: rgba(244, 246, 252, 0.15);
   }
 
   .card-horizontal .card-name {
@@ -1007,48 +1001,46 @@ section {
   box-shadow: var(--shadow-md);
 }
 
+/* Card hero (Avança/Destrava) · fundo claro com borda destacada */
 .card.card-hero {
-  background: linear-gradient(160deg, var(--ink-900), var(--ink-700));
-  color: var(--paper);
-  border-color: transparent;
+  background: linear-gradient(180deg, #fff 0%, #f7faff 100%);
+  border: 2.5px solid var(--ink-700);
+  box-shadow: 0 24px 60px -28px rgba(7, 32, 74, 0.45);
+  position: relative;
 }
 
-.card.card-hero .card-name,
-.card.card-hero .deliverables li {
-  color: var(--paper);
+.card.card-hero::before {
+  content: "CARRO-CHEFE";
+  position: absolute;
+  top: -12px;
+  left: 28px;
+  padding: 5px 14px;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  background: var(--orange);
+  color: #fff;
+  border-radius: 999px;
+  box-shadow: 0 6px 14px -5px rgba(240, 138, 58, 0.6);
 }
 
-.card.card-hero .card-tagline {
-  color: rgba(244, 246, 252, 0.78);
-}
-
-.card.card-hero .modality {
-  background: rgba(244, 246, 252, 0.06);
-  border-color: rgba(244, 246, 252, 0.18);
-  color: var(--paper);
-}
-
-.card.card-hero .modality .modality-pay {
-  color: rgba(244, 246, 252, 0.72);
+/* Esconder o .badge-best textual (substituído pelo ::before flutuante) */
+.card.card-hero .badge-best {
+  display: none;
 }
 
 .card.card-hero .modality.is-active {
+  background: rgba(49, 122, 224, 0.08);
+  border-color: var(--blue-400);
+}
+
+.card.card-hero .add-btn {
   background: var(--orange);
-  border-color: var(--orange);
-  color: #fff;
 }
 
-.card.card-hero .modality.is-active .modality-pay {
-  color: rgba(255, 255, 255, 0.92);
-}
-
-.card.card-hero .price {
-  color: var(--paper);
-}
-
-.card.card-hero .suffix,
-.card.card-hero .pay {
-  color: rgba(244, 246, 252, 0.7);
+.card.card-hero .add-btn:hover {
+  background: var(--orange-strong);
 }
 
 .card-badges {
@@ -1125,7 +1117,7 @@ section {
 }
 
 .card.card-hero .deliverables-wrap {
-  background: rgba(244, 246, 252, 0.06);
+  background: rgba(49, 122, 224, 0.07);
 }
 
 .deliverables-title {
@@ -1176,9 +1168,7 @@ section {
   background-repeat: no-repeat;
 }
 
-.card.card-hero .deliverables li {
-  color: rgba(244, 246, 252, 0.95);
-}
+/* (card-hero agora é claro · deliverables seguem a cor padrão ink-900) */
 
 .deliverables li.is-strike {
   text-decoration: line-through;
@@ -1328,22 +1318,7 @@ section {
   line-height: 1.4;
 }
 
-.card.card-hero .setup-row {
-  background: rgba(240, 138, 58, 0.2);
-  border-color: rgba(240, 138, 58, 0.65);
-}
-
-.card.card-hero .setup-row-label {
-  color: var(--orange);
-}
-
-.card.card-hero .setup-row-value {
-  color: #fff;
-}
-
-.card.card-hero .setup-row-sub {
-  color: rgba(244, 246, 252, 0.75);
-}
+/* (card-hero agora é claro · setup-row segue cores padrão) */
 
 .commission {
   font-size: 13px;
@@ -1354,10 +1329,7 @@ section {
   margin-bottom: 14px;
 }
 
-.card.card-hero .commission {
-  background: rgba(85, 157, 250, 0.18);
-  color: var(--blue-300);
-}
+/* (card-hero claro · commission segue cores padrão) */
 
 .note {
   font-size: 14px;
@@ -1394,19 +1366,7 @@ section {
   color: var(--blue-500);
 }
 
-.card.card-hero .savings-row {
-  background: rgba(85, 157, 250, 0.18);
-  border-color: rgba(85, 157, 250, 0.55);
-  color: rgba(244, 246, 252, 0.92);
-}
-
-.card.card-hero .savings-row strong {
-  color: var(--blue-300);
-}
-
-.card.card-hero .note {
-  color: rgba(244, 246, 252, 0.55);
-}
+/* (card-hero claro · savings/note seguem cores padrão) */
 
 .add-btn {
   margin-top: auto;
@@ -1415,14 +1375,14 @@ section {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 15px 18px;
+  padding: 12px 18px;
   border-radius: 999px;
   background: var(--ink-900);
   color: var(--paper);
   border: 0;
   cursor: pointer;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 15px;
   transition: background 0.2s, transform 0.15s;
 }
 
@@ -1433,14 +1393,6 @@ section {
 
 .add-btn.is-added {
   background: var(--green);
-}
-
-.card.card-hero .add-btn {
-  background: var(--orange);
-}
-
-.card.card-hero .add-btn:hover {
-  background: var(--orange-strong);
 }
 
 /* ----- Como funciona ----- */

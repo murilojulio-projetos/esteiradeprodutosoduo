@@ -119,9 +119,7 @@ window.ODUO_CATALOG = [
         type: "recurring",
         addon: true,
         modalities: [
-          { id: "mensal", label: "Mensal", price: 800, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 720, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
-          { id: "anual", label: "Anual", price: 680, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+          { id: "mensal", label: "Mensal", price: 800, suffix: "/mês", pay: "Acompanha o plano-base (boleto ou cartão)", discount: 0 },
         ],
       },
       {
@@ -133,9 +131,7 @@ window.ODUO_CATALOG = [
         type: "recurring",
         addon: true,
         modalities: [
-          { id: "mensal", label: "Mensal", price: 1500, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 1350, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
-          { id: "anual", label: "Anual", price: 1275, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+          { id: "mensal", label: "Mensal", price: 1500, suffix: "/mês", pay: "Acompanha o plano-base (boleto ou cartão)", discount: 0 },
         ],
       },
     ],
