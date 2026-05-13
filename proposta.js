@@ -173,6 +173,25 @@
         const id = btn.dataset.addUpsell;
         const found = ODUO.findItem(id);
         if (!found) return;
+        const item0 = found.item;
+        // Dependência (ex.: SEO precisa de Site Multipages).
+        if (item0.requires && !cart[item0.requires.id]) {
+          const dep = ODUO.findItem(item0.requires.id)?.item;
+          const depName = dep ? dep.name : item0.requires.id;
+          const ok = confirm(
+            `${item0.requires.reason || ""}\n\nAdicionar ${depName} junto com ${item0.name}?`
+          );
+          if (!ok) return;
+          if (dep) {
+            const depMod =
+              dep.type === "project"
+                ? dep.modalities.find((m) => m.id === "parcelado") || dep.modalities[0]
+                : dep.modalities.find((m) => m.id === activeCadence) ||
+                  dep.modalities.find((m) => m.id === "mensal") ||
+                  dep.modalities[0];
+            cart[item0.requires.id] = depMod.id;
+          }
+        }
         // Upgrade: se o cliente já tem um tier menor do mesmo grupo,
         // remove esse tier antes de adicionar o novo. Substitui em vez
         // de acumular dois níveis do mesmo grupo.
@@ -436,8 +455,8 @@
 
   function installmentOptions(total) {
     const opts = [];
-    opts.push(`<option value="1">À vista — ${BRL.format(total)}</option>`);
-    for (let n = 2; n <= 12; n++) {
+    opts.push(`<option value="1">À vista — ${BRL.format(total)} (10% off)</option>`);
+    for (let n = 2; n <= 6; n++) {
       const parcela = Math.ceil(total / n);
       opts.push(
         `<option value="${n}">${n}× de ${BRL.format(parcela)} sem juros</option>`
@@ -794,7 +813,7 @@
     doc.setTextColor(120, 130, 160);
     const conditions = [
       "Sem fidelidade mínima nos planos recorrentes (aviso prévio de 30 dias, salvo SDR que possui 60 dias).",
-      "Projetos pontuais: 10% off à vista ou parcelado em até 12× sem juros no cartão.",
+      "Projetos pontuais: 10% off à vista ou parcelado em até 6× sem juros no cartão (parcelas acima de 6× com juros do Asaas, sob consulta).",
       "Hunter de RH e SDR fecham em 2ª reunião com a CRO Isabelly.",
     ];
     conditions.forEach((line) => {

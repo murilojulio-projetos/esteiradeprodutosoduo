@@ -225,6 +225,27 @@
       if (cart[item.id]) {
         delete cart[item.id];
       } else {
+        // Dependência (ex.: SEO precisa de Site Multipages).
+        if (item.requires && !cart[item.requires.id]) {
+          const dep = ODUO.findItem(item.requires.id)?.item;
+          const depName = dep ? dep.name : item.requires.id;
+          const ok = confirm(
+            `${item.requires.reason || ""}\n\nAdicionar ${depName} junto com ${item.name}?`
+          );
+          if (!ok) return;
+          // Adiciona o pré-requisito também. Pra projeto, usa "parcelado" default.
+          const depItem = dep;
+          if (depItem) {
+            const depMod =
+              depItem.type === "project"
+                ? depItem.modalities.find((m) => m.id === "parcelado") ||
+                  depItem.modalities[0]
+                : depItem.modalities.find((m) => m.id === activeCadence) ||
+                  depItem.modalities.find((m) => m.id === "mensal") ||
+                  depItem.modalities[0];
+            cart[item.requires.id] = depMod.id;
+          }
+        }
         cart[item.id] = cardModality[item.id];
         // Se adicionou o plano-base, alinha cadência global à modalidade dele.
         if (isPlanoBase(item.id) && ODUO.CADENCES.includes(cart[item.id])) {

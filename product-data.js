@@ -77,7 +77,11 @@ window.ODUO_CATALOG = [
         tagline: "4 publicações no mês",
         type: "recurring",
         addon: true,
-        modalities: [{ id: "mensal", label: "Mensal", price: 500, suffix: "/mês", pay: "Acompanha o plano-base (boleto ou cartão)", discount: 0 }],
+        modalities: [
+          { id: "mensal", label: "Mensal", price: 500, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
+          { id: "semestral", label: "Semestral", price: 450, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
+          { id: "anual", label: "Anual", price: 425, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+        ],
       },
       {
         id: "artes-profissional",
@@ -88,7 +92,11 @@ window.ODUO_CATALOG = [
         recommended: true,
         type: "recurring",
         addon: true,
-        modalities: [{ id: "mensal", label: "Mensal", price: 750, suffix: "/mês", pay: "Acompanha o plano-base (boleto ou cartão)", discount: 0 }],
+        modalities: [
+          { id: "mensal", label: "Mensal", price: 750, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
+          { id: "semestral", label: "Semestral", price: 675, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
+          { id: "anual", label: "Anual", price: 637, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+        ],
       },
       {
         id: "artes-completo",
@@ -98,7 +106,11 @@ window.ODUO_CATALOG = [
         upgradeBenefit: "3 posts por semana · presença máxima no Instagram.",
         type: "recurring",
         addon: true,
-        modalities: [{ id: "mensal", label: "Mensal", price: 1000, suffix: "/mês", pay: "Acompanha o plano-base (boleto ou cartão)", discount: 0 }],
+        modalities: [
+          { id: "mensal", label: "Mensal", price: 1000, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
+          { id: "semestral", label: "Semestral", price: 900, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
+          { id: "anual", label: "Anual", price: 850, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+        ],
       },
     ],
   },
@@ -121,7 +133,9 @@ window.ODUO_CATALOG = [
         type: "recurring",
         addon: true,
         modalities: [
-          { id: "mensal", label: "Mensal", price: 800, suffix: "/mês", pay: "Acompanha o plano-base (boleto ou cartão)", discount: 0 },
+          { id: "mensal", label: "Mensal", price: 800, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
+          { id: "semestral", label: "Semestral", price: 720, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
+          { id: "anual", label: "Anual", price: 680, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
         ],
       },
       {
@@ -134,7 +148,9 @@ window.ODUO_CATALOG = [
         type: "recurring",
         addon: true,
         modalities: [
-          { id: "mensal", label: "Mensal", price: 1500, suffix: "/mês", pay: "Acompanha o plano-base (boleto ou cartão)", discount: 0 },
+          { id: "mensal", label: "Mensal", price: 1500, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
+          { id: "semestral", label: "Semestral", price: 1350, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
+          { id: "anual", label: "Anual", price: 1275, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
         ],
       },
     ],
@@ -166,6 +182,7 @@ window.ODUO_CATALOG = [
         name: "Pacote SEO",
         tagline: "Seu site nas primeiras orgânicas do Google. SEO técnico, conteúdo e backlinks contínuos.",
         upgradeBenefit: "Seu site aparece nas primeiras orgânicas do Google.",
+        requires: { id: "site", reason: "O SEO só funciona com Site Multipages (não roda em landing page)." },
         type: "recurring",
         modalities: [
           { id: "mensal", label: "Mensal", price: 1250, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
