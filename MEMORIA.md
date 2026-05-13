@@ -74,6 +74,25 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
 
 ## Histórico de sessões
 
+### 2026-05-13 (parte 6 · simplifica resumo + entregáveis visíveis)
+- Page head do `/proposta.html` reduzido pra um único título centralizado:
+  "Revise e baixe o PDF". O parágrafo descritivo saiu.
+- Subtitle dos items recorrentes ficou enxuto: apenas a modalidade
+  (ex.: "Anual · 12× no cartão") ou "Acompanha o plano" pros mensal-only.
+  Sai o `payText` longo que duplicava info do preço.
+- Subtitle dos headers dos grupos no drawer (igual ao checkout) também
+  saiu — "MENSALIDADE" só, sem "Fechando 1 ano · 12× no cartão" abaixo.
+- Bundle card teve o rodapé `<small>` removido — info redundante.
+- Hint do cadence selector removido. Os 3 botões + feedback visual já
+  comunicam, sem precisar do texto explicativo.
+- Checkout grade: max-width 1240 → 1080, gap 32 → 28, padding dos
+  cards 24/28 → 20/24. Mais centralizado, menos espaço vazio.
+- **Entregáveis no resumo** — feature nova: cada item recorrente/projeto
+  que tem `deliverables` no `product-data.js` ganha um pill "Ver
+  entregáveis" abaixo do subtitle. Click expande lista com bullets verde
+  (e cinza riscado pros "Sem ..."). Funciona no drawer e no
+  `/proposta.html`. Não polui por default — só abre se o cliente quiser.
+
 ### 2026-05-13 (parte 5 · clean-up + paleta clara)
 - **3 bugs visuais corrigidos**:
   - `.savings-row[hidden]` aparecia como faixa vazia (display:flex

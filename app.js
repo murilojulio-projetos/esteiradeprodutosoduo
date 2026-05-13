@@ -300,7 +300,6 @@
       block.innerHTML = `
         <header class="cart-group-head">
           <h4>${ODUO.escapeHtml(g.title)}</h4>
-          <span>${ODUO.escapeHtml(g.sub)}</span>
         </header>
       `;
       g.items.forEach((row) => {
@@ -313,11 +312,30 @@
         const baseStrike = row.basePriceText
           ? `<span class="cart-item-strike">${ODUO.escapeHtml(row.basePriceText)}</span>`
           : "";
+        const hasDeliverables = Array.isArray(row.deliverables) && row.deliverables.length > 0;
+        const deliverablesToggle = hasDeliverables
+          ? `<button type="button" class="cart-item-toggle" data-toggle-deliverables aria-expanded="false">
+               <span>Ver entregáveis</span>
+               <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 6l4 4 4-4"/></svg>
+             </button>`
+          : "";
+        const deliverablesList = hasDeliverables
+          ? `<ul class="cart-item-deliverables" hidden>
+               ${row.deliverables
+                 .map((d) => {
+                   const strike = /^sem\s/i.test(d) ? " is-strike" : "";
+                   return `<li class="${strike.trim()}">${ODUO.escapeHtml(d)}</li>`;
+                 })
+                 .join("")}
+             </ul>`
+          : "";
         item.innerHTML = `
           ${removeBtn}
           <div class="cart-item-main">
             <div class="cart-item-title">${ODUO.escapeHtml(row.name)}</div>
             <div class="cart-item-sub">${ODUO.escapeHtml(row.subtitle)}</div>
+            ${deliverablesToggle}
+            ${deliverablesList}
           </div>
           <div class="cart-item-price-block">
             ${baseStrike}
@@ -371,6 +389,18 @@
         }
       });
     });
+
+    // Accordion dos entregáveis dentro do item do carrinho
+    $$("[data-toggle-deliverables]", groupsEl).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const list = btn.parentElement.querySelector(".cart-item-deliverables");
+        if (!list) return;
+        const expanded = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", String(!expanded));
+        list.hidden = expanded;
+        btn.querySelector("span").textContent = expanded ? "Ver entregáveis" : "Ocultar";
+      });
+    });
   }
 
   function totalCard(label, value, hint, highlight = false) {
@@ -404,7 +434,6 @@
             </button>`;
         }).join("")}
       </div>
-      <small class="cadence-selector-hint">Sincroniza toda a proposta na mesma forma de pagamento.</small>
     `;
     $$(".cadence-btn", wrap).forEach((btn) => {
       btn.addEventListener("click", () => setGlobalCadence(btn.dataset.cadence));
@@ -428,13 +457,12 @@
             BRL.format(bundle.parcelaPrice)
           )}<span>/mês</span></strong>
         </div>
-        <small>${ODUO.escapeHtml(bundle.paymentLabel)} · aviso de 30 dias (60 no SDR).</small>
       `;
     } else {
       const savings = bundle.savingsTotal > 0
         ? `
           <div class="cart-bundle-savings">
-            <span>Você economiza no ${isAnual ? "anual" : "semestral"}</span>
+            <span>Economia no ${isAnual ? "anual" : "semestral"}</span>
             <strong>−${ODUO.escapeHtml(BRL.format(bundle.savingsTotal))}</strong>
           </div>`
         : "";
@@ -448,7 +476,6 @@
           <strong>${ODUO.escapeHtml(BRL.format(bundle.totalContratado))}</strong>
         </div>
         ${savings}
-        <small>${ODUO.escapeHtml(bundle.paymentLabel)}. Descontos da modalidade ${isAnual ? "anual" : "semestral"} já aplicados.</small>
       `;
     }
     return div;

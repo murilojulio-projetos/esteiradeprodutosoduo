@@ -214,14 +214,14 @@
         mensalEquivalentTotal += mensalRef;
         const savingsPerMonth = Math.max(0, mensalRef - finalPrice);
 
+        // Subtitle enxuto: só a essência. O preço já mostra parcela/valor.
         let subtitle;
         if (followsBase) {
-          subtitle = `Acompanha o plano · ${parcelas}× de ${BRL.format(
-            finalPrice
-          )} no cartão`;
+          subtitle = "Acompanha o plano";
+        } else if (cadence === "mensal" || mod.id === "mensal") {
+          subtitle = mod.customLabel || mod.label;
         } else {
-          const baseLabel = mod.customLabel || mod.label;
-          subtitle = `${baseLabel} · ${payText(item, mod)}`;
+          subtitle = `${mod.customLabel || mod.label} · ${parcelas}× no cartão`;
         }
 
         groups.mensal.items.push({
@@ -240,6 +240,7 @@
               ? `Cupom ${coupon} · -${BRL.format(discount)}/mês`
               : null,
           followsBase,
+          deliverables: item.deliverables || null,
           removable: true,
         });
         groups.mensal.total += finalPrice;
@@ -273,6 +274,7 @@
           subtitle,
           priceText: BRL.format(total),
           value: total,
+          deliverables: item.deliverables || null,
           removable: true,
         });
         groups.projetos.total += total;
