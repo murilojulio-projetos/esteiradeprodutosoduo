@@ -2220,13 +2220,13 @@ section {
 }
 
 .proposta-main {
-  max-width: 1100px;
+  max-width: 980px;
   margin: 0 auto;
-  padding: 50px 28px 80px;
+  padding: 40px 28px 80px;
 }
 
 .proposta-head {
-  margin: 0 auto 36px;
+  margin: 0 auto 32px;
   max-width: 680px;
   text-align: center;
 }
@@ -2243,8 +2243,8 @@ section {
 /* 2 colunas: items + Turbine inline · bundle/CTA sticky */
 .proposta-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 28px;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 24px;
   align-items: start;
 }
 

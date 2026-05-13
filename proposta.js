@@ -45,6 +45,7 @@
     artes: ["artes-essencial", "artes-profissional", "artes-completo"],
     video: ["video-4", "video-8"],
     seo: ["seo"],
+    site: ["site"],
   };
   /** ID do tier recomendado por default em cada grupo (quando o cliente
    *  não tem nada do grupo no carrinho). Bate com a flag `recommended`
@@ -53,6 +54,7 @@
     artes: "artes-profissional",
     video: "video-8",
     seo: "seo",
+    site: "site",
   };
 
   function getNextUpsellId(groupKey) {
@@ -94,11 +96,6 @@
 
     const cardsHtml = candidates
       .map((item) => {
-        // Pega a modalidade que combina com a cadência global, ou a mensal.
-        const mod =
-          item.modalities.find((m) => m.id === activeCadence) ||
-          item.modalities.find((m) => m.id === "mensal") ||
-          item.modalities[0];
         // Detecta se é UPGRADE (cliente já tem tier menor do mesmo grupo).
         const groupKey = Object.keys(UPSELL_TIERS).find((k) =>
           UPSELL_TIERS[k].includes(item.id)
@@ -113,18 +110,43 @@
           ? `<span class="proposta-upsell-card-kicker is-upgrade">Upgrade do ${ODUO.escapeHtml(lowerTierItem.name)}</span>`
           : item.group
           ? `<span class="proposta-upsell-card-kicker">${ODUO.escapeHtml(item.group)}</span>`
+          : item.type === "project"
+          ? `<span class="proposta-upsell-card-kicker">Projeto · entrega única</span>`
           : "";
         const btnLabel = lowerTierItem
           ? `Trocar pra ${ODUO.escapeHtml(item.name)}`
           : "+ Adicionar";
+
+        // Preço · pra projeto mostra parcela ("6× R$ 833"); pra recorrente
+        // mostra mensalidade ("R$ X/mês").
+        let priceHtml;
+        if (item.type === "project") {
+          const parc = item.modalities.find((m) => m.id === "parcelado");
+          const display = parc || item.modalities[0];
+          if (parc) {
+            priceHtml = `<span class="price-x">6×</span> ${ODUO.escapeHtml(BRL.format(parc.price))}`;
+          } else {
+            priceHtml = ODUO.escapeHtml(BRL.format(display.price));
+          }
+        } else {
+          const mod =
+            item.modalities.find((m) => m.id === activeCadence) ||
+            item.modalities.find((m) => m.id === "mensal") ||
+            item.modalities[0];
+          priceHtml = `${ODUO.escapeHtml(BRL.format(mod.price))}<small>/mês</small>`;
+        }
+
+        // Benefício do upgrade: usa upgradeBenefit se houver, senão tagline.
+        const benefit = item.upgradeBenefit || item.tagline;
+
         return `
           <div class="proposta-upsell-card">
             ${kicker}
             <div class="proposta-upsell-card-name-row">
               <strong class="proposta-upsell-card-name">${ODUO.escapeHtml(item.name)}</strong>
-              <span class="proposta-upsell-card-price">${ODUO.escapeHtml(BRL.format(mod.price))}<small>/mês</small></span>
+              <span class="proposta-upsell-card-price">${priceHtml}</span>
             </div>
-            <span class="proposta-upsell-card-tagline">${ODUO.escapeHtml(item.tagline)}</span>
+            <span class="proposta-upsell-card-tagline">${ODUO.escapeHtml(benefit)}</span>
             <button type="button" class="proposta-upsell-card-add" data-add-upsell="${item.id}">
               ${btnLabel}
             </button>
@@ -161,12 +183,22 @@
             if (tierId !== id && cart[tierId]) delete cart[tierId];
           });
         }
-        // Adiciona ao cart na cadência global (se o item tiver) ou na mensal.
+        // Adiciona ao cart:
+        // · recurring/hybrid: usa a cadência global (ou mensal de fallback)
+        // · project: usa "parcelado" (6× sem juros) — vai pra Entrega Única
+        //   ou pra parcela embutida quando há plano-base anual.
         const item = found.item;
-        const targetMod =
-          item.modalities.find((m) => m.id === activeCadence) ||
-          item.modalities.find((m) => m.id === "mensal") ||
-          item.modalities[0];
+        let targetMod;
+        if (item.type === "project") {
+          targetMod =
+            item.modalities.find((m) => m.id === "parcelado") ||
+            item.modalities[0];
+        } else {
+          targetMod =
+            item.modalities.find((m) => m.id === activeCadence) ||
+            item.modalities.find((m) => m.id === "mensal") ||
+            item.modalities[0];
+        }
         cart[id] = targetMod.id;
         ODUO.persistCart(cart);
         render();

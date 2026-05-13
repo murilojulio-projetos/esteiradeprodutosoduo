@@ -84,6 +84,7 @@ window.ODUO_CATALOG = [
         group: "Pacote de Artes",
         name: "Profissional",
         tagline: "8 publicações no mês",
+        upgradeBenefit: "Dobra a frequência de posts e mantém a marca ativa nas redes.",
         recommended: true,
         type: "recurring",
         addon: true,
@@ -94,6 +95,7 @@ window.ODUO_CATALOG = [
         group: "Pacote de Artes",
         name: "Completo",
         tagline: "12 publicações no mês",
+        upgradeBenefit: "3 posts por semana · presença máxima no Instagram.",
         type: "recurring",
         addon: true,
         modalities: [{ id: "mensal", label: "Mensal", price: 1000, suffix: "/mês", pay: "Acompanha o plano-base (boleto ou cartão)", discount: 0 }],
@@ -127,6 +129,7 @@ window.ODUO_CATALOG = [
         group: "Pacote de Vídeo Recorrente",
         name: "8 Reels/mês",
         tagline: "Vídeos curtos até 60s, edição profissional",
+        upgradeBenefit: "Dobra os reels no mês · 2 por semana pra surfar tendências.",
         recommended: true,
         type: "recurring",
         addon: true,
@@ -151,6 +154,7 @@ window.ODUO_CATALOG = [
         id: "site",
         name: "Site Multipages",
         tagline: "Profissional, otimizado para tráfego pago. Até 100 equipamentos. No ar em 30–45 dias.",
+        upgradeBenefit: "Site profissional otimizado pra converter tráfego pago e SEO. Até 100 equipamentos · no ar em 30 dias.",
         type: "project",
         modalities: [
           { id: "avista", label: "À vista", price: 4500, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
@@ -160,7 +164,8 @@ window.ODUO_CATALOG = [
       {
         id: "seo",
         name: "Pacote SEO",
-        tagline: "SEO técnico, conteúdo e backlinks. Otimização orgânica para Google.",
+        tagline: "Seu site nas primeiras orgânicas do Google. SEO técnico, conteúdo e backlinks contínuos.",
+        upgradeBenefit: "Seu site aparece nas primeiras orgânicas do Google.",
         type: "recurring",
         modalities: [
           { id: "mensal", label: "Mensal", price: 1250, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
