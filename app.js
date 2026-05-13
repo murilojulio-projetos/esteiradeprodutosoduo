@@ -289,8 +289,8 @@
       suffixEl.textContent = mod.suffix || "";
     }
 
-    // "Economiza R$ X/mês" quando a modalidade selecionada bate desconto
-    // contra o preço mensal de referência. Só faz sentido em recorrentes/híbridos.
+    // Economia acumulada (no ano/semestre) quando a modalidade dá desconto
+    // vs mensal. Só faz sentido em recorrentes/híbridos.
     const savingsEl = $('[data-role="savings"]', card);
     if (savingsEl) {
       const mensalMod = item.modalities.find((m) => m.id === "mensal");
@@ -303,13 +303,15 @@
         mensalMod.price > mod.price
       ) {
         const saveMonth = mensalMod.price - mod.price;
-        const saveYear = saveMonth * 12;
+        const parcelas = mod.id === "anual" ? 12 : (mod.id === "semestral" ? 6 : 1);
+        const saveAcum = saveMonth * parcelas;
+        const periodo = mod.id === "anual" ? "no ano" : "em 6 meses";
         savingsEl.hidden = false;
         savingsEl.innerHTML = `
-          <span>Economia ${ODUO.escapeHtml(LABEL_BY_CADENCE[mod.id] || mod.label)}</span>
-          <strong>−${ODUO.escapeHtml(BRL.format(saveMonth))}/mês</strong>
+          <span>Economia ${periodo}</span>
+          <strong>−${ODUO.escapeHtml(BRL.format(saveAcum))}</strong>
         `;
-        savingsEl.title = `Economia anual: ${BRL.format(saveYear)}`;
+        savingsEl.title = `${BRL.format(saveMonth)}/mês de desconto vs pagar mensal`;
       } else {
         savingsEl.hidden = true;
         savingsEl.innerHTML = "";
@@ -515,11 +517,12 @@
             <strong>−${ODUO.escapeHtml(BRL.format(bundle.couponDiscountPerMonth))}/mês</strong>
           </div>`
         : "";
-      const savings = bundle.savingsPerMonth > 0
+      const savingsLabel = isAnual ? "Economia no ano" : "Economia em 6 meses";
+      const savings = bundle.savingsTotal > 0
         ? `
           <div class="cart-bundle-savings">
-            <span>Economia vs mensal</span>
-            <strong>−${ODUO.escapeHtml(BRL.format(bundle.savingsPerMonth))}/mês</strong>
+            <span>${savingsLabel}</span>
+            <strong>−${ODUO.escapeHtml(BRL.format(bundle.savingsTotal))}</strong>
           </div>`
         : "";
       const embeddedNote = bundle.hasEmbedded

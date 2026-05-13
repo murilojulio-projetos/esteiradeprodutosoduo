@@ -1007,6 +1007,7 @@ section {
   border: 2.5px solid var(--ink-700);
   box-shadow: 0 24px 60px -28px rgba(7, 32, 74, 0.45);
   position: relative;
+  overflow: visible; /* deixa o badge "CARRO-CHEFE" sair acima do card */
 }
 
 .card.card-hero::before {

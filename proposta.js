@@ -430,11 +430,12 @@
             <strong>−${ODUO.escapeHtml(BRL.format(bundle.couponDiscountPerMonth))}/mês</strong>
           </div>`
         : "";
-      const savings = bundle.savingsPerMonth > 0
+      const savingsLabel = isAnual ? "Economia no ano" : "Economia em 6 meses";
+      const savings = bundle.savingsTotal > 0
         ? `
           <div class="proposta-bundle-savings">
-            <span>Economia vs mensal</span>
-            <strong>−${ODUO.escapeHtml(BRL.format(bundle.savingsPerMonth))}/mês</strong>
+            <span>${savingsLabel}</span>
+            <strong>−${ODUO.escapeHtml(BRL.format(bundle.savingsTotal))}</strong>
           </div>`
         : "";
       const embeddedNote = bundle.hasEmbedded
@@ -709,10 +710,11 @@
           `−${BRL.format(bundle.couponDiscountPerMonth)}/mês`,
         ]);
       }
-      if (bundle.savingsPerMonth > 0) {
+      if (bundle.savingsTotal > 0) {
+        const periodo = bundle.cadence === "anual" ? "no ano" : "em 6 meses";
         lines.push([
-          "Economia vs mensal",
-          `−${BRL.format(bundle.savingsPerMonth)}/mês`,
+          `Economia ${periodo}`,
+          `−${BRL.format(bundle.savingsTotal)}`,
         ]);
       }
       sections.push({ title, lines });
