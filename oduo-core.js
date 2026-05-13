@@ -229,12 +229,17 @@
         mensalEquivalentTotal += mensalRef;
         const savingsPerMonth = Math.max(0, mensalRef - finalPrice);
 
-        // Subtitle enxuto: só a essência. O preço já mostra parcela/valor.
+        // Subtitle enxuto e padrão consistente: "Modalidade · forma de pagamento"
         let subtitle;
         if (followsBase) {
-          subtitle = "Acompanha o plano";
+          subtitle =
+            cadence === "anual"
+              ? "Acompanha o plano · 12× no cartão"
+              : cadence === "semestral"
+              ? "Acompanha o plano · 6× no cartão"
+              : "Acompanha o plano";
         } else if (cadence === "mensal" || mod.id === "mensal") {
-          subtitle = mod.customLabel || mod.label;
+          subtitle = `${mod.customLabel || mod.label} · boleto ou Pix`;
         } else {
           subtitle = `${mod.customLabel || mod.label} · ${parcelas}× no cartão`;
         }

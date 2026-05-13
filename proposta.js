@@ -68,7 +68,9 @@
   }
 
   function renderUpsell() {
-    const root = $("#propostaItens");
+    const root = $("#propostaUpsellSection");
+    if (!root) return;
+    root.innerHTML = "";
     const candidates = Object.keys(UPSELL_TIERS)
       .map((groupKey) => {
         const id = getNextUpsellId(groupKey);
@@ -82,7 +84,11 @@
       .filter(Boolean)
       .map(({ item }) => item);
 
-    if (candidates.length === 0) return; // tudo no topo já
+    if (candidates.length === 0) {
+      root.hidden = true;
+      return;
+    }
+    root.hidden = false;
 
     const block = document.createElement("article");
     block.className = "proposta-upsell";
