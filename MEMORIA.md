@@ -53,16 +53,7 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
   Na proposta o trio é `product-data.js` → `oduo-core.js` → `proposta.js`.
 
 ## Conhecidas a olho nu (sem prioridade definida)
-- `app.js` contém uma função `generatePdf` antiga (~250 linhas) que **não é
-  mais chamada** — o PDF real sai de `proposta.js`. Pode limpar quando der.
-- `buildCartGroups` está duplicado entre `app.js` (linha ~262) e
-  `oduo-core.js`. Faz a mesma coisa. Idealmente o `app.js` consome o de
-  `oduo-core.js`.
-- `app.js` sobrescreve `window.ODUO` que `oduo-core.js` montou — funciona
-  porque a index não depende dos helpers de core, mas é confuso.
-- Texto das condições padrão diverge entre os dois PDFs: `app.js` diz
-  "projetos em 6×", `proposta.js` diz "até 12×". O que vai pro cliente é
-  o do `proposta.js`.
+- (atualizar conforme surgirem)
 
 ## Pendências / próximos passos
 - **Rotacionar credenciais expostas na sessão de 2026-05-13** (todas as 11
@@ -77,6 +68,24 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
   GitHub PAT, Google, Asaas (produção), n8n, Supabase.
 
 ## Histórico de sessões
+
+### 2026-05-13 (continuação)
+- **Limpeza de `app.js`**: removidas ~546 linhas (1.035 → 489, −53%).
+  - Função `generatePdf` (e satélites `buildSummary`, `ensureSpace`,
+    `openLeadModal`, `closeLeadModal`) eliminadas — eram dead code; PDF
+    real sai de `proposta.js`.
+  - `buildCartGroups` deixou de existir em duplicata; `app.js` consome o
+    do `oduo-core.js` via `ODUO.buildCartGroups(cart, activeCoupon)`.
+  - Helpers duplicados (`findItem`, `modalityOf`, `payText`,
+    `computeProjectTotal`, `escapeHtml`, `couponDiscountFor`, `loadCart`,
+    `persistCart`, `loadCoupon`, `persistCoupon`, `slug`, `ymd`,
+    constantes) também consumidos do `ODUO`. Fonte única em
+    `oduo-core.js`.
+  - Removida a sobrescrição de `window.ODUO` que o `app.js` fazia no topo.
+  - Inconsistência de texto "6× vs 12×" some sozinha — só sobrou o
+    gerador de PDF do `proposta.js`.
+  - Sanidade: brackets/braces/parens balanceados; arquivos servem HTTP 200
+    em server local. Verificação no browser fica com o cliente.
 
 ### 2026-05-13
 - Repositório git inicializado e publicado em
