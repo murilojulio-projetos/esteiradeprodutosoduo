@@ -425,11 +425,67 @@ section {
   line-height: 1.55;
 }
 
-/* ----- Social proof ----- */
+/* ----- Social proof · faixa de logos das locadoras ----- */
 .social-proof {
   background: var(--paper);
-  padding: 70px 32px 80px;
+  padding: 64px 32px 64px;
   text-align: center;
+}
+
+.social-proof-head {
+  max-width: 720px;
+  margin: 0 auto 36px;
+}
+
+.social-proof-count {
+  display: block;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: clamp(34px, 4.2vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--ink-900);
+  line-height: 1.05;
+  margin-bottom: 4px;
+}
+
+.social-proof-head p {
+  margin: 0;
+  font-size: 17px;
+  color: rgba(7, 32, 74, 0.65);
+}
+
+.social-proof-logos {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 28px 36px;
+  align-items: center;
+  justify-items: center;
+}
+
+.social-proof-logos img {
+  max-height: 56px;
+  max-width: 140px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  opacity: 0.7;
+  filter: grayscale(80%);
+  transition: opacity 0.2s, filter 0.2s, transform 0.2s;
+}
+
+.social-proof-logos img:hover {
+  opacity: 1;
+  filter: grayscale(0);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .social-proof-logos {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
 }
 
 .clientes-img {
@@ -539,6 +595,22 @@ section {
   background: rgba(244, 246, 252, 0.15);
   color: #fff;
   margin-bottom: 14px;
+}
+
+.case-card-logo {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  max-height: 44px;
+  max-width: 120px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  z-index: 2;
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.3);
 }
 
 .case-card h3 {
