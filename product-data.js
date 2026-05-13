@@ -142,14 +142,14 @@ window.ODUO_CATALOG = [
   },
 
   // ====================================================================
-  // D · MONETIZAÇÃO DIRETA — Pacote SEO
+  // D · MONETIZAÇÃO DIRETA — Pacote SEO + Site
   // ====================================================================
   {
     section: "seo",
-    sectionLabel: "Pacote SEO",
-    sectionKicker: "Monetização direta",
+    sectionLabel: "Pacote SEO + Site",
+    sectionKicker: "Monetização direta · tráfego orgânico",
     sectionDesc:
-      "Otimização orgânica contínua pra Google. Sem prazo final. Pode acompanhar o plano anual no cartão.",
+      "O combo do tráfego orgânico: SEO técnico contínuo + Site otimizado pra Google. Pode acompanhar o plano anual no cartão.",
     items: [
       {
         id: "seo",
@@ -162,18 +162,6 @@ window.ODUO_CATALOG = [
           { id: "anual", label: "Anual", price: 1062, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
         ],
       },
-    ],
-  },
-
-  // ====================================================================
-  // E · PROJETOS PONTUAIS
-  // ====================================================================
-  {
-    section: "projetos",
-    sectionLabel: "Projetos Pontuais",
-    sectionKicker: "E · Começo, meio e fim",
-    sectionDesc: "Entregas únicas. 10% off à vista ou 6× sem juros no cartão.",
-    items: [
       {
         id: "site",
         name: "Site Multipages",
@@ -184,6 +172,18 @@ window.ODUO_CATALOG = [
           { id: "parcelado", label: "Parcelado", price: 833, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 5.000", discount: 0 },
         ],
       },
+    ],
+  },
+
+  // ====================================================================
+  // E · PROJETOS PONTUAIS (Site mora na section SEO + Site)
+  // ====================================================================
+  {
+    section: "projetos",
+    sectionLabel: "Branding e Vídeo",
+    sectionKicker: "E · Começo, meio e fim",
+    sectionDesc: "Entregas únicas. 10% off à vista ou 6× sem juros no cartão.",
+    items: [
       {
         id: "branding",
         name: "Branding Completo",

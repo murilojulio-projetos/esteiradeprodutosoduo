@@ -688,7 +688,7 @@ section {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 80px;
+  gap: 48px;
 }
 
 .loader {
@@ -700,7 +700,7 @@ section {
 .cat-section {
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 20px;
 }
 
 .cat-section-head {
