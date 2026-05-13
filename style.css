@@ -2586,14 +2586,24 @@ section {
   box-shadow: 0 12px 24px -12px rgba(11, 40, 89, 0.2);
 }
 
-.proposta-upsell-card-group {
-  display: block;
+.proposta-upsell-card-group,
+.proposta-upsell-card-kicker {
+  display: inline-block;
+  width: fit-content;
   font-size: 11.5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-weight: 700;
   color: var(--blue-500);
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(49, 122, 224, 0.1);
+}
+
+.proposta-upsell-card-kicker.is-upgrade {
+  color: var(--orange-strong);
+  background: rgba(240, 138, 58, 0.15);
 }
 
 .proposta-upsell-card-name {
@@ -2968,9 +2978,12 @@ section {
   color: var(--blue-500);
 }
 
-/* Indicação visual para itens que "acompanham o plano-base" */
+/* Indicação visual para itens que "acompanham o plano-base" ou estão
+   embutidos na parcela do plano-base */
 .cart-item[data-follows-base="true"] .cart-item-sub,
-.proposta-item[data-follows-base="true"] .proposta-item-sub {
+.cart-item[data-embedded="true"] .cart-item-sub,
+.proposta-item[data-follows-base="true"] .proposta-item-sub,
+.proposta-item[data-embedded="true"] .proposta-item-sub {
   color: var(--orange-strong);
   font-weight: 500;
 }

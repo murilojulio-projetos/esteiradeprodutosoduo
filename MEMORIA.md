@@ -45,6 +45,18 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
   todos os recorrentes; itens só-mensal (Pacote de Artes) acompanham o
   cartão do plano-base pelo mesmo preço mensal. Estado em
   `localStorage.oduo_cadence_v1`.
+- **Embed de setups + projetos na parcela do plano-base**: quando há
+  Avança ou Destrava no carrinho com cadência **anual** ou **semestral**,
+  os setups e projetos pontuais são **embutidos** na mesma parcela do
+  cartão (preço total ÷ 12 ou ÷ 6 somado à mensalidade). O cliente vê
+  "UMA conta só". Quando o plano-base é mensal ou não há plano-base,
+  setups/projetos ficam separados em "Entrega Única" (regra antiga).
+  Constante `PLANO_BASE_IDS = ["avanca", "destrava"]` em `oduo-core.js`.
+- **Performance** (Hunter, SDR) NUNCA entra na parcela — fica em bloco
+  próprio "Performance · Variável".
+- **Total contratado** (soma anual) NÃO aparece mais no bundle card nem
+  no resumo do PDF. Brasileiro pensa em parcela. Cupom e economia
+  também aparecem por mês (não anualizado).
 
 ## Decisões de implementação
 - Cardápio abre sempre na modalidade **mensal** pra ancorar preço cheio antes
@@ -73,6 +85,31 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
   GitHub PAT, Google, Asaas (produção), n8n, Supabase.
 
 ## Histórico de sessões
+
+### 2026-05-13 (parte 10 · embed + upsell inteligente + parcela acima de tudo)
+- **Regra nova · embed de setups+projetos na parcela do plano-base**:
+  cliente com Avança/Destrava em anual/semestral → todos os setups
+  e projetos no carrinho viram parcela junto da mensalidade. Total ÷ 12
+  (ou ÷ 6) somado à parcelaPrice. UMA conta só. Quando plano-base é
+  mensal ou não há plano-base, setups/projetos ficam separados como
+  antes ("Entrega Única").
+- `oduo-core.js`: nova constante `PLANO_BASE_IDS`. `buildCartGroups`
+  detecta `shouldEmbed`, marca cada item de setup/projeto com
+  `row.embedded` + `row.embeddedPerMonth`, e ajusta o bundle com
+  `hasEmbedded`, `embeddedTotal`, `embeddedPerMonth`.
+- **Total contratado some** do bundle card (drawer + proposta) e do
+  resumo do PDF. Cupom e economia agora aparecem **por mês**
+  (−R$ 148/mês em vez de −R$ 1.776/ano).
+- **Investimento inicial** só aparece quando NÃO está embedded.
+- **Upsell inteligente no "Turbine seu projeto"**:
+  - `UPSELL_TIERS` define grupos com ordem: artes (essencial < profissional
+    < completo), video (4 < 8), seo.
+  - `getNextUpsellId(group)` retorna o próximo tier acima do que o
+    cliente tem. Se não tem nada do grupo, retorna o default
+    recommended. Se tem o topo, retorna null.
+  - Quando o card é upgrade (cliente tem tier menor), o kicker mostra
+    "Upgrade do Essencial" em laranja, e o botão vira "Trocar pra X".
+    Click remove o tier menor antes de adicionar o novo (substitui).
 
 ### 2026-05-13 (parte 9 · validade curta + resumo do PDF reformatado)
 - Modal de geração de PDF agora aceita validade de **1 dia** e **3 dias**

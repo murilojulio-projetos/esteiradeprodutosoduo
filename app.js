@@ -319,6 +319,7 @@
         const item = document.createElement("div");
         item.className = "cart-item";
         if (row.followsBase) item.dataset.followsBase = "true";
+        if (row.embedded) item.dataset.embedded = "true";
         const removeBtn = row.removable
           ? `<button type="button" class="cart-item-remove" data-remove="${row.id}" aria-label="Remover ${ODUO.escapeHtml(row.name)}">×</button>`
           : "";
@@ -372,7 +373,10 @@
       totalsEl.appendChild(renderCadenceSelector(groups.bundle));
       totalsEl.appendChild(renderBundleCard(groups.bundle));
     }
-    if (investimentoInicial > 0) {
+    // "Investimento inicial" só aparece quando os setups/projetos NÃO foram
+    // embutidos na parcela do plano-base (caso de plano-base mensal ou sem plano-base).
+    const showInvestimentoInicial = investimentoInicial > 0 && !groups.bundle.hasEmbedded;
+    if (showInvestimentoInicial) {
       totalsEl.appendChild(
         totalCard(
           "Investimento inicial",
@@ -476,31 +480,31 @@
         </div>
       `;
     } else {
-      const couponLine = bundle.couponDiscountTotal > 0
+      const couponLine = bundle.couponDiscountPerMonth > 0
         ? `
           <div class="cart-bundle-coupon">
             <span>Cupom ${ODUO.escapeHtml(bundle.couponCode)} aplicado</span>
-            <strong>−${ODUO.escapeHtml(BRL.format(bundle.couponDiscountTotal))}</strong>
+            <strong>−${ODUO.escapeHtml(BRL.format(bundle.couponDiscountPerMonth))}/mês</strong>
           </div>`
         : "";
-      const savings = bundle.savingsTotal > 0
+      const savings = bundle.savingsPerMonth > 0
         ? `
           <div class="cart-bundle-savings">
-            <span>Economia no ${isAnual ? "anual" : "semestral"}</span>
-            <strong>−${ODUO.escapeHtml(BRL.format(bundle.savingsTotal))}</strong>
+            <span>Economia vs mensal</span>
+            <strong>−${ODUO.escapeHtml(BRL.format(bundle.savingsPerMonth))}/mês</strong>
           </div>`
+        : "";
+      const embeddedNote = bundle.hasEmbedded
+        ? `<small>Setups e projetos já estão embutidos nessa parcela.</small>`
         : "";
       div.innerHTML = `
         <div class="cart-bundle-top">
           <span class="cart-bundle-kicker">${ODUO.escapeHtml(bundle.contractLabel)}</span>
           <strong class="cart-bundle-value">${bundle.parcelas}× ${ODUO.escapeHtml(BRL.format(bundle.parcelaPrice))}</strong>
         </div>
-        <div class="cart-bundle-total-row">
-          <span>Total contratado</span>
-          <strong>${ODUO.escapeHtml(BRL.format(bundle.totalContratado))}</strong>
-        </div>
         ${couponLine}
         ${savings}
+        ${embeddedNote}
       `;
     }
     return div;

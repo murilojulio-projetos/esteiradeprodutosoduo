@@ -22,6 +22,10 @@
     anual: "Anual",
   };
 
+  // IDs do plano-base. Se algum deles está no carrinho com cadência
+  // anual/semestral, os projetos/setups são embutidos na mesma parcela.
+  const PLANO_BASE_IDS = ["avanca", "destrava"];
+
   const BRL = new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
@@ -159,6 +163,13 @@
     const cadence = CADENCES.includes(globalCadence) ? globalCadence : "mensal";
     const parcelas = PARCELAS_BY_CADENCE[cadence];
 
+    // Detecta se o plano-base está no carrinho e qual a cadência DELE.
+    // Se o plano-base tá em anual/semestral, projetos/setups são embutidos
+    // na mesma parcela do cartão (1 conta só pro cliente).
+    const planoBaseInCart = PLANO_BASE_IDS.find((id) => cart[id]);
+    const planoBaseMod = planoBaseInCart ? cart[planoBaseInCart] : null;
+    const shouldEmbed = planoBaseMod && planoBaseMod !== "mensal";
+
     const groups = {
       mensal: {
         title: "Mensalidade",
@@ -250,22 +261,36 @@
         groups.mensal.total += finalPrice;
 
         if (item.setup) {
-          const parcela = Math.round(item.setup / 3);
+          const setupParcela = Math.round(item.setup / 3);
+          const setupEmbeddedPerMonth = shouldEmbed
+            ? Math.round(item.setup / parcelas)
+            : null;
           groups.setups.items.push({
             id: item.id + "__setup",
             parentId: item.id,
             name: item.name + " — setup",
-            subtitle: `Pagamento único · 3× de ${BRL.format(parcela)} sem juros`,
-            priceText: BRL.format(item.setup),
+            subtitle: shouldEmbed
+              ? `Embutido · ${parcelas}× ${BRL.format(setupEmbeddedPerMonth)} no cartão`
+              : `Pagamento único · 3× de ${BRL.format(setupParcela)} sem juros`,
+            priceText: shouldEmbed
+              ? BRL.format(setupEmbeddedPerMonth) + "/mês"
+              : BRL.format(item.setup),
             value: item.setup,
+            embedded: shouldEmbed,
+            embeddedPerMonth: setupEmbeddedPerMonth,
             removable: false,
           });
           groups.setups.total += item.setup;
         }
       } else if (item.type === "project") {
         const total = computeProjectTotal(mod);
+        const projectEmbeddedPerMonth = shouldEmbed
+          ? Math.round(total / parcelas)
+          : null;
         let subtitle;
-        if (mod.id === "avista") {
+        if (shouldEmbed) {
+          subtitle = `Embutido · ${parcelas}× ${BRL.format(projectEmbeddedPerMonth)} no cartão`;
+        } else if (mod.id === "avista") {
           subtitle = `À vista · 10% off no Pix ou cartão`;
         } else if (mod.id === "parcelado") {
           subtitle = `Parcelado · 6× de ${BRL.format(mod.price)} sem juros`;
@@ -276,8 +301,12 @@
           id: item.id,
           name: item.name,
           subtitle,
-          priceText: BRL.format(total),
+          priceText: shouldEmbed
+            ? BRL.format(projectEmbeddedPerMonth) + "/mês"
+            : BRL.format(total),
           value: total,
+          embedded: shouldEmbed,
+          embeddedPerMonth: projectEmbeddedPerMonth,
           deliverables: item.deliverables || null,
           removable: true,
         });
@@ -295,10 +324,20 @@
       }
     });
 
-    const parcelaPrice = groups.mensal.total;
+    // Embute setups+projetos na mesma parcela do plano-base (quando o
+    // plano-base é anual/semestral). Caso contrário, ficam no fluxo
+    // antigo de "Entrega Única".
+    const embeddedTotal = shouldEmbed
+      ? groups.setups.total + groups.projetos.total
+      : 0;
+    const embeddedPerMonth = shouldEmbed
+      ? Math.round(embeddedTotal / parcelas)
+      : 0;
+
+    const parcelaPrice = groups.mensal.total + embeddedPerMonth;
     const totalContratado = parcelaPrice * parcelas;
     const totalMensalEquivalente = mensalEquivalentTotal * parcelas;
-    const savingsPerMonth = Math.max(0, mensalEquivalentTotal - parcelaPrice);
+    const savingsPerMonth = Math.max(0, mensalEquivalentTotal - (parcelaPrice - embeddedPerMonth));
     const savingsTotal = savingsPerMonth * parcelas;
     const bundle = {
       cadence,
@@ -313,6 +352,10 @@
       couponCode: coupon || null,
       couponDiscountPerMonth: couponDiscountTotal,
       couponDiscountTotal: couponDiscountTotal * parcelas,
+      hasEmbedded: shouldEmbed && embeddedTotal > 0,
+      embeddedTotal,
+      embeddedPerMonth,
+      planoBaseInCart: planoBaseInCart || null,
       paymentLabel:
         cadence === "mensal"
           ? "Boleto ou Pix · sem fidelidade"

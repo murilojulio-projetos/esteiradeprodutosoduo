@@ -38,26 +38,51 @@
     $("#propostaPdfBtn").disabled = false;
   }
 
-  /** Bloco "Turbine seu projeto" — mini-cards de upsell de monetização direta.
-   *  Aparece depois dos items da proposta com Artes (3 níveis), Vídeo (2) e SEO. */
-  const UPSELL_IDS = [
-    "artes-essencial",
-    "artes-profissional",
-    "artes-completo",
-    "video-4",
-    "video-8",
-    "seo",
-  ];
+  /** Bloco "Turbine seu projeto" — upsell inteligente baseado em tiers.
+   *  Para cada grupo, recomenda só o próximo tier acima do que o cliente
+   *  já tem (ou o tier "recommended" se não tem nada). */
+  const UPSELL_TIERS = {
+    artes: ["artes-essencial", "artes-profissional", "artes-completo"],
+    video: ["video-4", "video-8"],
+    seo: ["seo"],
+  };
+  /** ID do tier recomendado por default em cada grupo (quando o cliente
+   *  não tem nada do grupo no carrinho). Bate com a flag `recommended`
+   *  do product-data.js. */
+  const UPSELL_DEFAULT = {
+    artes: "artes-profissional",
+    video: "video-8",
+    seo: "seo",
+  };
+
+  function getNextUpsellId(groupKey) {
+    const tiers = UPSELL_TIERS[groupKey];
+    // Qual tier mais alto o cliente já tem no carrinho?
+    let highestIdx = -1;
+    tiers.forEach((id, idx) => {
+      if (cart[id] && idx > highestIdx) highestIdx = idx;
+    });
+    if (highestIdx === -1) return UPSELL_DEFAULT[groupKey]; // nada no grupo
+    if (highestIdx === tiers.length - 1) return null; // já tem o topo
+    return tiers[highestIdx + 1];
+  }
+
   function renderUpsell() {
     const root = $("#propostaItens");
-    // Filtra os itens recomendados que ainda NÃO estão no carrinho.
-    const candidates = UPSELL_IDS
-      .filter((id) => !cart[id])
-      .map((id) => ODUO.findItem(id))
+    const candidates = Object.keys(UPSELL_TIERS)
+      .map((groupKey) => {
+        const id = getNextUpsellId(groupKey);
+        return id ? { groupKey, id } : null;
+      })
       .filter(Boolean)
-      .map((found) => found.item);
+      .map(({ groupKey, id }) => {
+        const found = ODUO.findItem(id);
+        return found ? { groupKey, item: found.item } : null;
+      })
+      .filter(Boolean)
+      .map(({ item }) => item);
 
-    if (candidates.length === 0) return; // tudo já está no carrinho
+    if (candidates.length === 0) return; // tudo no topo já
 
     const block = document.createElement("article");
     block.className = "proposta-upsell";
@@ -69,19 +94,34 @@
           item.modalities.find((m) => m.id === activeCadence) ||
           item.modalities.find((m) => m.id === "mensal") ||
           item.modalities[0];
-        const subTitle = item.group
-          ? `<span class="proposta-upsell-card-group">${ODUO.escapeHtml(item.group)}</span>`
+        // Detecta se é UPGRADE (cliente já tem tier menor do mesmo grupo).
+        const groupKey = Object.keys(UPSELL_TIERS).find((k) =>
+          UPSELL_TIERS[k].includes(item.id)
+        );
+        const lowerTier = groupKey
+          ? UPSELL_TIERS[groupKey].find((id) => id !== item.id && cart[id])
+          : null;
+        const lowerTierItem = lowerTier
+          ? ODUO.findItem(lowerTier)?.item
+          : null;
+        const kicker = lowerTierItem
+          ? `<span class="proposta-upsell-card-kicker is-upgrade">Upgrade do ${ODUO.escapeHtml(lowerTierItem.name)}</span>`
+          : item.group
+          ? `<span class="proposta-upsell-card-kicker">${ODUO.escapeHtml(item.group)}</span>`
           : "";
+        const btnLabel = lowerTierItem
+          ? `Trocar pra ${ODUO.escapeHtml(item.name)}`
+          : "+ Adicionar";
         return `
           <div class="proposta-upsell-card">
-            ${subTitle}
+            ${kicker}
             <strong class="proposta-upsell-card-name">${ODUO.escapeHtml(item.name)}</strong>
             <span class="proposta-upsell-card-tagline">${ODUO.escapeHtml(item.tagline)}</span>
             <span class="proposta-upsell-card-price">
               ${ODUO.escapeHtml(BRL.format(mod.price))}<small>/mês</small>
             </span>
             <button type="button" class="proposta-upsell-card-add" data-add-upsell="${item.id}">
-              + Adicionar
+              ${btnLabel}
             </button>
           </div>
         `;
@@ -105,6 +145,17 @@
         const id = btn.dataset.addUpsell;
         const found = ODUO.findItem(id);
         if (!found) return;
+        // Upgrade: se o cliente já tem um tier menor do mesmo grupo,
+        // remove esse tier antes de adicionar o novo. Substitui em vez
+        // de acumular dois níveis do mesmo grupo.
+        const groupKey = Object.keys(UPSELL_TIERS).find((k) =>
+          UPSELL_TIERS[k].includes(id)
+        );
+        if (groupKey) {
+          UPSELL_TIERS[groupKey].forEach((tierId) => {
+            if (tierId !== id && cart[tierId]) delete cart[tierId];
+          });
+        }
         // Adiciona ao cart na cadência global (se o item tiver) ou na mensal.
         const item = found.item;
         const targetMod =
@@ -149,6 +200,7 @@
         const item = document.createElement("div");
         item.className = "proposta-item";
         if (row.followsBase) item.dataset.followsBase = "true";
+        if (row.embedded) item.dataset.embedded = "true";
 
         const removeBtn = row.removable
           ? `<button type="button" class="proposta-item-remove" data-remove="${row.id}" aria-label="Remover ${ODUO.escapeHtml(row.name)}">×</button>`
@@ -225,13 +277,14 @@
 
     const inicial = groups.setups.total + groups.projetos.total;
     const hasRecurring = groups.mensal.items.length > 0;
+    const showInicial = inicial > 0 && !groups.bundle.hasEmbedded;
 
     if (hasRecurring) {
       wrap.appendChild(renderCadenceSelector(groups.bundle));
       wrap.appendChild(renderBundleCard(groups.bundle));
     }
 
-    if (inicial > 0) {
+    if (showInicial) {
       const card = totalCard({
         kicker: "Investimento inicial",
         value: BRL.format(inicial),
@@ -331,31 +384,31 @@
         </div>
       `;
     } else {
-      const couponLine = bundle.couponDiscountTotal > 0
+      const couponLine = bundle.couponDiscountPerMonth > 0
         ? `
           <div class="proposta-bundle-coupon">
             <span>Cupom ${ODUO.escapeHtml(bundle.couponCode)} aplicado</span>
-            <strong>−${ODUO.escapeHtml(BRL.format(bundle.couponDiscountTotal))}</strong>
+            <strong>−${ODUO.escapeHtml(BRL.format(bundle.couponDiscountPerMonth))}/mês</strong>
           </div>`
         : "";
-      const savings = bundle.savingsTotal > 0
+      const savings = bundle.savingsPerMonth > 0
         ? `
           <div class="proposta-bundle-savings">
-            <span>Economia no ${isAnual ? "anual" : "semestral"}</span>
-            <strong>−${ODUO.escapeHtml(BRL.format(bundle.savingsTotal))}</strong>
+            <span>Economia vs mensal</span>
+            <strong>−${ODUO.escapeHtml(BRL.format(bundle.savingsPerMonth))}/mês</strong>
           </div>`
+        : "";
+      const embeddedNote = bundle.hasEmbedded
+        ? `<small>Setups e projetos já estão embutidos nessa parcela.</small>`
         : "";
       div.innerHTML = `
         <div class="proposta-total-top">
           <span>${ODUO.escapeHtml(bundle.contractLabel)}</span>
           <strong>${bundle.parcelas}× ${ODUO.escapeHtml(BRL.format(bundle.parcelaPrice))}</strong>
         </div>
-        <div class="proposta-bundle-total">
-          <span>Total contratado</span>
-          <strong>${ODUO.escapeHtml(BRL.format(bundle.totalContratado))}</strong>
-        </div>
         ${couponLine}
         ${savings}
+        ${embeddedNote}
       `;
     }
     return div;
@@ -604,27 +657,29 @@
           "Parcela mensal",
           `${bundle.parcelas}× ${BRL.format(bundle.parcelaPrice)} · sem juros`,
         ]);
+      }
+      if (bundle.hasEmbedded) {
         lines.push([
-          `Total em ${bundle.parcelas} meses`,
-          BRL.format(bundle.totalContratado),
+          "Setups e projetos",
+          `Embutidos · +${BRL.format(bundle.embeddedPerMonth)}/mês na parcela`,
         ]);
       }
       if (bundle.couponDiscountTotal > 0) {
         lines.push([
-          `Cupom ${bundle.couponCode} (incluso acima)`,
-          `−${BRL.format(bundle.couponDiscountTotal)}`,
+          `Cupom ${bundle.couponCode} (já aplicado)`,
+          `−${BRL.format(bundle.couponDiscountPerMonth)}/mês`,
         ]);
       }
-      if (bundle.savingsTotal > 0) {
+      if (bundle.savingsPerMonth > 0) {
         lines.push([
           "Economia vs mensal",
-          `−${BRL.format(bundle.savingsTotal)}`,
+          `−${BRL.format(bundle.savingsPerMonth)}/mês`,
         ]);
       }
       sections.push({ title, lines });
     }
 
-    if (inicial > 0) {
+    if (inicial > 0 && !bundle.hasEmbedded) {
       const lines = [];
       if (installments > 1) {
         const parcela = Math.ceil(inicial / installments);
