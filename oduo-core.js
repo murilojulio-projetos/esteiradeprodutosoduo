@@ -367,10 +367,10 @@
           : `${parcelas}× no cartão · sem juros`,
       contractLabel:
         cadence === "anual"
-          ? "Fechando 1 ano com a ODuo"
+          ? "Fechando 1 ano"
           : cadence === "semestral"
-          ? "Fechando 6 meses com a ODuo"
-          : "Mês a mês com a ODuo",
+          ? "Fechando 6 meses"
+          : "Mensalidade",
     };
 
     return { ...groups, bundle };
