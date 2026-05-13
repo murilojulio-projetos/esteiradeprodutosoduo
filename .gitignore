@@ -1,1 +1,15 @@
 .vercel
+
+# Segredos · NUNCA commitar
+.env
+.env.*
+!.env.example
+apis.md
+apis.local.md
+*.local.md
+*.secrets
+
+# SO / editor
+.DS_Store
+.idea/
+.vscode/
