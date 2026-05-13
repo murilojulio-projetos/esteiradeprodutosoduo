@@ -584,42 +584,80 @@
       y += 4;
     }
 
-    // Totais
+    // Resumo em 3 blocos claros: RECORRENTE / ENTREGA ÚNICA / PERFORMANCE
     const inicial = groups.setups.total + groups.projetos.total;
     const bundle = groups.bundle;
-    const totalLines = [];
+    const sections = [];
+
     if (bundle.parcelaPrice > 0) {
+      const title =
+        bundle.cadence === "anual"
+          ? "RECORRENTE · 12 MESES NO CARTÃO"
+          : bundle.cadence === "semestral"
+          ? "RECORRENTE · 6 MESES NO CARTÃO"
+          : "RECORRENTE MENSAL";
+      const lines = [];
       if (bundle.cadence === "mensal") {
-        totalLines.push([
-          "Mensalidade (boleto/Pix)",
-          BRL.format(bundle.parcelaPrice) + "/mês",
-        ]);
+        lines.push(["Pagamento", BRL.format(bundle.parcelaPrice) + "/mês · boleto ou Pix"]);
       } else {
-        totalLines.push([
-          bundle.contractLabel,
-          `${bundle.parcelas}× ${BRL.format(bundle.parcelaPrice)} no cartão`,
+        lines.push([
+          "Parcela mensal",
+          `${bundle.parcelas}× ${BRL.format(bundle.parcelaPrice)} · sem juros`,
         ]);
-        totalLines.push([
-          "Total contratado",
+        lines.push([
+          `Total em ${bundle.parcelas} meses`,
           BRL.format(bundle.totalContratado),
         ]);
       }
+      if (bundle.couponDiscountTotal > 0) {
+        lines.push([
+          `Cupom ${bundle.couponCode} (incluso acima)`,
+          `−${BRL.format(bundle.couponDiscountTotal)}`,
+        ]);
+      }
+      if (bundle.savingsTotal > 0) {
+        lines.push([
+          "Economia vs mensal",
+          `−${BRL.format(bundle.savingsTotal)}`,
+        ]);
+      }
+      sections.push({ title, lines });
     }
+
     if (inicial > 0) {
-      let label = "Investimento inicial";
-      let value;
+      const lines = [];
       if (installments > 1) {
         const parcela = Math.ceil(inicial / installments);
-        value = `${installments}× de ${BRL.format(parcela)} (${BRL.format(inicial)})`;
+        lines.push([
+          "Parcela",
+          `${installments}× ${BRL.format(parcela)} · sem juros · cartão`,
+        ]);
+        lines.push(["Total", BRL.format(inicial)]);
       } else {
-        value = `${BRL.format(inicial)} à vista`;
+        lines.push([
+          "Pagamento",
+          `${BRL.format(inicial)} à vista · Pix ou cartão`,
+        ]);
       }
-      totalLines.push([label, value]);
+      sections.push({
+        title: "ENTREGA ÚNICA · SETUPS + PROJETOS",
+        lines,
+      });
     }
-    if (groups.performance.items.length > 0)
-      totalLines.push(["Performance", "Variável conforme contratação"]);
 
-    const boxH = 36 + totalLines.length * 16;
+    if (groups.performance.items.length > 0) {
+      sections.push({
+        title: "PERFORMANCE",
+        lines: [
+          ["Cobrança", "Variável conforme contratação"],
+          ["Definição", "Em reunião dedicada"],
+        ],
+      });
+    }
+
+    // Render do box azul-marinho com seções
+    const sectionH = (s) => 22 + s.lines.length * 14 + 10;
+    const boxH = 32 + sections.reduce((acc, s) => acc + sectionH(s), 0);
     y = ensureSpace(doc, y, boxH + 8, pageH, margin);
     doc.setFillColor(7, 32, 74);
     doc.roundedRect(margin, y, pageW - margin * 2, boxH, 10, 10, "F");
@@ -627,38 +665,35 @@
     doc.setFontSize(11);
     doc.setTextColor(244, 246, 252);
     doc.text("RESUMO DA PROPOSTA", margin + 16, y + 22);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    let ty = y + 42;
-    totalLines.forEach(([k, v]) => {
-      doc.setTextColor(180, 195, 230);
-      doc.text(k, margin + 16, ty);
+
+    let sy = y + 42;
+    sections.forEach((section, idx) => {
+      // Divider sutil acima a partir da 2ª seção
+      if (idx > 0) {
+        doc.setDrawColor(60, 80, 130);
+        doc.line(margin + 16, sy - 6, pageW - margin - 16, sy - 6);
+      }
+      // Título da seção em laranja
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(244, 246, 252);
-      doc.text(v, pageW - margin - 16, ty, { align: "right" });
+      doc.setFontSize(9.5);
+      doc.setTextColor(240, 138, 58);
+      doc.text(section.title, margin + 16, sy);
+      sy += 14;
+      // Linhas da seção
       doc.setFont("helvetica", "normal");
-      ty += 16;
+      doc.setFontSize(10);
+      section.lines.forEach(([k, v]) => {
+        doc.setTextColor(180, 195, 230);
+        doc.text(k, margin + 16, sy);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(244, 246, 252);
+        doc.text(v, pageW - margin - 16, sy, { align: "right" });
+        doc.setFont("helvetica", "normal");
+        sy += 14;
+      });
+      sy += 4;
     });
     y += boxH + 14;
-
-    if (activeCoupon) {
-      y = ensureSpace(doc, y, 60, pageH, margin);
-      doc.setFillColor(233, 248, 241);
-      doc.roundedRect(margin, y, pageW - margin * 2, 44, 8, 8, "F");
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(11);
-      doc.setTextColor(31, 138, 91);
-      doc.text(`Cupom ${activeCoupon} aplicado`, margin + 14, y + 18);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9.5);
-      doc.setTextColor(60, 90, 70);
-      doc.text(
-        `-${ODUO.COUPON_PERCENT}% no Plano Avança Locações já refletidos no valor mensal acima.`,
-        margin + 14,
-        y + 34
-      );
-      y += 56;
-    }
 
     if (lead.observacoes) {
       y = ensureSpace(doc, y, 100, pageH, margin);

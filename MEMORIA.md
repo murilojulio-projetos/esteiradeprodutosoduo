@@ -74,6 +74,20 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
 
 ## Histórico de sessões
 
+### 2026-05-13 (parte 9 · validade curta + resumo do PDF reformatado)
+- Modal de geração de PDF agora aceita validade de **1 dia** e **3 dias**
+  além das anteriores (7/15/30 dias / Sem prazo). Padrão continua 7 dias.
+- **Resumo da proposta no PDF reescrito** em 3 seções claras com header
+  laranja:
+  - `RECORRENTE · 12 MESES NO CARTÃO` (ou semestral ou mensal) com
+    `Parcela mensal`, `Total em X meses`, `Cupom aplicado` (se houver) e
+    `Economia vs mensal` (se houver)
+  - `ENTREGA ÚNICA · SETUPS + PROJETOS` com `Parcela`, `Total` (ou "à
+    vista")
+  - `PERFORMANCE` com `Cobrança` (Variável) e `Definição` (Em reunião)
+- Cupom virou uma linha dentro da seção RECORRENTE — sumiu o box verde
+  duplicado que aparecia abaixo do resumo no PDF antigo.
+
 ### 2026-05-13 (parte 8 · reordenação + "Turbine seu projeto")
 - **Catálogo reorganizado**: a antiga seção única "Criativos" (Artes + Vídeo)
   virou três seções separadas, agora chamadas conjuntamente de
