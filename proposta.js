@@ -68,10 +68,12 @@
   }
 
   function renderUpsell() {
-    // Render do upsell na coluna do meio (entre items e bundle/CTA).
-    const root = $("#propostaUpsellCol");
+    // Render do upsell DEPOIS dos items, dentro da coluna esquerda.
+    // appendChild no #propostaItens — renderItens roda antes (limpa e popula)
+    // e renderUpsell anexa logo após. Em telas largas, fica antes da sticky
+    // bar direita continuar sticky em "Baixar proposta em PDF".
+    const root = $("#propostaItens");
     if (!root) return;
-    root.innerHTML = "";
     const candidates = Object.keys(UPSELL_TIERS)
       .map((groupKey) => {
         const id = getNextUpsellId(groupKey);
