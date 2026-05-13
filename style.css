@@ -1205,6 +1205,17 @@ section {
   color: var(--ink-900);
 }
 
+.price .price-x {
+  display: inline-block;
+  font-weight: 800;
+  color: var(--orange-strong);
+  margin-right: 4px;
+}
+
+.card.card-hero .price .price-x {
+  color: var(--orange);
+}
+
 .suffix {
   font-size: 16px;
   color: rgba(7, 32, 74, 0.65);

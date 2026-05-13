@@ -257,6 +257,12 @@
     if (item.type === "performance") {
       priceEl.textContent = mod.customLabel || "Sob consulta";
       suffixEl.textContent = "";
+    } else if (item.type === "project" && mod.id === "parcelado") {
+      // Projeto parcelado: "6× R$ 833" com o "6×" como prefixo claro
+      // (padrão brasileiro). Suffix antigo " × 6" some.
+      const parcelas = parseInt(String(mod.suffix || "").replace(/\D/g, ""), 10) || 6;
+      priceEl.innerHTML = `<span class="price-x">${parcelas}×</span> ${BRL.format(mod.price)}`;
+      suffixEl.textContent = "";
     } else {
       priceEl.textContent = BRL.format(mod.price);
       suffixEl.textContent = mod.suffix || "";
