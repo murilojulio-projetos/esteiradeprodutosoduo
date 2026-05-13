@@ -1012,17 +1012,17 @@ section {
 .card.card-hero::before {
   content: "CARRO-CHEFE";
   position: absolute;
-  top: -12px;
+  top: -13px;
   left: 28px;
-  padding: 5px 14px;
+  padding: 6px 14px;
   font-family: "Sora", "Inter", sans-serif;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.16em;
-  background: var(--orange);
+  background: var(--ink-700);
   color: #fff;
   border-radius: 999px;
-  box-shadow: 0 6px 14px -5px rgba(240, 138, 58, 0.6);
+  box-shadow: 0 6px 14px -5px rgba(7, 32, 74, 0.4);
 }
 
 /* Esconder o .badge-best textual (substituído pelo ::before flutuante) */
@@ -1033,14 +1033,6 @@ section {
 .card.card-hero .modality.is-active {
   background: rgba(49, 122, 224, 0.08);
   border-color: var(--blue-400);
-}
-
-.card.card-hero .add-btn {
-  background: var(--orange);
-}
-
-.card.card-hero .add-btn:hover {
-  background: var(--orange-strong);
 }
 
 .card-badges {
@@ -1132,7 +1124,7 @@ section {
 }
 
 .card.card-hero .deliverables-title {
-  color: var(--orange);
+  color: var(--ink-700);
 }
 
 .deliverables {
@@ -1256,13 +1248,12 @@ section {
 
 .price .price-x {
   display: inline-block;
-  font-weight: 800;
-  color: var(--orange-strong);
-  margin-right: 4px;
-}
-
-.card.card-hero .price .price-x {
-  color: var(--orange);
+  font-weight: 500;
+  color: rgba(7, 32, 74, 0.5);
+  margin-right: 8px;
+  font-size: 0.62em;
+  vertical-align: 0.18em;
+  letter-spacing: 0;
 }
 
 .suffix {
