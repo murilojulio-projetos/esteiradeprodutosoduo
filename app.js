@@ -355,14 +355,8 @@
           ? `<span class="cart-item-strike">${ODUO.escapeHtml(row.basePriceText)}</span>`
           : "";
         const hasDeliverables = Array.isArray(row.deliverables) && row.deliverables.length > 0;
-        const deliverablesToggle = hasDeliverables
-          ? `<button type="button" class="cart-item-toggle" data-toggle-deliverables aria-expanded="false">
-               <span>Ver entregáveis</span>
-               <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 6l4 4 4-4"/></svg>
-             </button>`
-          : "";
         const deliverablesList = hasDeliverables
-          ? `<ul class="cart-item-deliverables" hidden>
+          ? `<ul class="cart-item-deliverables">
                ${row.deliverables
                  .map((d) => {
                    const strike = /^sem\s/i.test(d) ? " is-strike" : "";
@@ -377,7 +371,6 @@
             <div class="cart-item-title">${ODUO.escapeHtml(row.name)}</div>
             <div class="cart-item-sub">${ODUO.escapeHtml(row.subtitle)}</div>
             ${couponPill}
-            ${deliverablesToggle}
             ${deliverablesList}
           </div>
           <div class="cart-item-price-block">
@@ -436,17 +429,6 @@
       });
     });
 
-    // Accordion dos entregáveis dentro do item do carrinho
-    $$("[data-toggle-deliverables]", groupsEl).forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const list = btn.parentElement.querySelector(".cart-item-deliverables");
-        if (!list) return;
-        const expanded = btn.getAttribute("aria-expanded") === "true";
-        btn.setAttribute("aria-expanded", String(!expanded));
-        list.hidden = expanded;
-        btn.querySelector("span").textContent = expanded ? "Ver entregáveis" : "Ocultar";
-      });
-    });
   }
 
   function totalCard(label, value, hint, highlight = false) {

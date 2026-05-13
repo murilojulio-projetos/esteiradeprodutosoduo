@@ -584,25 +584,28 @@ section {
   margin: 0 auto 44px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 32px 24px;
+  gap: 16px 18px;
 }
 
 .ancora-cargo {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
   gap: 14px;
+  padding: 14px 18px;
+  background: rgba(244, 246, 252, 0.06);
+  border: 1px solid rgba(244, 246, 252, 0.1);
+  border-radius: var(--radius-md);
+  text-align: left;
 }
 
 .ancora-x {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background: #fff;
+  background: rgba(232, 64, 87, 0.18);
+  border: 1.5px solid rgba(232, 64, 87, 0.6);
   position: relative;
   flex-shrink: 0;
-  box-shadow: 0 4px 14px -4px rgba(4, 19, 42, 0.5);
 }
 
 .ancora-x::before,
@@ -611,9 +614,9 @@ section {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 16px;
+  width: 13px;
   height: 2.5px;
-  background: var(--ink-900);
+  background: #ff7a8c;
   border-radius: 2px;
   transform: translate(-50%, -50%) rotate(45deg);
 }
@@ -624,45 +627,53 @@ section {
 
 .ancora-cargo-label {
   font-family: "Sora", "Inter", sans-serif;
-  font-size: 16px;
+  font-size: 15.5px;
   font-weight: 500;
-  color: var(--paper);
+  color: rgba(244, 246, 252, 0.78);
   letter-spacing: -0.005em;
+  text-decoration: line-through;
+  text-decoration-color: rgba(255, 122, 140, 0.55);
+  text-decoration-thickness: 1.5px;
 }
 
 .ancora-total {
-  max-width: 520px;
+  max-width: 640px;
   margin: 0 auto;
   text-align: center;
-  padding: 26px 32px;
+  padding: 32px 36px 30px;
   border-radius: var(--radius-lg);
-  border: 2px solid rgba(240, 138, 58, 0.55);
-  background: rgba(4, 19, 42, 0.4);
+  border: 2px solid rgba(240, 138, 58, 0.65);
+  background: linear-gradient(160deg, rgba(4, 19, 42, 0.55), rgba(11, 40, 89, 0.3));
+  box-shadow: 0 24px 50px -20px rgba(240, 138, 58, 0.25);
 }
 
 .ancora-total-label {
   display: block;
-  font-size: 15px;
-  color: var(--paper);
-  margin-bottom: 6px;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(244, 246, 252, 0.7);
+  margin-bottom: 10px;
 }
 
 .ancora-total-value {
   display: block;
   font-family: "Sora", "Inter", sans-serif;
-  font-size: clamp(34px, 5vw, 48px);
+  font-size: clamp(42px, 6vw, 64px);
   font-weight: 800;
   color: var(--orange);
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-  margin-bottom: 10px;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  margin-bottom: 14px;
 }
 
 .ancora-total small {
   display: block;
-  font-size: 13.5px;
-  color: rgba(244, 246, 252, 0.75);
-  line-height: 1.5;
+  font-size: 15px;
+  color: rgba(244, 246, 252, 0.85);
+  line-height: 1.55;
 }
 
 .ancora-total small b {
@@ -683,6 +694,53 @@ section {
   background: linear-gradient(180deg, var(--paper) 0%, #eef2fa 100%);
 }
 
+/* Sub-nav sticky com âncoras pras seções do catálogo */
+.catalogo-subnav {
+  position: sticky;
+  top: 100px;
+  z-index: 40;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 1240px;
+  margin: 0 auto 36px;
+  padding: 10px 14px;
+  background: rgba(244, 246, 252, 0.95);
+  backdrop-filter: saturate(140%) blur(10px);
+  border: 1px solid rgba(11, 40, 89, 0.1);
+  border-radius: 999px;
+  box-shadow: 0 6px 20px -12px rgba(4, 19, 42, 0.18);
+  justify-content: center;
+}
+
+.catalogo-subnav a {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: rgba(7, 32, 74, 0.7);
+  padding: 7px 14px;
+  border-radius: 999px;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.catalogo-subnav a:hover {
+  background: rgba(49, 122, 224, 0.1);
+  color: var(--blue-500);
+}
+
+@media (max-width: 760px) {
+  .catalogo-subnav {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    border-radius: var(--radius-md);
+  }
+  .catalogo-subnav a {
+    flex-shrink: 0;
+  }
+}
+
 .catalogo-root {
   max-width: 1240px;
   margin: 0 auto;
@@ -701,6 +759,7 @@ section {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  scroll-margin-top: 180px;
 }
 
 .cat-section-head {
@@ -2246,6 +2305,7 @@ section {
 .proposta-group {
   background: #fff;
   border: 1px solid rgba(11, 40, 89, 0.08);
+  border-left: 4px solid var(--green);
   border-radius: var(--radius-lg);
   padding: 20px 24px;
   box-shadow: var(--shadow-md);
@@ -2256,12 +2316,26 @@ section {
 }
 
 .proposta-group-head h3 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: "Sora", "Inter", sans-serif;
   font-size: 18px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   margin: 0 0 6px;
-  color: var(--blue-500);
+  color: var(--green);
+}
+
+.proposta-group-head h3::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--green)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-6.5'/%3E%3C/svg%3E")
+    center/12px no-repeat;
+  flex-shrink: 0;
 }
 
 .proposta-group-head span {
@@ -2587,11 +2661,29 @@ section {
    Cards lado a lado em desktop, stack em mobile.
    ==================================================================== */
 .proposta-upsell {
-  margin-top: 20px;
+  margin-top: 28px;
   padding: 22px 24px 24px;
-  background: linear-gradient(180deg, #f3f7ff 0%, #fff 80%);
-  border: 1px solid rgba(49, 122, 224, 0.25);
+  background: linear-gradient(180deg, #e3edfc 0%, #f3f7ff 100%);
+  border: 2px dashed rgba(49, 122, 224, 0.45);
   border-radius: var(--radius-lg);
+  box-shadow: 0 12px 30px -16px rgba(49, 122, 224, 0.35);
+  position: relative;
+}
+
+.proposta-upsell::before {
+  content: "OPORTUNIDADE";
+  position: absolute;
+  top: -10px;
+  left: 24px;
+  padding: 3px 12px;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  background: var(--orange);
+  color: #fff;
+  border-radius: 999px;
+  box-shadow: 0 4px 10px -4px rgba(240, 138, 58, 0.6);
 }
 
 .proposta-upsell-head {
