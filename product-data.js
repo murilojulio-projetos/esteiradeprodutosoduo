@@ -146,10 +146,10 @@ window.ODUO_CATALOG = [
   // ====================================================================
   {
     section: "seo",
-    sectionLabel: "Pacote SEO + Site",
+    sectionLabel: "Site + SEO",
     sectionKicker: "Monetização direta · tráfego orgânico",
     sectionDesc:
-      "O combo do tráfego orgânico: SEO técnico contínuo + Site otimizado pra Google. Pode acompanhar o plano anual no cartão.",
+      "O combo do tráfego orgânico: Site otimizado pra Google + SEO técnico contínuo. Pode acompanhar o plano anual no cartão.",
     items: [
       {
         id: "site",
