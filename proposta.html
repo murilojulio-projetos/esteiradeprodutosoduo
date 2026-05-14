@@ -93,48 +93,124 @@
           ×
         </button>
         <h3>Dados da proposta</h3>
-        <p class="muted">Esses dados aparecem no PDF que você vai baixar.</p>
+        <p class="muted">
+          Captados aqui pra preencher a proposta agora e, depois, o contrato
+          em 1 clique. Dados ficam salvos só neste navegador.
+        </p>
         <form id="leadForm" class="lead-form">
-          <label>
-            Nome da sua locadora
-            <input
-              type="text"
-              id="leadEmpresa"
-              placeholder="Ex.: CLM Locações"
-              required
-            />
-          </label>
-          <label>
-            Responsável
-            <input type="text" id="leadContato" placeholder="Ex.: Cristiano" />
-          </label>
-          <label>
-            Cidade / UF
-            <input
-              type="text"
-              id="leadCidade"
-              placeholder="Ex.: Belo Horizonte / MG"
-            />
-          </label>
-          <label>
-            Observações <span class="label-hint">(aparecem no PDF)</span>
-            <textarea
-              id="leadObs"
-              rows="3"
-              placeholder="Ex.: Condições especiais combinadas nesta conversa."
-            ></textarea>
-          </label>
-          <label class="inline-field">
-            <span>Proposta válida por</span>
-            <select id="leadValidade">
-              <option value="1">1 dia</option>
-              <option value="3">3 dias</option>
-              <option value="7" selected>7 dias (padrão)</option>
-              <option value="15">15 dias</option>
-              <option value="30">30 dias</option>
-              <option value="0">Sem prazo</option>
-            </select>
-          </label>
+          <fieldset class="lead-fieldset">
+            <legend>Pra proposta · obrigatório</legend>
+            <label>
+              Nome da sua locadora
+              <input
+                type="text"
+                id="leadEmpresa"
+                placeholder="Ex.: CLM Locações"
+                minlength="2"
+                required
+              />
+            </label>
+            <label>
+              Responsável
+              <input
+                type="text"
+                id="leadContato"
+                placeholder="Ex.: Cristiano"
+                minlength="2"
+              />
+            </label>
+            <label>
+              Cidade / UF
+              <input
+                type="text"
+                id="leadCidade"
+                placeholder="Ex.: Belo Horizonte / MG"
+                minlength="3"
+              />
+            </label>
+            <label>
+              Observações <span class="label-hint">(aparecem no PDF)</span>
+              <textarea
+                id="leadObs"
+                rows="3"
+                placeholder="Ex.: Condições especiais combinadas nesta conversa."
+              ></textarea>
+            </label>
+            <label class="inline-field">
+              <span>Proposta válida por</span>
+              <select id="leadValidade">
+                <option value="1">1 dia</option>
+                <option value="3">3 dias</option>
+                <option value="7" selected>7 dias (padrão)</option>
+                <option value="15">15 dias</option>
+                <option value="30">30 dias</option>
+                <option value="0">Sem prazo</option>
+              </select>
+            </label>
+          </fieldset>
+
+          <fieldset class="lead-fieldset lead-fieldset-contract">
+            <legend>
+              Pra contrato · opcional agora
+              <span class="label-hint">(usado quando gerar o contrato)</span>
+            </legend>
+            <label>
+              CNPJ
+              <input
+                type="text"
+                id="leadCnpj"
+                placeholder="00.000.000/0001-00"
+                inputmode="numeric"
+                autocomplete="off"
+              />
+            </label>
+            <label>
+              Endereço completo (rua, número, bairro, CEP)
+              <input
+                type="text"
+                id="leadEndereco"
+                placeholder="Ex.: Rua das Locações, 123 · Centro · Belo Horizonte/MG · 30000-000"
+              />
+            </label>
+            <label>
+              E-mail comercial
+              <input
+                type="email"
+                id="leadEmail"
+                placeholder="contato@sualocadora.com.br"
+                autocomplete="email"
+              />
+            </label>
+            <label>
+              Nome do representante legal
+              <input
+                type="text"
+                id="leadRepNome"
+                placeholder="Ex.: Cristiano da Silva"
+              />
+            </label>
+            <label>
+              CPF do representante legal
+              <input
+                type="text"
+                id="leadRepCpf"
+                placeholder="000.000.000-00"
+                inputmode="numeric"
+                autocomplete="off"
+              />
+            </label>
+            <label>
+              Telefone do representante (financeiro)
+              <input
+                type="tel"
+                id="leadRepFone"
+                placeholder="(31) 99999-9999"
+                inputmode="tel"
+                autocomplete="tel"
+              />
+            </label>
+          </fieldset>
+
           <div class="modal-actions">
             <button type="button" class="btn btn-ghost" id="leadSkip">
               Pular e gerar

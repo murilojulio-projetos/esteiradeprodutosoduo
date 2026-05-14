@@ -241,12 +241,13 @@
           ? "Semestral"
           : "Mensal";
         const subtitle = effectiveCadence === "mensal"
-          ? `${cadenceLabel} · boleto ou Pix`
-          : `${cadenceLabel} · ${effectiveParcelas}× no cartão`;
+          ? `${cadenceLabel} · boleto bancário ou Pix`
+          : `${cadenceLabel} · ${effectiveParcelas}× no cartão de crédito sem juros`;
 
         groups.mensal.items.push({
           id: item.id,
           name: item.name,
+          group: item.group || null,
           subtitle,
           basePrice: mod.price,
           finalPrice,
@@ -275,8 +276,8 @@
             parentId: item.id,
             name: item.name + " — setup",
             subtitle: shouldEmbed
-              ? `Embutido · ${parcelas}× ${BRL.format(setupEmbeddedPerMonth)} no cartão`
-              : `Pagamento único · 3× de ${BRL.format(setupParcela)} sem juros`,
+              ? `Embutido · ${parcelas}× ${BRL.format(setupEmbeddedPerMonth)} no cartão de crédito sem juros`
+              : `Pagamento único · 3× de ${BRL.format(setupParcela)} no cartão de crédito sem juros`,
             priceText: shouldEmbed
               ? BRL.format(setupEmbeddedPerMonth) + "/mês"
               : BRL.format(item.setup),
@@ -294,17 +295,18 @@
           : null;
         let subtitle;
         if (shouldEmbed) {
-          subtitle = `Embutido · ${parcelas}× ${BRL.format(projectEmbeddedPerMonth)} no cartão`;
+          subtitle = `Embutido · ${parcelas}× ${BRL.format(projectEmbeddedPerMonth)} no cartão de crédito sem juros`;
         } else if (mod.id === "avista") {
-          subtitle = `À vista · 10% off no Pix ou cartão`;
+          subtitle = `À vista · 10% off no Pix ou cartão de crédito`;
         } else if (mod.id === "parcelado") {
-          subtitle = `Parcelado · 6× de ${BRL.format(mod.price)} sem juros`;
+          subtitle = `Parcelado · 6× de ${BRL.format(mod.price)} no cartão de crédito sem juros`;
         } else {
           subtitle = mod.pay || mod.label;
         }
         groups.projetos.items.push({
           id: item.id,
           name: item.name,
+          group: item.group || null,
           subtitle,
           priceText: shouldEmbed
             ? BRL.format(projectEmbeddedPerMonth) + "/mês"
@@ -320,6 +322,7 @@
         groups.performance.items.push({
           id: item.id,
           name: item.name,
+          group: item.group || null,
           subtitle: mod.customLabel
             ? `${mod.customLabel} · ${mod.pay}`
             : mod.pay || "Variável conforme contratação",
@@ -364,7 +367,7 @@
       paymentLabel:
         cadence === "mensal"
           ? "Boleto ou Pix · sem fidelidade"
-          : `${parcelas}× no cartão · sem juros`,
+          : `${parcelas}× no cartão de crédito · sem juros · período fechado`,
       contractLabel:
         cadence === "anual"
           ? "Fechando 1 ano"
