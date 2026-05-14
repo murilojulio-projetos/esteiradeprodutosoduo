@@ -208,15 +208,16 @@ window.ODUO_CATALOG = [
       {
         id: "site",
         name: "Site Multipages",
-        tagline: "Profissional, otimizado para tráfego pago. Até 100 equipamentos. No ar em 30–45 dias.",
+        tagline: "Profissional, otimizado para tráfego pago. Até 100 equipamentos. No ar em 30 dias.",
         upgradeBenefit: "Site profissional otimizado pra converter tráfego pago e SEO. Até 100 equipamentos · no ar em 30 dias.",
         type: "project",
         deliverables: [
           "Site profissional otimizado pra tráfego pago e conversão",
           "Cadastro de até 100 equipamentos com página individual",
           "Estrutura preparada pra SEO (pré-requisito do Pacote SEO)",
-          "Briefing aprovado → no ar em 30–45 dias",
-          "Manutenção pós-entrega à parte (R$ 200/h de desenvolvedor)",
+          "Briefing aprovado → no ar em 30 dias",
+          "Manutenção pós-entrega: ajustes e novas funcionalidades (R$ 200/h de desenvolvedor)",
+          "Suporte técnico do time ODuo pós-publicação",
         ],
         modalities: [
           { id: "avista", label: "À vista", price: 4500, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
@@ -458,7 +459,7 @@ window.ODUO_CATALOG = [
     sectionLabel: "Produtos Comerciais",
     sectionKicker: "H · Performance",
     sectionDesc:
-      "SDR e Hunter são apresentados aqui, mas fecham em 2ª reunião com Isabelly (CRO).",
+      "SDR humano + recrutamento de time comercial pra escalar a operação.",
     items: [
       {
         id: "sdr",
@@ -469,7 +470,6 @@ window.ODUO_CATALOG = [
         setup: 2000,
         setupNote: "Setup único · treinamento do SDR no seu negócio",
         commission: "10% sobre a 1ª locação fechada via lead do SDR",
-        secondMeeting: true,
         deliverables: [
           "SDR humano alocado prospectando sua base + mercado",
           "30h/mês dedicadas · meta de 12 a 20 reuniões qualificadas/mês",
@@ -490,16 +490,15 @@ window.ODUO_CATALOG = [
         id: "hunter",
         name: "Hunter de RH",
         tagline:
-          "Recrutamento de vendedor, atendente, gerente comercial. 100% do 1º salário do contratado.",
+          "Recrutamento de vendedor, atendente, gerente comercial. 2 primeiros salários do contratado.",
         type: "performance",
-        secondMeeting: true,
         deliverables: [
           "Recrutamento especializado (vendedor, atendente, gerente comercial)",
           "Triagem e entrevistas técnicas com candidatos",
           "Apresentação dos finalistas pra você decidir",
-          "Garantia: paga quando candidato contratado passar do período de experiência",
+          "Garantia de reposição: se o candidato não der certo em 60 dias após a contratação, repomos sem custo",
           "Pagamento: entrada no início + saldo no fechamento da vaga",
-          "Boleto em 2 parcelas sob negociação na 2ª reunião",
+          "Cartão (entrada + saldo) ou 2× boleto bancário",
         ],
         modalities: [
           {
@@ -509,10 +508,10 @@ window.ODUO_CATALOG = [
             suffix: "",
             pay: "Entrada + saldo no fechamento da vaga · cartão ou 2× boleto",
             discount: 0,
-            customLabel: "100% do 1º salário",
+            customLabel: "2 primeiros salários",
           },
         ],
-        note: "Investimento variável conforme o cargo. Apresentar em 2ª reunião.",
+        note: "Investimento variável conforme o cargo do contratado.",
       },
     ],
   },

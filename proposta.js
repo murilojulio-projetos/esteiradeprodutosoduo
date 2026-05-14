@@ -816,7 +816,7 @@
     const conditions = [
       "Sem fidelidade mínima nos planos recorrentes (aviso prévio de 30 dias, salvo SDR que possui 60 dias).",
       "Projetos pontuais: 10% off à vista ou parcelado em até 6× sem juros no cartão (parcelas acima de 6× com juros do Asaas, sob consulta).",
-      "Hunter de RH e SDR fecham em 2ª reunião com a CRO Isabelly.",
+      "Hunter de RH: garantia de reposição em 60 dias se o candidato não der certo.",
     ];
     conditions.forEach((line) => {
       const lines = doc.splitTextToSize("• " + line, pageW - margin * 2);

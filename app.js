@@ -27,10 +27,9 @@
   let activeCadence = ODUO.loadCadence();
 
   function defaultModality(item) {
-    // Respeita a cadência global se o item tiver — assim a UI já abre alinhada
-    // com o que vai ser cobrado quando o cliente adicionar à proposta.
-    const inCadence = item.modalities.find((m) => m.id === activeCadence);
-    if (inCadence) return inCadence.id;
+    // Cards sempre abrem na modalidade mais cara (mensal/avista) pra ancorar
+    // o preço alto. O desconto da semestral/anual vira benefício visível
+    // quando o cliente troca a modalidade ou adiciona à proposta.
     const mensal = item.modalities.find((m) => m.id === "mensal");
     if (mensal) return mensal.id;
     const avista = item.modalities.find((m) => m.id === "avista");
@@ -109,7 +108,6 @@
     if (item.protagonist) badges.push(`<span class="badge badge-best">Carro-chefe</span>`);
     if (item.recommended) badges.push(`<span class="badge badge-rec">Recomendado</span>`);
     if (item.downsell) badges.push(`<span class="badge badge-down">Downsell</span>`);
-    if (item.secondMeeting) badges.push(`<span class="badge badge-second">Fecha em 2ª reunião</span>`);
 
     const deliverablesItems = (item.deliverables || [])
       .map((d) => {
