@@ -1070,7 +1070,7 @@
     razao: "ODUO ASSESSORIA LTDA",
     cnpj: "48.501.609/0001-70",
     endereco: "R. Gustavo Ambrust, 36 - Nova Campinas - SP, 13092-106, Campinas/SP",
-    email: "comercial.oduo@gmail.com",
+    email: "administrativo@oduo.com.br",
     reps: [
       { nome: "Murilo José Júlio", cpf: "482.341.428-44" },
       { nome: "Lucas Ferrari Pereira", cpf: "490.220.378-27" },
@@ -1542,11 +1542,15 @@
     }
     tableRow("(VII) Condições de Rescisão", rescisaoText);
 
-    // (VIII) Comunicações
+    // (VIII) Comunicações — separa CANAL OPERACIONAL (WhatsApp) de
+    // NOTIFICAÇÕES FORMAIS (e-mail), e identifica claramente qual e-mail
+    // pertence a quem, em vez de listar tudo em sequência.
     tableRow(
       "(VIII) Comunicações",
-      `Para CONTRATADA: ${CONTRATADA_DATA.email} ou grupo de WhatsApp criado no fechamento. ` +
-        `Para CONTRATANTE: ${lead.email || blank}.`
+      "Canal operacional do dia a dia: grupo de WhatsApp criado entre as PARTES na reunião de abertura do projeto.\n" +
+        "Notificações formais (cobrança, rescisão, descumprimento): por e-mail.\n" +
+        `E-mail da CONTRATADA (ODuo): ${CONTRATADA_DATA.email}.\n` +
+        `E-mail da CONTRATANTE: ${lead.email || blank}.`
     );
 
     state.y += 18;
