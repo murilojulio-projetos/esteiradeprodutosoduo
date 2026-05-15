@@ -99,77 +99,365 @@
           <span class="eyebrow eyebrow-accent">Cases de sucesso</span>
           <h2>O poder do tráfego pago com escala</h2>
           <p>
-            Resultados reais de locadoras que confiaram na ODuo. Estes são
-            apenas alguns dos números que estamos colhendo todos os meses.
+            Resultados reais de locadoras que confiaram na ODuo. Clique em
+            qualquer card pra ver o estudo de caso completo.
           </p>
         </div>
-        <div class="case-cards">
-          <article class="case-card reveal" data-reveal-delay="1">
-            <img class="case-card-logo" src="assets/cases/clm.png" alt="CLM Locações" loading="lazy" />
-            <span class="case-tag">CLM Locações</span>
-            <h3>+ R$ 310 mil em locações fechadas</h3>
-            <p class="case-stats">
-              <span><b>R$ 18.000</b> investidos em anúncios</span>
-              <span class="arrow">→</span>
-              <span><b>R$ 310.000</b> de retorno</span>
-            </p>
-            <blockquote>
-              "Investimos na ODuo e o resultado foi impressionante: mais de
-              R$ 310.000,00 em locações fechadas. Além do retorno financeiro,
-              tivemos clareza no processo, agilidade nas entregas e um
-              atendimento que realmente entende do nosso mercado."
-              <cite>— Cristiano, Proprietário de Locadora de Equipamentos</cite>
-            </blockquote>
-          </article>
-          <article class="case-card case-card-alt reveal" data-reveal-delay="2">
-            <img class="case-card-logo" src="assets/cases/alianca.png" alt="Aliança Betoneiras" loading="lazy" />
-            <span class="case-tag">Aliança Betoneiras</span>
-            <h3>+ R$ 92 mil em locações no mesmo mês</h3>
-            <p class="case-stats">
-              <span><b>R$ 10.000</b> investidos em anúncios</span>
-              <span class="arrow">→</span>
-              <span><b>R$ 92.000</b> de retorno</span>
-            </p>
-            <blockquote>
-              "Investimos sem medo com a ODuo, esse mês, e voltou mais de
-              R$ 90.000,00 em locações. O time entende nosso mercado e nos
-              trouxe resultados com clareza. Hoje temos segurança para investir
-              porque sabemos que o retorno vem."
-              <cite>— Felipe Bochnia, Aliança Betoneiras</cite>
-            </blockquote>
-          </article>
-          <article class="case-card reveal" data-reveal-delay="3">
-            <span class="case-tag">RG Locações</span>
-            <h3>R$ 170 mil → R$ 260.644</h3>
-            <p class="case-stats">
-              <span>Faturamento <b>antes</b>: R$ 170.000</span>
-              <span class="arrow">→</span>
-              <span><b>Depois</b>: R$ 260.644</span>
-            </p>
-            <blockquote>
-              "Graças a Deus o mês está muito bom, com muitas pessoas vindo do
-              Google. Está dando resultado! Estou muito satisfeito em escolher
-              a ODuo, uma empresa muito comprometida e dedicada no que faz."
-              <cite>— Rodrigo Gois, RG Locações</cite>
-            </blockquote>
-          </article>
-          <article class="case-card case-card-alt reveal" data-reveal-delay="4">
-            <span class="case-tag">FL Locações</span>
-            <h3>R$ 65 mil → R$ 108.561</h3>
-            <p class="case-stats">
-              <span>Travados em <b>R$ 65.000</b></span>
-              <span class="arrow">→</span>
-              <span>Hoje em <b>R$ 108.561</b></span>
-            </p>
-            <blockquote>
-              "Antes ficávamos travados em R$ 65 mil de faturamento, mês após
-              mês. Com a ODuo e o tráfego pago, logo chegamos a R$ 100 mil,
-              mesmo com a indústria em baixa. A ODuo não deu só uma mãozinha
-              — deu a mão, o pé e metade do corpo para transformar nosso
-              resultado. Hoje, cerca de 70% dos clientes vêm pelo Google."
-              <cite>— Fabiane, FL Locações</cite>
-            </blockquote>
-          </article>
+
+        <div class="cases-magnitude reveal">
+          <div class="cases-magnitude-item cases-magnitude-hero">
+            <strong>R$ 420 mi/ano</strong>
+            <span>estimados em locações geradas no setor com o método ODuo · 500 locadoras × média dos cases públicos</span>
+          </div>
+          <div class="cases-magnitude-item">
+            <strong>+ R$ 70 mil/mês</strong>
+            <span>retorno médio por locadora atendida · média dos 5 cases com números públicos</span>
+          </div>
+          <div class="cases-magnitude-item">
+            <strong>+ 500 locadoras</strong>
+            <span>confiando no método ODuo · cases abaixo são uma amostra autorizada a divulgar</span>
+          </div>
+        </div>
+
+        <div class="cases-filters reveal" role="tablist" aria-label="Filtrar cases por situação">
+          <button type="button" class="cases-filter is-active" data-filter="todos" role="tab" aria-selected="true">
+            Todos os cases
+          </button>
+          <button type="button" class="cases-filter" data-filter="demanda" role="tab" aria-selected="false">
+            Quero mais demanda
+          </button>
+          <button type="button" class="cases-filter" data-filter="novo" role="tab" aria-selected="false">
+            Locadora nova
+          </button>
+          <button type="button" class="cases-filter" data-filter="roas" role="tab" aria-selected="false">
+            ROAS alto via tráfego pago
+          </button>
+        </div>
+
+        <div class="cases-carousel reveal" data-autoplay="6000">
+          <button class="cases-nav cases-nav-prev" type="button" aria-label="Case anterior">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+
+          <div class="cases-track" id="casesTrack">
+            <button type="button" class="case-card-rich" data-case="clm" data-bg="assets/cases/lojas/clm.jpg">
+              <div class="case-card-bg" aria-hidden="true"></div>
+              <div class="case-card-content">
+                <div class="case-card-top">
+                  <span class="case-tag">CLM Locações</span>
+                  <img class="case-card-logo-rich" src="assets/cases/clm.png" alt="" loading="lazy" />
+                </div>
+                <h3>+ R$ 110 mil em locações via tráfego pago</h3>
+                <p class="case-stats">
+                  <span><b>R$ 18.000</b> em anúncios</span>
+                  <span class="arrow">→</span>
+                  <span><b>R$ 110.000</b> de retorno</span>
+                </p>
+                <blockquote>
+                  "Hoje temos previsibilidade e muito mais confiança no
+                  crescimento da nossa locadora."
+                  <cite>— Cristiano, Proprietário</cite>
+                </blockquote>
+                <span class="case-card-cta">Ver case completo →</span>
+              </div>
+            </button>
+
+            <button type="button" class="case-card-rich case-card-rich-alt" data-case="alianca" data-bg="assets/cases/lojas/alianca.jpg">
+              <div class="case-card-bg" aria-hidden="true"></div>
+              <div class="case-card-content">
+                <div class="case-card-top">
+                  <span class="case-tag">Aliança Betoneiras</span>
+                  <img class="case-card-logo-rich" src="assets/cases/alianca.png" alt="" loading="lazy" />
+                </div>
+                <h3>+ R$ 92 mil em locações no mesmo mês</h3>
+                <p class="case-stats">
+                  <span><b>R$ 10.000</b> em anúncios</span>
+                  <span class="arrow">→</span>
+                  <span><b>R$ 92.000</b> de retorno</span>
+                </p>
+                <blockquote>
+                  "Investimos sem medo com a ODuo, e voltou mais de R$ 90.000 em
+                  locações. Hoje temos segurança para investir porque o retorno vem."
+                  <cite>— Felipe Bochnia</cite>
+                </blockquote>
+                <span class="case-card-cta">Ver case completo →</span>
+              </div>
+            </button>
+
+            <button type="button" class="case-card-rich" data-case="rg" data-bg="assets/cases/lojas/rg.jpg">
+              <div class="case-card-bg" aria-hidden="true"></div>
+              <div class="case-card-content">
+                <div class="case-card-top">
+                  <span class="case-tag">RG Locações</span>
+                </div>
+                <h3>R$ 170 mil → R$ 260.644</h3>
+                <p class="case-stats">
+                  <span>Antes: <b>R$ 170.000</b></span>
+                  <span class="arrow">→</span>
+                  <span>Depois: <b>R$ 260.644</b></span>
+                </p>
+                <blockquote>
+                  "Muitas pessoas vindo do Google. Está dando resultado!
+                  Estou muito satisfeito em escolher a ODuo."
+                  <cite>— Rodrigo Gois</cite>
+                </blockquote>
+                <span class="case-card-cta">Ver case completo →</span>
+              </div>
+            </button>
+
+            <button type="button" class="case-card-rich case-card-rich-alt" data-case="fl" data-bg="assets/cases/lojas/fl.jpg">
+              <div class="case-card-bg" aria-hidden="true"></div>
+              <div class="case-card-content">
+                <div class="case-card-top">
+                  <span class="case-tag">FL Locações</span>
+                </div>
+                <h3>R$ 65 mil → R$ 108.561</h3>
+                <p class="case-stats">
+                  <span>Travados em <b>R$ 65.000</b></span>
+                  <span class="arrow">→</span>
+                  <span>Hoje em <b>R$ 108.561</b></span>
+                </p>
+                <blockquote>
+                  "A ODuo não deu só uma mãozinha — deu a mão, o pé e metade do
+                  corpo pra transformar nosso resultado. 70% dos clientes vêm do Google."
+                  <cite>— Fabiane</cite>
+                </blockquote>
+                <span class="case-card-cta">Ver case completo →</span>
+              </div>
+            </button>
+
+            <button type="button" class="case-card-rich" data-case="maven" data-bg="assets/cases/lojas/maven.jpg">
+              <div class="case-card-bg" aria-hidden="true"></div>
+              <div class="case-card-content">
+                <div class="case-card-top">
+                  <span class="case-tag">Maven</span>
+                </div>
+                <h3>Dobrou o faturamento em ~90 dias</h3>
+                <p class="case-stats">
+                  <span>Antes <b>travada</b> na demanda</span>
+                  <span class="arrow">→</span>
+                  <span>Faturamento <b>dobrou</b></span>
+                </p>
+                <blockquote>
+                  Saiu de menos da metade do que fatura hoje — em poucos meses dobrou os resultados com a ODuo.
+                </blockquote>
+                <span class="case-card-cta">Ver case completo →</span>
+              </div>
+            </button>
+
+            <button type="button" class="case-card-rich case-card-rich-alt" data-case="esmanhoto" data-bg="assets/cases/lojas/esmanhoto.jpg">
+              <div class="case-card-bg" aria-hidden="true"></div>
+              <div class="case-card-content">
+                <div class="case-card-top">
+                  <span class="case-tag">Esmanhoto</span>
+                  <img class="case-card-logo-rich" src="assets/cases/esmanhoto.png" alt="" loading="lazy" />
+                </div>
+                <h3>Mesmo investimento, muito mais demanda</h3>
+                <p class="case-stats">
+                  <span><b>Mesmo</b> orçamento</span>
+                  <span class="arrow">→</span>
+                  <span>muito mais <b>demanda</b></span>
+                </p>
+                <blockquote>
+                  Trocou de agência sem aumentar a verba. Site novo entregue em ~3 meses, resultado já no 2º.
+                </blockquote>
+                <span class="case-card-cta">Ver case completo →</span>
+              </div>
+            </button>
+
+            <button type="button" class="case-card-rich" data-case="frourinhos" data-bg="assets/cases/lojas/frourinhos.jpg">
+              <div class="case-card-bg" aria-hidden="true"></div>
+              <div class="case-card-content">
+                <div class="case-card-top">
+                  <span class="case-tag">FR Ourinhos</span>
+                </div>
+                <h3>Nasceu junto com a ODuo · demanda em &lt;4 meses</h3>
+                <p class="case-stats">
+                  <span><b>Locadora nova</b></span>
+                  <span class="arrow">→</span>
+                  <span>demanda consistente em <b>&lt;4 meses</b></span>
+                </p>
+                <blockquote>
+                  Abriu junto com a parceria. Engrenou no 3º/4º mês e seguiu crescendo até aumentar o investimento.
+                </blockquote>
+                <span class="case-card-cta">Ver case completo →</span>
+              </div>
+            </button>
+
+            <button type="button" class="case-card-rich case-card-rich-alt" data-case="fazenda" data-bg="assets/cases/lojas/fazenda.jpg">
+              <div class="case-card-bg" aria-hidden="true"></div>
+              <div class="case-card-content">
+                <div class="case-card-top">
+                  <span class="case-tag">Fazenda</span>
+                </div>
+                <h3>+ R$ 20 mil/mês · melhor mês da história</h3>
+                <p class="case-stats">
+                  <span><b>+R$ 20k</b> por mês</span>
+                  <span class="arrow">→</span>
+                  <span>melhor mês da <b>história</b></span>
+                </p>
+                <blockquote>
+                  "Se não fosse pela ODuo, não estaria no faturamento que estou hoje."
+                  <cite>— Silvio</cite>
+                </blockquote>
+                <span class="case-card-cta">Ver case completo →</span>
+              </div>
+            </button>
+
+            <button type="button" class="case-card-rich" data-case="beloc" data-bg="assets/cases/lojas/beloc.jpg">
+              <div class="case-card-bg" aria-hidden="true"></div>
+              <div class="case-card-content">
+                <div class="case-card-top">
+                  <span class="case-tag">Beloc</span>
+                  <img class="case-card-logo-rich" src="assets/cases/beloc.png" alt="" loading="lazy" />
+                </div>
+                <h3>+ 52% de faturamento em menos de 3 meses</h3>
+                <p class="case-stats">
+                  <span>Oscilação de <b>demanda</b></span>
+                  <span class="arrow">→</span>
+                  <span><b>+52%</b> em &lt;3 meses</span>
+                </p>
+                <blockquote>
+                  Travada por falta de visibilidade na internet. No final do 2º mês com a ODuo, o salto começou.
+                </blockquote>
+                <span class="case-card-cta">Ver case completo →</span>
+              </div>
+            </button>
+
+            <button type="button" class="case-card-rich case-card-rich-alt" data-case="rt" data-bg="assets/cases/lojas/rt.jpg">
+              <div class="case-card-bg" aria-hidden="true"></div>
+              <div class="case-card-content">
+                <div class="case-card-top">
+                  <span class="case-tag">RT</span>
+                  <img class="case-card-logo-rich" src="assets/cases/rt.png" alt="" loading="lazy" />
+                </div>
+                <h3>Do zero a fluxo consistente em 90 dias</h3>
+                <p class="case-stats">
+                  <span><b>Sem histórico</b></span>
+                  <span class="arrow">→</span>
+                  <span>fluxo de leads em <b>60–90 dias</b></span>
+                </p>
+                <blockquote>
+                  Locadora nova, sem demanda nenhuma. Em até 90 dias, leads chegando consistentes todo mês.
+                </blockquote>
+                <span class="case-card-cta">Ver case completo →</span>
+              </div>
+            </button>
+
+            <button type="button" class="case-card-rich" data-case="zdg">
+              <div class="case-card-bg" aria-hidden="true"></div>
+              <div class="case-card-content">
+                <div class="case-card-top">
+                  <span class="case-tag">ZDG</span>
+                  <img class="case-card-logo-rich" src="assets/cases/zdg.png" alt="" loading="lazy" />
+                </div>
+                <h3>+ 150% a + 200% · mais que dobrou o faturamento</h3>
+                <p class="case-stats">
+                  <span>Captação <b>travada</b></span>
+                  <span class="arrow">→</span>
+                  <span><b>+150% a +200%</b></span>
+                </p>
+                <blockquote>
+                  Saiu da estagnação para demanda recorde de escoras — o maior nível da história da empresa.
+                </blockquote>
+                <span class="case-card-cta">Ver case completo →</span>
+              </div>
+            </button>
+          </div>
+
+          <button class="cases-nav cases-nav-next" type="button" aria-label="Próximo case">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+
+          <div class="cases-dots" role="tablist" aria-label="Selecionar case"></div>
+        </div>
+      </section>
+
+      <section id="depoimentos" class="depoimentos">
+        <div class="section-head reveal">
+          <span class="eyebrow eyebrow-accent">Quem confia na ODuo</span>
+          <h2>Depoimentos em vídeo</h2>
+          <p>
+            Donos de locadora contando, sem roteiro, o que mudou depois
+            da parceria com a ODuo.
+          </p>
+        </div>
+
+        <div class="video-grid reveal">
+          <button type="button" class="video-card" data-video="https://www.instagram.com/p/DWAD80fAgoH/" data-mp4="assets/videos/sos.mp4" data-thumb="assets/videos/sos.jpg" data-label="SOS Máquinas e Furos · Rodrigo">
+            <div class="video-card-shape">
+              <span class="video-card-play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+              </span>
+              <span class="video-card-badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+              </span>
+            </div>
+            <div class="video-card-meta">
+              <strong>SOS Máquinas e Furos</strong>
+              <span>Rodrigo · proprietário</span>
+            </div>
+          </button>
+
+          <button type="button" class="video-card" data-video="https://www.instagram.com/p/DYRlUGKDMD-/" data-mp4="assets/videos/k-rental.mp4" data-thumb="assets/videos/k-rental.jpg" data-label="K Rental · depoimento">
+            <div class="video-card-shape">
+              <span class="video-card-play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+              </span>
+              <span class="video-card-badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+              </span>
+            </div>
+            <div class="video-card-meta">
+              <strong>K Rental</strong>
+              <span>Depoimento em vídeo</span>
+            </div>
+          </button>
+
+          <button type="button" class="video-card" data-video="https://www.instagram.com/p/DWrHt3YBskP/" data-mp4="assets/videos/acm.mp4" data-thumb="assets/videos/acm.jpg" data-label="ACM Locações · Alexandre Cabral">
+            <div class="video-card-shape">
+              <span class="video-card-play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+              </span>
+              <span class="video-card-badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+              </span>
+            </div>
+            <div class="video-card-meta">
+              <strong>ACM Locações</strong>
+              <span>Alexandre Cabral</span>
+            </div>
+          </button>
+
+          <button type="button" class="video-card" data-video="https://www.instagram.com/p/DQy7AUiDcfq/" data-mp4="assets/videos/for-rental.mp4" data-thumb="assets/videos/for-rental.jpg" data-label="For Rental Paulínia · Danilo Zonta">
+            <div class="video-card-shape">
+              <span class="video-card-play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+              </span>
+              <span class="video-card-badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+              </span>
+            </div>
+            <div class="video-card-meta">
+              <strong>For Rental Paulínia</strong>
+              <span>Danilo Zonta · estudo de caso</span>
+            </div>
+          </button>
+
+          <button type="button" class="video-card" data-video="https://www.instagram.com/p/DXzM7dGnIl-/" data-mp4="assets/videos/alugmaq.mp4" data-thumb="assets/videos/alugmaq.jpg" data-label="Alugmaq · Victor">
+            <div class="video-card-shape">
+              <span class="video-card-play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+              </span>
+              <span class="video-card-badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+              </span>
+            </div>
+            <div class="video-card-meta">
+              <strong>Alugmaq</strong>
+              <span>Victor · proprietário</span>
+            </div>
+          </button>
         </div>
       </section>
 
@@ -366,6 +654,45 @@
       </div>
     </div>
 
+    <!-- Modal de Case Study completo -->
+    <div class="modal" id="caseModal" hidden role="dialog" aria-modal="true" aria-labelledby="caseModalTitle">
+      <div class="modal-card modal-card-wide case-modal-card">
+        <button
+          type="button"
+          class="icon-btn modal-close"
+          id="caseModalClose"
+          aria-label="Fechar"
+        >
+          ×
+        </button>
+        <div class="case-modal-hero">
+          <div class="case-modal-bg" id="caseModalBg" aria-hidden="true"></div>
+          <div class="case-modal-hero-content">
+            <img id="caseModalLogo" alt="" class="case-modal-logo" />
+            <span class="case-modal-tag" id="caseModalTag"></span>
+            <h3 id="caseModalTitle"></h3>
+          </div>
+        </div>
+        <div class="case-modal-body" id="caseModalContent"></div>
+      </div>
+    </div>
+
+    <!-- Modal de Vídeo (depoimentos) -->
+    <div class="modal" id="videoModal" hidden role="dialog" aria-modal="true" aria-labelledby="videoModalLabel">
+      <div class="modal-card video-modal-card">
+        <button
+          type="button"
+          class="icon-btn modal-close"
+          id="videoModalClose"
+          aria-label="Fechar"
+        >
+          ×
+        </button>
+        <span class="video-modal-label" id="videoModalLabel"></span>
+        <div class="video-modal-content" id="videoModalContent"></div>
+      </div>
+    </div>
+
     <!-- Carrinho lateral -->
     <aside
       class="cart-drawer"
@@ -426,7 +753,9 @@
     <script src="product-data.js"></script>
     <script src="oduo-core.js"></script>
     <script src="pilares.js" defer></script>
+    <script src="cases-carousel.js" defer></script>
     <script src="scroll-reveal.js" defer></script>
+    <script src="videos.js" defer></script>
     <script src="app.js" defer></script>
   </body>
 </html>

@@ -16,3 +16,6 @@ apis.local.md
 
 # Node portátil local (não commitar)
 .tools/
+
+# Claude Code local config (não commitar)
+.claude/

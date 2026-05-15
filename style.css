@@ -737,6 +737,456 @@ section {
   color: rgba(244, 246, 252, 0.7);
 }
 
+/* =========================================================
+   CASES · Carousel + Rich Cards (foto de fundo + click-expand)
+   ========================================================= */
+.cases-carousel {
+  max-width: 1180px;
+  margin: 0 auto;
+  position: relative;
+  padding: 0 64px;
+}
+
+.cases-track {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cases-track::-webkit-scrollbar {
+  display: none;
+}
+
+.case-card-rich {
+  position: relative;
+  flex: 0 0 100%;
+  min-width: 100%;
+  scroll-snap-align: center;
+  min-height: 460px;
+  border: 0;
+  cursor: pointer;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-align: left;
+  padding: 0;
+  background: none;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  font: inherit;
+  color: inherit;
+}
+
+.case-card-rich:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 28px 56px -18px rgba(7, 32, 74, 0.45);
+}
+
+.case-card-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--ink-700);
+  transition: transform 0.6s ease;
+}
+
+.case-card-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(7, 32, 74, 0.35) 0%,
+    rgba(7, 32, 74, 0.55) 35%,
+    rgba(7, 32, 74, 0.92) 85%,
+    rgba(7, 32, 74, 0.96) 100%
+  );
+}
+
+.case-card-rich-alt .case-card-bg {
+  background-color: var(--orange-strong);
+}
+
+.case-card-rich-alt .case-card-bg::after {
+  background: linear-gradient(
+    180deg,
+    rgba(247, 127, 0, 0.35) 0%,
+    rgba(212, 102, 0, 0.6) 35%,
+    rgba(165, 79, 0, 0.94) 85%,
+    rgba(140, 67, 0, 0.96) 100%
+  );
+}
+
+.case-card-rich:hover .case-card-bg {
+  transform: scale(1.04);
+}
+
+.case-card-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  min-height: 460px;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 36px;
+  color: var(--paper);
+}
+
+.case-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: auto;
+}
+
+.case-card-logo-rich {
+  max-height: 44px;
+  max-width: 130px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  background: #fff;
+  padding: 7px 12px;
+  border-radius: 10px;
+  box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.45);
+}
+
+.case-card-rich h3 {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 18px 0 12px;
+  color: #fff;
+  max-width: 92%;
+}
+
+.case-card-rich .case-stats {
+  margin-bottom: 14px;
+  background: rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.case-card-rich blockquote {
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.95);
+  border-left: 3px solid var(--orange);
+  position: relative;
+  z-index: 1;
+}
+
+.case-card-rich-alt blockquote {
+  border-left-color: #fff;
+}
+
+.case-card-rich cite {
+  display: block;
+  margin-top: 8px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.case-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--orange);
+  margin-top: auto;
+}
+
+.case-card-rich-alt .case-card-cta {
+  color: #fff;
+}
+
+.case-card-rich:hover .case-card-cta {
+  color: #ffb866;
+}
+
+.case-card-rich-alt:hover .case-card-cta {
+  color: #fff7ee;
+}
+
+/* Nav buttons (setas) */
+.cases-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid rgba(11, 40, 89, 0.12);
+  box-shadow: var(--shadow-md);
+  color: var(--ink-900);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.15s, color 0.15s;
+}
+
+.cases-nav:hover {
+  background: var(--orange);
+  color: #fff;
+}
+
+.cases-nav:disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.cases-nav svg {
+  width: 22px;
+  height: 22px;
+}
+
+.cases-nav-prev {
+  left: 0;
+}
+
+.cases-nav-next {
+  right: 0;
+}
+
+/* Dots (paginação) */
+.cases-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.cases-dots button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(11, 40, 89, 0.22);
+  cursor: pointer;
+  transition: background 0.2s, width 0.25s;
+  padding: 0;
+}
+
+.cases-dots button.is-active {
+  background: var(--orange);
+  width: 32px;
+  border-radius: 999px;
+}
+
+.cases-dots button:hover {
+  background: var(--blue-400);
+}
+
+/* Mobile: navega só por swipe, sem setas grandes */
+@media (max-width: 720px) {
+  .cases-carousel {
+    padding: 0 16px;
+  }
+  .cases-nav {
+    display: none;
+  }
+  .case-card-rich {
+    min-height: 480px;
+  }
+  .case-card-rich h3 {
+    font-size: 24px;
+  }
+}
+
+/* =========================================================
+   CASE MODAL · Estudo de caso completo
+   ========================================================= */
+.case-modal-card {
+  padding: 0;
+  overflow: hidden;
+  width: min(720px, 100%);
+  max-height: 92vh;
+}
+
+.case-modal-card .modal-close {
+  z-index: 3;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink-900);
+}
+
+.case-modal-hero {
+  position: relative;
+  min-height: 220px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.case-modal-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--ink-700);
+}
+
+.case-modal-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(7, 32, 74, 0.3) 0%,
+    rgba(7, 32, 74, 0.7) 60%,
+    rgba(7, 32, 74, 0.95) 100%
+  );
+}
+
+.case-modal-hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 28px 32px;
+  color: var(--paper);
+  width: 100%;
+}
+
+.case-modal-logo {
+  display: inline-block;
+  max-height: 40px;
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.case-modal-logo[src=""],
+.case-modal-logo:not([src]) {
+  display: none;
+}
+
+.case-modal-tag {
+  display: inline-block;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 6px;
+}
+
+.case-modal-card h3 {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 0;
+  max-width: 92%;
+}
+
+.case-modal-body {
+  padding: 28px 32px 32px;
+  overflow-y: auto;
+  max-height: calc(92vh - 240px);
+}
+
+.case-modal-section {
+  margin-bottom: 22px;
+}
+
+.case-modal-section:last-child {
+  margin-bottom: 0;
+}
+
+.case-modal-section-title {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin: 0 0 8px;
+}
+
+.case-modal-section p {
+  margin: 0 0 8px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink-700);
+}
+
+.case-modal-numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.case-modal-number {
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(160deg, var(--ink-700), var(--ink-600));
+  color: var(--paper);
+}
+
+.case-modal-number-label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(244, 246, 252, 0.65);
+  margin-bottom: 4px;
+}
+
+.case-modal-number-value {
+  display: block;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+
+.case-modal-quote {
+  margin: 0;
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  background: rgba(247, 127, 0, 0.08);
+  border-left: 3px solid var(--orange);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-700);
+  font-style: italic;
+}
+
+.case-modal-quote cite {
+  display: block;
+  margin-top: 8px;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--ink-900);
+}
+
 /* ----- Ancoragem ----- */
 .ancoragem {
   background: radial-gradient(
@@ -3499,4 +3949,1278 @@ section {
 .proposta-item[data-embedded="true"] .proposta-item-sub {
   color: var(--orange-strong);
   font-weight: 500;
+}
+
+/* =========================================================
+   CASE MODAL · Redesign clean (sem dependência de foto)
+   ========================================================= */
+
+/* Override: hero deixa de ser caixa escura grande e vira header
+   compacto branco com tag + título grande. */
+.case-modal-card {
+  background: var(--paper);
+}
+
+.case-modal-hero {
+  min-height: auto;
+  align-items: flex-start;
+  background: linear-gradient(180deg, #fff 0%, rgba(247, 247, 250, 0.6) 100%);
+  border-bottom: 1px solid rgba(11, 40, 89, 0.08);
+}
+
+.case-modal-bg,
+.case-modal-bg::after {
+  display: none;
+}
+
+.case-modal-hero-content {
+  padding: 30px 36px 24px;
+  color: var(--ink-900);
+}
+
+.case-modal-logo {
+  display: none;
+}
+
+.case-modal-tag {
+  color: var(--orange);
+  margin-bottom: 8px;
+}
+
+.case-modal-card h3 {
+  color: var(--ink-900);
+  font-size: 26px;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  max-width: 96%;
+}
+
+.case-modal-body {
+  padding: 26px 36px 32px;
+  max-height: calc(92vh - 160px);
+}
+
+/* ----- Antes / Depois (número-herói visual) ----- */
+.case-before-after {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  gap: 14px;
+  margin: 2px 0 26px;
+}
+
+.case-ba-side {
+  padding: 22px 20px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.case-ba-before {
+  background: rgba(11, 40, 89, 0.05);
+  border: 1px solid rgba(11, 40, 89, 0.1);
+}
+
+.case-ba-after {
+  background: linear-gradient(160deg, var(--orange-strong), var(--orange));
+  color: #fff;
+  box-shadow: 0 16px 34px -14px rgba(247, 127, 0, 0.55);
+}
+
+.case-ba-label {
+  display: block;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(11, 40, 89, 0.55);
+  margin-bottom: 8px;
+}
+
+.case-ba-after .case-ba-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.case-ba-value {
+  display: block;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink-900);
+  line-height: 1.05;
+}
+
+.case-ba-after .case-ba-value {
+  color: #fff;
+}
+
+.case-ba-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--orange);
+  gap: 8px;
+}
+
+.case-ba-arrow svg {
+  width: 52px;
+  height: 24px;
+}
+
+.case-ba-delta {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--orange);
+  background: rgba(247, 127, 0, 0.12);
+  padding: 5px 11px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+@media (max-width: 540px) {
+  .case-before-after {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .case-ba-arrow {
+    flex-direction: row;
+    padding: 6px 0;
+  }
+  .case-ba-arrow svg {
+    transform: rotate(90deg);
+    width: 22px;
+    height: 22px;
+  }
+  .case-ba-value {
+    font-size: 28px;
+  }
+  .case-modal-card h3 {
+    font-size: 22px;
+  }
+  .case-modal-hero-content {
+    padding: 24px 22px 18px;
+  }
+  .case-modal-body {
+    padding: 22px 22px 26px;
+  }
+}
+
+/* ----- CTA de conversão no fim do modal ----- */
+.case-modal-cta {
+  margin-top: 26px;
+  padding: 24px 24px 22px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    160deg,
+    rgba(247, 127, 0, 0.1),
+    rgba(11, 40, 89, 0.04)
+  );
+  border: 1px dashed rgba(247, 127, 0, 0.4);
+  text-align: center;
+}
+
+.case-modal-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  padding: 13px 24px;
+}
+
+.case-modal-cta-hint {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-700);
+}
+
+/* ----- Card do carousel: reduz dead space quando não tem foto ----- */
+.case-card-content {
+  min-height: 360px;
+}
+
+.case-card-top {
+  margin-bottom: 18px;
+}
+
+/* ----- Hero Stat único (quando não há antes/depois numérico) ----- */
+.case-hero-stat {
+  margin: 2px 0 26px;
+  padding: 32px 28px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(160deg, var(--orange-strong), var(--orange));
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 18px 38px -16px rgba(247, 127, 0, 0.55);
+}
+
+.case-hero-stat-value {
+  display: block;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.case-hero-stat-label {
+  display: block;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.45;
+}
+
+@media (max-width: 540px) {
+  .case-hero-stat {
+    padding: 24px 20px;
+  }
+  .case-hero-stat-value {
+    font-size: 32px;
+  }
+}
+
+/* =========================================================
+   DEPOIMENTOS · grid de vídeos + modal
+   ========================================================= */
+.depoimentos {
+  padding: clamp(64px, 8vw, 110px) 24px;
+  position: relative;
+}
+
+.depoimentos .section-head {
+  max-width: 720px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+
+.depoimentos .section-head h2 {
+  margin: 8px 0 14px;
+}
+
+.depoimentos .section-head p {
+  color: var(--ink-700);
+  font-size: 15.5px;
+  line-height: 1.55;
+}
+
+.video-grid {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+}
+
+.video-card {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.2s ease;
+}
+
+.video-card:hover {
+  transform: translateY(-5px);
+}
+
+.video-card-shape {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(160deg, #07204A 0%, #133778 55%, #f77f00 130%);
+  box-shadow: 0 22px 40px -18px rgba(7, 32, 74, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.25s ease;
+}
+
+.video-card:nth-child(even) .video-card-shape {
+  background: linear-gradient(160deg, #f77f00 0%, #d46600 55%, #07204A 130%);
+}
+
+.video-card:nth-child(3n) .video-card-shape {
+  background: linear-gradient(160deg, #133778 0%, #07204A 60%, #d46600 140%);
+}
+
+.video-card:hover .video-card-shape {
+  box-shadow: 0 28px 50px -18px rgba(7, 32, 74, 0.7);
+}
+
+.video-card-play {
+  position: relative;
+  z-index: 2;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--ink-900);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 18px 30px -12px rgba(0, 0, 0, 0.55);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.video-card-play svg {
+  width: 26px;
+  height: 26px;
+  margin-left: 4px;
+}
+
+.video-card:hover .video-card-play {
+  background: #fff;
+  transform: scale(1.08);
+}
+
+.video-card-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.32);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 2;
+}
+
+.video-card-badge svg {
+  width: 18px;
+  height: 18px;
+}
+
+.video-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 4px;
+}
+
+.video-card-meta strong {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.video-card-meta span {
+  font-size: 12px;
+  color: var(--ink-700);
+}
+
+@media (max-width: 980px) {
+  .video-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .video-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding: 0 24px 8px;
+    margin: 0 -24px;
+    gap: 14px;
+  }
+  .video-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .video-card {
+    flex: 0 0 65%;
+    scroll-snap-align: center;
+  }
+  .depoimentos {
+    padding: 64px 0 80px;
+  }
+  .depoimentos .section-head {
+    padding: 0 24px;
+  }
+}
+
+/* ----- Modal de vídeo ----- */
+.video-modal-card {
+  padding: 22px 22px 20px;
+  width: min(600px, 96%);
+  max-height: 92vh;
+  background: var(--paper);
+  position: relative;
+  overflow: hidden;
+}
+
+.video-modal-card .modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--ink-900);
+}
+
+.video-modal-label {
+  display: block;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--orange);
+  text-align: center;
+  margin: 4px 36px 16px;
+}
+
+.video-modal-content {
+  display: flex;
+  justify-content: center;
+  max-height: calc(92vh - 80px);
+  overflow-y: auto;
+}
+
+/* ----- Video player (modal de depoimentos + modal de case) ----- */
+.video-modal-player,
+.case-modal-player {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  aspect-ratio: 9 / 16;
+  border-radius: 14px;
+  background: #000;
+  object-fit: contain;
+}
+
+.case-modal-player {
+  max-width: 380px;
+}
+
+.video-modal-card {
+  background: var(--paper);
+}
+
+.video-modal-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 0;
+}
+
+/* =========================================================
+   CASE MODAL V2 · voz-primeiro + highlights concretos
+   ========================================================= */
+
+/* ----- Quote-hero (abre o modal quando NÃO tem vídeo) ----- */
+.case-quote-hero {
+  position: relative;
+  text-align: center;
+  margin: 0 auto 30px;
+  max-width: 96%;
+  padding: 20px 28px 12px;
+}
+
+.case-quote-hero::before,
+.case-quote-hero::after {
+  font-family: "Sora", "Inter", Georgia, serif;
+  font-size: 64px;
+  line-height: 0.7;
+  color: var(--orange);
+  position: absolute;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.case-quote-hero::before {
+  content: "\201C";
+  top: -8px;
+  left: -4px;
+}
+
+.case-quote-hero::after {
+  content: "\201D";
+  bottom: -12px;
+  right: -4px;
+}
+
+.case-quote-hero-text {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 21px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--ink-900);
+  font-weight: 600;
+  margin: 0 0 14px;
+}
+
+.case-quote-hero-cite {
+  display: inline-block;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-top: 6px;
+}
+
+/* ----- Quote-secondary (quando o vídeo é o hero) ----- */
+.case-quote-secondary {
+  margin: 0 0 24px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  background: rgba(247, 127, 0, 0.07);
+  border-left: 3px solid var(--orange);
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink-700);
+  font-style: italic;
+}
+
+.case-quote-secondary cite {
+  display: block;
+  margin-top: 10px;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-900);
+}
+
+/* ----- Video-hero ----- */
+.case-video-hero {
+  margin: 0 0 22px;
+  display: flex;
+  justify-content: center;
+}
+
+.case-video-hero .case-modal-player {
+  max-width: 360px;
+  width: 100%;
+}
+
+/* ----- Highlights (vitórias concretas) ----- */
+.case-highlights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 0 0 26px;
+}
+
+.case-highlight {
+  padding: 18px 16px;
+  border-radius: 14px;
+  background: rgba(11, 40, 89, 0.04);
+  border: 1px solid rgba(11, 40, 89, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.case-highlight:hover {
+  background: rgba(247, 127, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.case-highlight-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(247, 127, 0, 0.14);
+  color: var(--orange);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.case-highlight-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.case-highlight strong {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+  line-height: 1.25;
+}
+
+.case-highlight span {
+  font-size: 12.5px;
+  color: var(--ink-700);
+  line-height: 1.45;
+}
+
+/* ----- Antes/depois e hero-stat compactos (porque agora vem
+        depois da voz humana, são evidência, não abertura) ----- */
+.case-before-after-compact {
+  margin: 0 0 26px;
+}
+
+.case-before-after-compact .case-ba-value {
+  font-size: 28px;
+}
+
+.case-hero-stat-compact {
+  padding: 26px 24px;
+  margin: 0 0 26px;
+}
+
+.case-hero-stat-compact .case-hero-stat-value {
+  font-size: 34px;
+}
+
+@media (max-width: 540px) {
+  .case-quote-hero {
+    padding: 16px 16px 8px;
+  }
+  .case-quote-hero-text {
+    font-size: 17.5px;
+  }
+  .case-quote-hero::before,
+  .case-quote-hero::after {
+    font-size: 44px;
+  }
+  .case-highlights {
+    grid-template-columns: 1fr;
+  }
+  .case-before-after-compact .case-ba-value {
+    font-size: 24px;
+  }
+  .case-hero-stat-compact .case-hero-stat-value {
+    font-size: 28px;
+  }
+}
+
+/* ----- Person card (foto + nome + role do dono do case) ----- */
+.case-person-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 8px 16px 8px 8px;
+  background: rgba(11, 40, 89, 0.04);
+  border: 1px solid rgba(11, 40, 89, 0.08);
+  border-radius: 999px;
+  text-align: left;
+}
+
+.case-person-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--ink-700);
+  border: 3px solid var(--orange);
+  flex-shrink: 0;
+}
+
+.case-person-avatar-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  text-transform: uppercase;
+  background: linear-gradient(160deg, var(--orange-strong), var(--orange));
+  border-color: transparent;
+}
+
+.case-person-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  line-height: 1.25;
+}
+
+.case-person-meta strong {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.case-person-meta span {
+  font-size: 12px;
+  color: var(--ink-700);
+  letter-spacing: 0.02em;
+}
+
+/* Quando o person-card aparece DENTRO da quote-secondary (vídeo é hero),
+   estiliza pra contrastar com o fundo laranja-claro. */
+.case-quote-secondary .case-person-card {
+  margin: 14px 0 0;
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(247, 127, 0, 0.25);
+}
+
+/* Quando aparece sozinho (sem quote, sem vídeo), centraliza */
+.case-quote-hero .case-person-card,
+.case-modal-section + .case-person-card,
+.case-modal-body > .case-person-card:first-child {
+  margin-left: auto;
+  margin-right: auto;
+  display: inline-flex;
+}
+
+.case-modal-body > .case-person-card:first-child {
+  margin: 0 auto 24px;
+}
+
+/* Quote hero: centraliza a person card abaixo do texto */
+.case-quote-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (max-width: 540px) {
+  .case-person-avatar {
+    width: 44px;
+    height: 44px;
+  }
+  .case-person-meta strong {
+    font-size: 13.5px;
+  }
+}
+
+/* =========================================================
+   PERSON CARD V2 · grande + humanizado
+   ========================================================= */
+
+/* Versão padrão = BIG hero (centralizada no topo do modal) */
+.case-person-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin: 0 auto 24px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  text-align: center;
+}
+
+.case-person-avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--ink-700);
+  border: 5px solid #fff;
+  box-shadow:
+    0 0 0 4px var(--orange),
+    0 24px 50px -18px rgba(247, 127, 0, 0.45),
+    0 12px 26px -10px rgba(7, 32, 74, 0.25);
+  flex-shrink: 0;
+}
+
+.case-person-avatar-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 60px;
+  font-weight: 800;
+  text-transform: uppercase;
+  background: linear-gradient(160deg, var(--orange-strong), var(--orange));
+  border-color: #fff;
+}
+
+.case-person-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.case-person-meta strong {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink-900);
+}
+
+.case-person-meta span {
+  font-size: 13.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-700);
+}
+
+/* Quando o person-card aparece DENTRO da quote-secondary (vídeo é hero),
+   reduz pra versão pill horizontal compacta. */
+.case-quote-secondary .case-person-card {
+  flex-direction: row;
+  gap: 12px;
+  margin: 14px 0 0;
+  padding: 8px 16px 8px 8px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(247, 127, 0, 0.25);
+  border-radius: 999px;
+  text-align: left;
+  align-items: center;
+  width: fit-content;
+}
+
+.case-quote-secondary .case-person-avatar {
+  width: 48px;
+  height: 48px;
+  border-width: 3px;
+  box-shadow: 0 0 0 2px var(--orange);
+}
+
+.case-quote-secondary .case-person-avatar-fallback {
+  font-size: 18px;
+}
+
+.case-quote-secondary .case-person-meta {
+  align-items: flex-start;
+  text-align: left;
+  gap: 1px;
+}
+
+.case-quote-secondary .case-person-meta strong {
+  font-size: 14px;
+}
+
+.case-quote-secondary .case-person-meta span {
+  font-size: 11.5px;
+}
+
+/* No quote-hero, person card aparece DEPOIS do texto da quote */
+.case-quote-hero .case-person-card {
+  margin-top: 24px;
+  margin-bottom: 0;
+}
+
+.case-quote-hero .case-person-avatar {
+  width: 100px;
+  height: 100px;
+  border-width: 4px;
+  box-shadow:
+    0 0 0 3px var(--orange),
+    0 16px 32px -14px rgba(247, 127, 0, 0.45);
+}
+
+.case-quote-hero .case-person-avatar-fallback {
+  font-size: 38px;
+}
+
+.case-quote-hero .case-person-meta strong {
+  font-size: 17px;
+}
+
+.case-quote-hero .case-person-meta span {
+  font-size: 12.5px;
+}
+
+@media (max-width: 540px) {
+  .case-person-avatar {
+    width: 120px;
+    height: 120px;
+  }
+  .case-person-avatar-fallback {
+    font-size: 44px;
+  }
+  .case-person-meta strong {
+    font-size: 18px;
+  }
+  .case-quote-hero .case-person-avatar {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* ----- Speaker pill no card do carousel (humaniza desde o primeiro contato) ----- */
+.case-card-speaker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 6px 14px 6px 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.case-card-speaker img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--orange);
+  background: #07204A;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+}
+
+.case-card-speaker-fallback {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  background: linear-gradient(160deg, var(--orange-strong), var(--orange));
+  border: 2px solid var(--orange);
+  flex-shrink: 0;
+}
+
+.case-card-speaker strong {
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+
+.case-card-rich-alt .case-card-speaker img,
+.case-card-rich-alt .case-card-speaker-fallback {
+  border-color: #fff;
+}
+
+/* ===== Cards do carousel · overlay mais escuro + text-shadow ===== */
+.case-card-bg::after {
+  background: linear-gradient(
+    180deg,
+    rgba(7, 32, 74, 0.45) 0%,
+    rgba(7, 32, 74, 0.78) 50%,
+    rgba(7, 32, 74, 0.96) 90%,
+    rgba(7, 32, 74, 0.98) 100%
+  );
+}
+
+.case-card-rich-alt .case-card-bg::after {
+  background: linear-gradient(
+    180deg,
+    rgba(247, 127, 0, 0.45) 0%,
+    rgba(212, 102, 0, 0.82) 50%,
+    rgba(165, 79, 0, 0.96) 90%,
+    rgba(140, 67, 0, 0.98) 100%
+  );
+}
+
+.case-card-rich h3 {
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.case-card-rich .case-stats {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.case-card-rich blockquote {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-size: 14px;
+}
+
+.case-card-rich cite {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.case-card-rich .case-tag {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Foto da fachada: leve aumento de contraste/saturação pra "pop" */
+.case-card-bg {
+  filter: contrast(1.04) saturate(1.08);
+}
+
+/* =========================================================
+   CASES V3 · faixa de magnitude + carousel multi-coluna
+   ========================================================= */
+
+/* ----- Faixa de magnitude (frame the carousel) ----- */
+.cases-magnitude {
+  max-width: 980px;
+  margin: 0 auto 40px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  padding: 0 24px;
+}
+
+.cases-magnitude-item {
+  text-align: center;
+  padding: 22px 16px 18px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    160deg,
+    rgba(247, 127, 0, 0.08),
+    rgba(11, 40, 89, 0.03)
+  );
+  border: 1px solid rgba(247, 127, 0, 0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cases-magnitude-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px -14px rgba(247, 127, 0, 0.32);
+}
+
+.cases-magnitude-item strong {
+  display: block;
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--orange);
+  margin-bottom: 6px;
+  line-height: 1.05;
+}
+
+.cases-magnitude-item span {
+  display: block;
+  font-size: 12.5px;
+  color: var(--ink-700);
+  line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+  .cases-magnitude {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .cases-magnitude-item {
+    padding: 18px 14px 14px;
+  }
+  .cases-magnitude-item strong {
+    font-size: 22px;
+  }
+}
+
+/* ----- Carousel multi-coluna ----- */
+/* DESKTOP · 3 cards visíveis */
+@media (min-width: 980px) {
+  .cases-carousel {
+    padding: 0 56px;
+    max-width: 1280px;
+  }
+  .cases-track {
+    gap: 20px;
+  }
+  .case-card-rich {
+    flex: 0 0 calc((100% - 40px) / 3);
+    min-width: calc((100% - 40px) / 3);
+    min-height: 380px;
+  }
+  .case-card-content {
+    min-height: 380px;
+    padding: 26px 24px;
+  }
+  .case-card-top {
+    margin-bottom: 16px;
+  }
+  .case-card-rich h3 {
+    font-size: 21px;
+    line-height: 1.16;
+    margin: 14px 0 8px;
+  }
+  /* No preview compacto, esconde stats e blockquote — moveu pro modal */
+  .case-card-rich .case-stats,
+  .case-card-rich blockquote {
+    display: none;
+  }
+  .case-card-rich .case-card-cta {
+    margin-top: auto;
+    font-size: 13px;
+  }
+  .case-card-logo-rich {
+    max-height: 36px;
+    max-width: 100px;
+    padding: 5px 9px;
+  }
+}
+
+/* TABLET · 2 cards visíveis */
+@media (min-width: 640px) and (max-width: 979px) {
+  .cases-carousel {
+    padding: 0 48px;
+  }
+  .cases-track {
+    gap: 16px;
+  }
+  .case-card-rich {
+    flex: 0 0 calc((100% - 16px) / 2);
+    min-width: calc((100% - 16px) / 2);
+    min-height: 400px;
+  }
+  .case-card-content {
+    min-height: 400px;
+  }
+  .case-card-rich h3 {
+    font-size: 22px;
+  }
+  .case-card-rich .case-stats,
+  .case-card-rich blockquote {
+    display: none;
+  }
+  .case-card-rich .case-card-cta {
+    margin-top: auto;
+  }
+}
+
+/* MOBILE · 1 card + peek do próximo */
+@media (max-width: 639px) {
+  .cases-carousel {
+    padding: 0 24px;
+  }
+  .cases-track {
+    gap: 12px;
+  }
+  .case-card-rich {
+    flex: 0 0 86%;
+    min-width: 86%;
+    min-height: 480px;
+  }
+}
+
+/* Dots ficam menos densos quando há muitos cards */
+.cases-dots {
+  flex-wrap: wrap;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ===== Filter chips (filtrar cases por dor) ===== */
+.cases-filters {
+  max-width: 720px;
+  margin: 0 auto 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  padding: 0 24px;
+}
+
+.cases-filter {
+  padding: 10px 18px;
+  border: 1.5px solid rgba(11, 40, 89, 0.14);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink-700);
+  font-family: "Sora", "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  letter-spacing: 0.01em;
+}
+
+.cases-filter:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+  transform: translateY(-1px);
+}
+
+.cases-filter.is-active {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #fff;
+  box-shadow: 0 10px 20px -8px rgba(247, 127, 0, 0.55);
+}
+
+@media (max-width: 540px) {
+  .cases-filter {
+    font-size: 12.5px;
+    padding: 9px 14px;
+  }
+}
+
+/* CSS-only filtering: hide non-matching cards via attribute match */
+.cases-carousel.filter-demanda .case-card-rich:not([data-cat~="demanda"]) { display: none; }
+.cases-carousel.filter-novo .case-card-rich:not([data-cat~="novo"]) { display: none; }
+.cases-carousel.filter-roas .case-card-rich:not([data-cat~="roas"]) { display: none; }
+
+/* ===== Hero stat na faixa de magnitude (R$ 420 mi/ano) ===== */
+.cases-magnitude-hero {
+  background: linear-gradient(160deg, var(--orange), var(--orange-strong)) !important;
+  border-color: transparent !important;
+  box-shadow: 0 22px 44px -18px rgba(247, 127, 0, 0.55);
+  position: relative;
+  overflow: hidden;
+}
+
+.cases-magnitude-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 20% 0%,
+    rgba(255, 255, 255, 0.22),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.cases-magnitude-hero strong {
+  color: #fff !important;
+  font-size: 30px !important;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.cases-magnitude-hero span {
+  color: rgba(255, 255, 255, 0.92) !important;
+  font-weight: 500;
+}
+
+.cases-magnitude-hero:hover {
+  box-shadow: 0 28px 52px -18px rgba(247, 127, 0, 0.7);
+}
+
+@media (max-width: 640px) {
+  .cases-magnitude-hero strong {
+    font-size: 26px !important;
+  }
 }
