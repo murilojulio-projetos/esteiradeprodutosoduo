@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ODuo · Cardápio de Produtos</title>
+    <title>ODuo · Proposta para sua locadora</title>
     <meta
       name="description"
       content="A esteira de produtos da ODuo — a maior assessoria de Marketing para Locadoras da América Latina."
@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=20260519h" />
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
       defer
@@ -31,7 +31,7 @@
       </a>
       <nav class="topnav" aria-label="Seções">
         <a href="#metodo">Método</a>
-        <a href="#catalogo">Cardápio</a>
+        <a href="#catalogo">Produtos</a>
         <a href="#como-funciona">Como funciona</a>
       </nav>
       <button
@@ -60,7 +60,7 @@
           <span class="hero-ring hero-ring-b"></span>
         </div>
         <div class="hero-inner">
-          <span class="eyebrow">ODuo · Cardápio v2.11</span>
+          <span class="eyebrow">ODuo · Marketing para locadoras</span>
           <h1>
             Uma proposta para o<br />
             <span class="hero-accent">momento da sua locadora.</span>
@@ -73,10 +73,10 @@
           </p>
           <div class="hero-cta">
             <a href="#metodo" class="btn btn-primary">Começar pelo método</a>
-            <a href="#catalogo" class="btn btn-ghost">Ver o cardápio</a>
+            <a href="#catalogo" class="btn btn-ghost">Ver os produtos</a>
           </div>
           <a href="#metodo" class="hero-moat">
-            <span class="hero-moat-flag">MOAT ODuo</span>
+            <span class="hero-moat-flag">Diferencial ODuo</span>
             <span class="hero-moat-text">
               IA + dados de <b>+500 locadoras</b> atendidas alimentam cada
               campanha, atendimento e oferta.
@@ -94,7 +94,28 @@
         />
       </section>
 
-      <section class="cases" aria-label="Cases de sucesso">
+      <section class="track-band" aria-label="Escolha a trilha">
+        <div class="section-head reveal">
+          <span class="eyebrow eyebrow-accent">Dois caminhos que se completam</span>
+          <h2>Por onde sua locadora precisa crescer agora?</h2>
+          <p>
+            Marketing traz o cliente. Comercial fecha e faz ele voltar.
+            Escolha a trilha — o método e o cardápio se ajustam.
+          </p>
+        </div>
+        <div class="catalogo-tabs reveal" role="tablist" aria-label="Trilhas">
+          <button type="button" class="catalogo-tab is-active" data-track="marketing" role="tab" aria-selected="true">
+            <span class="catalogo-tab-name">Marketing</span>
+            <span class="catalogo-tab-desc">Atrair clientes pra sua locadora</span>
+          </button>
+          <button type="button" class="catalogo-tab" data-track="comercial" role="tab" aria-selected="false">
+            <span class="catalogo-tab-name">Comercial</span>
+            <span class="catalogo-tab-desc">Fechar mais e monetizar a base</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="cases" id="cases" data-track="marketing" aria-label="Cases de sucesso">
         <div class="section-head reveal">
           <span class="eyebrow eyebrow-accent">Cases de sucesso</span>
           <h2>O poder do tráfego pago com escala</h2>
@@ -140,7 +161,7 @@
           </button>
 
           <div class="cases-track" id="casesTrack">
-            <button type="button" class="case-card-rich" data-case="clm" data-bg="assets/cases/lojas/clm.jpg">
+            <article role="button" tabindex="0" class="case-card-rich" data-case="clm" data-bg="assets/cases/lojas/clm.jpg">
               <div class="case-card-bg" aria-hidden="true"></div>
               <div class="case-card-content">
                 <div class="case-card-top">
@@ -160,9 +181,9 @@
                 </blockquote>
                 <span class="case-card-cta">Ver case completo →</span>
               </div>
-            </button>
+            </article>
 
-            <button type="button" class="case-card-rich case-card-rich-alt" data-case="alianca" data-bg="assets/cases/lojas/alianca.jpg">
+            <article role="button" tabindex="0" class="case-card-rich case-card-rich-alt" data-case="alianca" data-bg="assets/cases/lojas/alianca.jpg">
               <div class="case-card-bg" aria-hidden="true"></div>
               <div class="case-card-content">
                 <div class="case-card-top">
@@ -182,9 +203,9 @@
                 </blockquote>
                 <span class="case-card-cta">Ver case completo →</span>
               </div>
-            </button>
+            </article>
 
-            <button type="button" class="case-card-rich" data-case="rg" data-bg="assets/cases/lojas/rg.jpg">
+            <article role="button" tabindex="0" class="case-card-rich" data-case="rg" data-bg="assets/cases/lojas/rg.jpg">
               <div class="case-card-bg" aria-hidden="true"></div>
               <div class="case-card-content">
                 <div class="case-card-top">
@@ -203,9 +224,9 @@
                 </blockquote>
                 <span class="case-card-cta">Ver case completo →</span>
               </div>
-            </button>
+            </article>
 
-            <button type="button" class="case-card-rich case-card-rich-alt" data-case="fl" data-bg="assets/cases/lojas/fl.jpg">
+            <article role="button" tabindex="0" class="case-card-rich case-card-rich-alt" data-case="fl" data-bg="assets/cases/lojas/fl.jpg">
               <div class="case-card-bg" aria-hidden="true"></div>
               <div class="case-card-content">
                 <div class="case-card-top">
@@ -224,9 +245,9 @@
                 </blockquote>
                 <span class="case-card-cta">Ver case completo →</span>
               </div>
-            </button>
+            </article>
 
-            <button type="button" class="case-card-rich" data-case="maven" data-bg="assets/cases/lojas/maven.jpg">
+            <article role="button" tabindex="0" class="case-card-rich" data-case="maven" data-bg="assets/cases/lojas/maven.jpg">
               <div class="case-card-bg" aria-hidden="true"></div>
               <div class="case-card-content">
                 <div class="case-card-top">
@@ -243,9 +264,9 @@
                 </blockquote>
                 <span class="case-card-cta">Ver case completo →</span>
               </div>
-            </button>
+            </article>
 
-            <button type="button" class="case-card-rich case-card-rich-alt" data-case="esmanhoto" data-bg="assets/cases/lojas/esmanhoto.jpg">
+            <article role="button" tabindex="0" class="case-card-rich case-card-rich-alt" data-case="esmanhoto" data-bg="assets/cases/lojas/esmanhoto.jpg">
               <div class="case-card-bg" aria-hidden="true"></div>
               <div class="case-card-content">
                 <div class="case-card-top">
@@ -263,28 +284,28 @@
                 </blockquote>
                 <span class="case-card-cta">Ver case completo →</span>
               </div>
-            </button>
+            </article>
 
-            <button type="button" class="case-card-rich" data-case="frourinhos" data-bg="assets/cases/lojas/frourinhos.jpg">
+            <article role="button" tabindex="0" class="case-card-rich" data-case="frourinhos" data-bg="assets/cases/lojas/frourinhos.jpg">
               <div class="case-card-bg" aria-hidden="true"></div>
               <div class="case-card-content">
                 <div class="case-card-top">
                   <span class="case-tag">FR Ourinhos</span>
                 </div>
-                <h3>Nasceu junto com a ODuo · demanda em &lt;4 meses</h3>
+                <h3>Nasceu junto com a ODuo · demanda em menos de 4 meses</h3>
                 <p class="case-stats">
                   <span><b>Locadora nova</b></span>
                   <span class="arrow">→</span>
-                  <span>demanda consistente em <b>&lt;4 meses</b></span>
+                  <span>demanda consistente em <b>menos de 4 meses</b></span>
                 </p>
                 <blockquote>
                   Abriu junto com a parceria. Engrenou no 3º/4º mês e seguiu crescendo até aumentar o investimento.
                 </blockquote>
                 <span class="case-card-cta">Ver case completo →</span>
               </div>
-            </button>
+            </article>
 
-            <button type="button" class="case-card-rich case-card-rich-alt" data-case="fazenda" data-bg="assets/cases/lojas/fazenda.jpg">
+            <article role="button" tabindex="0" class="case-card-rich case-card-rich-alt" data-case="fazenda" data-bg="assets/cases/lojas/fazenda.jpg">
               <div class="case-card-bg" aria-hidden="true"></div>
               <div class="case-card-content">
                 <div class="case-card-top">
@@ -302,9 +323,9 @@
                 </blockquote>
                 <span class="case-card-cta">Ver case completo →</span>
               </div>
-            </button>
+            </article>
 
-            <button type="button" class="case-card-rich" data-case="beloc" data-bg="assets/cases/lojas/beloc.jpg">
+            <article role="button" tabindex="0" class="case-card-rich" data-case="beloc" data-bg="assets/cases/lojas/beloc.jpg">
               <div class="case-card-bg" aria-hidden="true"></div>
               <div class="case-card-content">
                 <div class="case-card-top">
@@ -315,16 +336,16 @@
                 <p class="case-stats">
                   <span>Oscilação de <b>demanda</b></span>
                   <span class="arrow">→</span>
-                  <span><b>+52%</b> em &lt;3 meses</span>
+                  <span><b>+52%</b> em menos de 3 meses</span>
                 </p>
                 <blockquote>
                   Travada por falta de visibilidade na internet. No final do 2º mês com a ODuo, o salto começou.
                 </blockquote>
                 <span class="case-card-cta">Ver case completo →</span>
               </div>
-            </button>
+            </article>
 
-            <button type="button" class="case-card-rich case-card-rich-alt" data-case="rt" data-bg="assets/cases/lojas/rt.jpg">
+            <article role="button" tabindex="0" class="case-card-rich case-card-rich-alt" data-case="rt" data-bg="assets/cases/lojas/rt.jpg">
               <div class="case-card-bg" aria-hidden="true"></div>
               <div class="case-card-content">
                 <div class="case-card-top">
@@ -342,9 +363,9 @@
                 </blockquote>
                 <span class="case-card-cta">Ver case completo →</span>
               </div>
-            </button>
+            </article>
 
-            <button type="button" class="case-card-rich" data-case="zdg">
+            <article role="button" tabindex="0" class="case-card-rich" data-case="zdg">
               <div class="case-card-bg" aria-hidden="true"></div>
               <div class="case-card-content">
                 <div class="case-card-top">
@@ -362,7 +383,7 @@
                 </blockquote>
                 <span class="case-card-cta">Ver case completo →</span>
               </div>
-            </button>
+            </article>
           </div>
 
           <button class="cases-nav cases-nav-next" type="button" aria-label="Próximo case">
@@ -373,7 +394,7 @@
         </div>
       </section>
 
-      <section id="depoimentos" class="depoimentos">
+      <section id="depoimentos" class="depoimentos" data-track="marketing">
         <div class="section-head reveal">
           <span class="eyebrow eyebrow-accent">Quem confia na ODuo</span>
           <h2>Depoimentos em vídeo</h2>
@@ -462,45 +483,48 @@
       </section>
 
       <section id="metodo" class="metodo">
-        <div class="section-head reveal">
-          <span class="eyebrow eyebrow-accent">O Método ODuo</span>
-          <h2>3 pilares fundamentais</h2>
-          <p>
-            Tudo que entregamos roda em cima destes pilares. Clique em cada um
-            pra ver como funciona o processo e os cases relacionados.
-          </p>
+        <div id="metodoMarketing">
+          <div class="section-head reveal">
+            <span class="eyebrow eyebrow-accent">O Método ODuo · Marketing</span>
+            <h2>3 pilares fundamentais</h2>
+            <p>
+              Tudo que entregamos roda em cima destes pilares. Clique em cada
+              um pra ver como funciona o processo e os cases relacionados.
+            </p>
+          </div>
+          <div class="pilares">
+            <button type="button" class="pilar reveal" data-reveal-delay="1" data-pilar="aquisicao">
+              <h3>Aquisição</h3>
+              <p>
+                Direcionamos anúncios geo-segmentados no Google e Meta para
+                pessoas da sua região que estão pesquisando exatamente pelas
+                suas locações.
+              </p>
+              <span class="pilar-cta">Ver como funciona →</span>
+            </button>
+            <button type="button" class="pilar pilar-mid reveal" data-reveal-delay="2" data-pilar="filtro">
+              <h3>Filtro Inteligente</h3>
+              <p>
+                Nossa IA atende e qualifica os leads no WhatsApp 24/7. Seu
+                vendedor recebe apenas leads quentes, prontos para fechar.
+              </p>
+              <span class="pilar-cta">Ver como funciona →</span>
+            </button>
+            <button type="button" class="pilar reveal" data-reveal-delay="3" data-pilar="monetizacao">
+              <h3>Monetização</h3>
+              <p>
+                Nossa IA reativa automaticamente sua base de clientes — lembra
+                deles antes do concorrente lembrar. É onde mora o lucro real do
+                locador.
+              </p>
+              <span class="pilar-cta">Ver como funciona →</span>
+            </button>
+          </div>
         </div>
-        <div class="pilares">
-          <button type="button" class="pilar reveal" data-reveal-delay="1" data-pilar="aquisicao">
-            <h3>Aquisição</h3>
-            <p>
-              Direcionamos anúncios geo-segmentados no Google e Meta para
-              pessoas da sua região que estão pesquisando exatamente pelas suas
-              locações.
-            </p>
-            <span class="pilar-cta">Ver como funciona →</span>
-          </button>
-          <button type="button" class="pilar pilar-mid reveal" data-reveal-delay="2" data-pilar="filtro">
-            <h3>Filtro Inteligente</h3>
-            <p>
-              Nossa IA atende e qualifica os leads no WhatsApp 24/7. Seu
-              vendedor recebe apenas leads quentes, prontos para fechar.
-            </p>
-            <span class="pilar-cta">Ver como funciona →</span>
-          </button>
-          <button type="button" class="pilar reveal" data-reveal-delay="3" data-pilar="monetizacao">
-            <h3>Monetização</h3>
-            <p>
-              Nossa IA reativa automaticamente sua base de clientes — lembra
-              deles antes do concorrente lembrar. É onde mora o lucro real do
-              locador.
-            </p>
-            <span class="pilar-cta">Ver como funciona →</span>
-          </button>
-        </div>
+        <div id="metodoComercial" hidden></div>
       </section>
 
-      <section class="ancoragem">
+      <section class="ancoragem" id="ancoragem" data-track="marketing">
         <div class="section-head reveal">
           <span class="eyebrow eyebrow-accent">Antes de ver os preços</span>
           <h2>Seu time de marketing<br />já está montado</h2>
@@ -540,36 +564,41 @@
           <strong class="ancora-total-value">R$ 17.000/mês</strong>
           <small>
             só em folha de salários — sem contar encargos, ferramentas e gestão.
-            Com a ODuo, a partir de <b>R$ 2.967/mês</b> no Plano Avança Anual.
           </small>
         </div>
         <p class="ancora-nota">
           No plano mensal (boleto/Pix), sem fidelidade — cancela com aviso de 30
-          dias. Nos planos semestral e anual, o valor é parcelado no cartão
+          dias. Nos planos trimestral e semestral, o valor é parcelado no cartão
           como período fechado, encerrando-se ao fim do prazo sem renovação
           automática.
         </p>
       </section>
 
+      <section class="roas-cta" id="roasCta" data-track="marketing" aria-label="Calculadora de ROAS">
+        <div class="roas-cta-inner reveal">
+          <div class="roas-cta-text">
+            <span class="eyebrow eyebrow-accent">3 perguntas · 30 segundos</span>
+            <h2>Veja o tamanho da sua locadora em <strong>2 anos</strong></h2>
+            <p>Quanto você fatura, em quanto tempo o plano se paga.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-lg" id="roasOpenBtn">
+            Simular agora
+          </button>
+        </div>
+      </section>
+
       <section id="catalogo" class="catalogo">
-        <div class="section-head reveal">
-          <span class="eyebrow eyebrow-accent">Cardápio</span>
-          <h2>Esteira de produtos</h2>
+        <div class="section-head reveal" id="catalogoHead">
+          <span class="eyebrow eyebrow-accent">Produtos</span>
+          <h2>Monte a sua proposta</h2>
           <p>
-            Escolha o plano-base, agregue criativos, IAs e projetos pontuais.
-            Conforme você adiciona, o resumo da proposta cresce ao lado.
+            Monte a proposta da sua locadora. Conforme você adiciona, o resumo
+            cresce ao lado — e você leva tudo em PDF no final.
           </p>
         </div>
 
-        <nav class="catalogo-subnav" aria-label="Atalhos do cardápio">
-          <a href="#sec-plano-base">Plano-base</a>
-          <a href="#sec-artes">Artes</a>
-          <a href="#sec-video">Vídeo</a>
-          <a href="#sec-seo">Site + SEO</a>
-          <a href="#sec-projetos">Branding + Vídeo</a>
-          <a href="#sec-ia">IA Loctus</a>
-          <a href="#sec-treinamento">Treinamento</a>
-          <a href="#sec-comercial">Comercial</a>
+        <nav class="catalogo-subnav" aria-label="Atalhos do cardápio" id="catalogoSubnav">
+          <!-- preenchido por app.js conforme a aba ativa -->
         </nav>
 
         <div id="catalogoRoot" class="catalogo-root">
@@ -593,7 +622,7 @@
             <h3>Escolha o que faz sentido para você</h3>
             <p>
               Você navega pelo cardápio com o nosso time e seleciona a
-              modalidade que cabe no seu momento — mensal, semestral ou anual
+              modalidade que cabe no seu momento — mensal, trimestral ou semestral
               — em cada produto. A cada escolha, você já vê o preço, o que
               está incluído e o desconto que ganhou.
             </p>
@@ -651,6 +680,24 @@
         <h3 id="pilarModalTitle"></h3>
         <p id="pilarModalLead"></p>
         <div id="pilarModalContent"></div>
+      </div>
+    </div>
+
+    <!-- Modal das frentes da Estruturação Comercial -->
+    <div class="modal" id="frenteModal" hidden role="dialog" aria-modal="true" aria-labelledby="frenteModalTitle">
+      <div class="modal-card modal-card-wide">
+        <button
+          type="button"
+          class="icon-btn modal-close"
+          id="frenteModalClose"
+          aria-label="Fechar"
+        >
+          ×
+        </button>
+        <span class="frente-modal-kicker" id="frenteModalKicker"></span>
+        <h3 id="frenteModalTitle"></h3>
+        <p id="frenteModalLead"></p>
+        <div id="frenteModalContent"></div>
       </div>
     </div>
 
@@ -717,7 +764,7 @@
       <div class="cart-body" id="cartBody">
         <div class="cart-empty" id="cartEmpty">
           <p>Seu cardápio está vazio.</p>
-          <p class="muted">
+          <p class="muted" id="cartEmptyHint">
             Comece pelo Avança Locações — o carro-chefe da ODuo.
           </p>
         </div>
@@ -750,12 +797,47 @@
     </aside>
     <div class="cart-overlay" id="cartOverlay" hidden></div>
 
-    <script src="product-data.js"></script>
-    <script src="oduo-core.js"></script>
+    <!-- Calculadora de ROAS · versão simples (3 campos, 1 resultado) -->
+    <div class="modal roas-modal" id="roasModal" hidden role="dialog" aria-modal="true" aria-labelledby="roasModalLabel">
+      <div class="modal-card roas-card">
+        <button type="button" class="icon-btn modal-close" id="roasClose" aria-label="Fechar">×</button>
+
+        <span class="roas-eyebrow">Projeção rápida</span>
+        <h3 class="roas-title" id="roasModalLabel">Quanto sua locadora cresce com ODuo</h3>
+
+        <form class="roas-fields" id="roasForm" autocomplete="off">
+          <label class="roas-field">
+            <span>Quanto você investe em ads por mês?</span>
+            <input type="number" id="roasAds" min="0" step="100" value="5000" inputmode="numeric" />
+          </label>
+          <label class="roas-field">
+            <span>Quanto vale uma locação em média?</span>
+            <input type="number" id="roasTicket" min="0" step="50" value="1200" inputmode="numeric" />
+          </label>
+          <label class="roas-field">
+            <span>Por quanto tempo o cliente fica com você?</span>
+            <select id="roasAnos">
+              <option value="1">1 ano</option>
+              <option value="2" selected>2 anos</option>
+              <option value="3">3 anos</option>
+              <option value="5">5 anos</option>
+            </select>
+          </label>
+        </form>
+
+        <div class="roas-result" id="roasResult">
+          <!-- preenchido por roas-calculator.js -->
+        </div>
+      </div>
+    </div>
+
+    <script src="product-data.js?v=20260519h"></script>
+    <script src="oduo-core.js?v=20260519h"></script>
     <script src="pilares.js" defer></script>
     <script src="cases-carousel.js" defer></script>
     <script src="scroll-reveal.js" defer></script>
     <script src="videos.js" defer></script>
-    <script src="app.js" defer></script>
+    <script src="app.js?v=20260519h" defer></script>
+    <script src="roas-calculator.js?v=20260519h" defer></script>
   </body>
 </html>

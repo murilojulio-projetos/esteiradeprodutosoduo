@@ -17,6 +17,12 @@
   let activeCoupon = ODUO.loadCoupon();
   let activeCadence = ODUO.loadCadence();
   let installments = parseInt(localStorage.getItem("oduo_installments_v1"), 10) || 1;
+  /** Curva de juros do Investimento inicial — preenchida quando o inicial
+   *  é exatamente o Programa Estruturação (ver detectarCurvaInicial). */
+  let curvaInicial = null;
+  /** jsPDF vem de CDN externa (defer). Se a CDN falhar, isto fica false e
+   *  o botão de PDF é travado com aviso, em vez de quebrar no clique. */
+  let pdfReady = typeof window !== "undefined" && !!window.jspdf;
 
   // -------------------------- RENDER -----------------------------------
 
@@ -35,7 +41,26 @@
     renderTotais(groups);
     renderCoupon(groups);
 
-    $("#propostaPdfBtn").disabled = false;
+    refreshPdfBtn();
+  }
+
+  /* Estado do botão de PDF: habilitado só com itens no carrinho E com o
+     gerador (jsPDF) carregado. */
+  function refreshPdfBtn() {
+    const btn = $("#propostaPdfBtn");
+    if (!btn) return;
+    if (!pdfReady) {
+      btn.disabled = true;
+      btn.textContent = "Gerador de PDF indisponível";
+      btn.title =
+        "Não foi possível carregar o gerador de PDF. Verifique a conexão e recarregue a página.";
+      return;
+    }
+    btn.disabled = Object.keys(cart).length === 0;
+    btn.title = "";
+    if (!btn.classList.contains("is-loading")) {
+      btn.textContent = "Baixar proposta em PDF";
+    }
   }
 
   /** Bloco "Turbine seu projeto" — upsell inteligente baseado em tiers.
@@ -119,7 +144,7 @@
 
         // Preço · pra projeto mostra o valor cheio (entrega única);
         // pra recorrente, a mensalidade ("R$ X/mês"). Quando o cliente
-        // fechar plano anual, o projeto entra embutido na parcela.
+        // fechar plano trimestral/semestral, o projeto entra embutido na parcela.
         let priceHtml;
         if (item.type === "project") {
           const parc = item.modalities.find((m) => m.id === "parcelado");
@@ -160,7 +185,7 @@
       <header class="proposta-upsell-head">
         <span class="proposta-upsell-kicker">Recomendado pra crescimento acelerado</span>
         <h3>Turbine o seu projeto</h3>
-        <p>Pacotes que monetizam direto a sua base. Acompanham o plano anual no cartão.</p>
+        <p>Pacotes que monetizam direto a sua base. Acompanham o plano-base no cartão.</p>
       </header>
       <div class="proposta-upsell-grid">
         ${cardsHtml}
@@ -169,7 +194,7 @@
     root.appendChild(block);
 
     $$("[data-add-upsell]", block).forEach((btn) => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", async () => {
         const id = btn.dataset.addUpsell;
         const found = ODUO.findItem(id);
         if (!found) return;
@@ -178,9 +203,12 @@
         if (item0.requires && !cart[item0.requires.id]) {
           const dep = ODUO.findItem(item0.requires.id)?.item;
           const depName = dep ? dep.name : item0.requires.id;
-          const ok = confirm(
-            `${item0.requires.reason || ""}\n\nAdicionar ${depName} junto com ${item0.name}?`
-          );
+          const ok = await ODUO.confirmDialog({
+            title: `${item0.name} precisa de ${depName}`,
+            message: `${item0.requires.reason || ""} Quer adicionar ${depName} junto?`,
+            okLabel: "Adicionar os dois",
+            cancelLabel: "Cancelar",
+          });
           if (!ok) return;
           if (dep) {
             const depMod =
@@ -206,7 +234,7 @@
         // Adiciona ao cart:
         // · recurring/hybrid: usa a cadência global (ou mensal de fallback)
         // · project: usa "parcelado" (6× sem juros) — vai pra Entrega Única
-        //   ou pra parcela embutida quando há plano-base anual.
+        //   ou pra parcela embutida quando há plano-base trimestral/semestral.
         const item = found.item;
         let targetMod;
         if (item.type === "project") {
@@ -265,6 +293,10 @@
         const couponPill = row.couponNote
           ? `<span class="proposta-item-coupon">${ODUO.escapeHtml(row.couponNote)}</span>`
           : "";
+        // Nota de personalização (entregas removidas) — explica o preço menor.
+        const removalPill = row.removalNote
+          ? `<span class="proposta-item-coupon proposta-item-custom">${ODUO.escapeHtml(row.removalNote)}</span>`
+          : "";
         const baseStrike = row.basePriceText
           ? `<span class="proposta-item-strike">${ODUO.escapeHtml(row.basePriceText)}</span>`
           : "";
@@ -286,6 +318,7 @@
             <div class="proposta-item-title">${ODUO.escapeHtml(row.name)}</div>
             <div class="proposta-item-sub">${ODUO.escapeHtml(row.subtitle)}</div>
             ${couponPill}
+            ${removalPill}
             ${deliverablesList}
           </div>
           <div class="proposta-item-price-block">
@@ -317,6 +350,8 @@
     const inicial = groups.setups.total + groups.projetos.total;
     const hasRecurring = groups.mensal.items.length > 0;
     const showInicial = inicial > 0 && !groups.bundle.hasEmbedded;
+    // Curva de juros do investimento inicial (só Programa Estruturação)
+    curvaInicial = detectarCurvaInicial(groups);
 
     if (hasRecurring) {
       wrap.appendChild(renderCadenceSelector(groups.bundle));
@@ -330,6 +365,10 @@
         hint: "Setups e projetos. Escolha abaixo como prefere pagar.",
       });
 
+      const maxInicialParcelas = groups.projetos.items
+        .filter((r) => !r.embedded)
+        .reduce((max, r) => Math.max(max, r.projectParcelas || 6), 6);
+
       // Bloco de forma de pagamento
       const pay = document.createElement("div");
       pay.className = "proposta-pay";
@@ -337,7 +376,7 @@
         <div class="proposta-pay-row">
           <label for="installments">Forma de pagamento</label>
           <select id="installments" class="proposta-installments">
-            ${installmentOptions(inicial)}
+            ${installmentOptions(inicial, maxInicialParcelas)}
           </select>
         </div>
         <div class="proposta-pay-result" id="propostaPayResult"></div>
@@ -346,6 +385,7 @@
       wrap.appendChild(card);
 
       const sel = pay.querySelector("#installments");
+      if (installments > maxInicialParcelas) installments = maxInicialParcelas;
       sel.value = String(installments);
       const updateResult = () => {
         installments = parseInt(sel.value, 10) || 1;
@@ -387,8 +427,8 @@
     const wrap = document.createElement("div");
     wrap.className = "cadence-selector cadence-selector-proposta";
     wrap.innerHTML = `
-      <span class="cadence-selector-label">Forma de pagamento</span>
-      <div class="cadence-selector-buttons" role="group" aria-label="Cadência da proposta">
+      <span class="cadence-selector-label">Período do plano</span>
+      <div class="cadence-selector-buttons" role="group" aria-label="Período do plano">
         ${ODUO.CADENCES.map((c) => {
           const isActive = c === bundle.cadence;
           return `
@@ -413,7 +453,7 @@
     div.className =
       "proposta-total-card proposta-bundle-card is-cadence-" + bundle.cadence;
 
-    const isAnual = bundle.cadence === "anual";
+    const isTrimestral = bundle.cadence === "trimestral";
 
     if (bundle.cadence === "mensal") {
       div.innerHTML = `
@@ -430,7 +470,7 @@
             <strong>−${ODUO.escapeHtml(BRL.format(bundle.couponDiscountPerMonth))}/mês</strong>
           </div>`
         : "";
-      const savingsLabel = isAnual ? "Economia no ano" : "Economia em 6 meses";
+      const savingsLabel = isTrimestral ? "Economia em 3 meses" : "Economia em 6 meses";
       const savings = bundle.savingsTotal > 0
         ? `
           <div class="proposta-bundle-savings">
@@ -454,31 +494,77 @@
     return div;
   }
 
-  function installmentOptions(total) {
+  /* Curva de juros do Investimento inicial. Só ativa quando o inicial é
+     EXATAMENTE o Programa Estruturação (sem setups, sem outros projetos).
+     1-3× sem juros = preço à vista; 4×+ com juros lineares até o total
+     cheio do parcelado no nº máximo de parcelas. */
+  function detectarCurvaInicial(groups) {
+    const proj = (groups.projetos.items || []).filter((r) => !r.embedded);
+    if ((groups.setups.items || []).length > 0 || proj.length !== 1) return null;
+    if (proj[0].id !== "estruturacao-comercial") return null;
+    const found = ODUO.findItem("estruturacao-comercial");
+    const av = found && found.item.modalities.find((m) => m.id === "avista");
+    const pc = found && found.item.modalities.find((m) => m.id === "parcelado");
+    if (!av || !pc) return null;
+    const m = (pc.suffix || "").match(/×\s*(\d+)/);
+    const maxParc = m ? parseInt(m[1], 10) : 12;
+    return { avista: av.price, parceladoTotal: pc.price * maxParc, maxParc };
+  }
+
+  /* Total a pagar em n parcelas, conforme a curva de juros. Sem curva
+     ativa, devolve null (o chamador usa o total simples). */
+  function totalInicialEm(n) {
+    if (!curvaInicial) return null;
+    const { avista, parceladoTotal, maxParc } = curvaInicial;
+    if (n <= 3) return avista; // 1-3× sem juros
+    const t = (Math.min(n, maxParc) - 3) / (maxParc - 3);
+    return Math.round(avista + (parceladoTotal - avista) * t);
+  }
+
+  function installmentOptions(total, maxParcelas) {
+    const max = curvaInicial ? curvaInicial.maxParc : maxParcelas || 6;
     const opts = [];
-    opts.push(`<option value="1">À vista — ${BRL.format(total)} (10% off)</option>`);
-    for (let n = 2; n <= 6; n++) {
-      const parcela = Math.ceil(total / n);
+    for (let n = 1; n <= max; n++) {
+      const tot = totalInicialEm(n);
+      const valorTotal = tot != null ? tot : total;
+      if (n === 1) {
+        opts.push(`<option value="1">À vista — ${BRL.format(valorTotal)}</option>`);
+        continue;
+      }
+      const parcela = Math.ceil(valorTotal / n);
+      // Com curva: 1-3× sem juros, 4×+ com juros. Sem curva: "no cartão".
+      const tag = curvaInicial
+        ? n <= 3
+          ? " sem juros"
+          : " com juros"
+        : " no cartão";
       opts.push(
-        `<option value="${n}">${n}× de ${BRL.format(parcela)} sem juros</option>`
+        `<option value="${n}">${n}× de ${BRL.format(parcela)}${tag}</option>`
       );
     }
     return opts.join("");
   }
 
   function installmentResultHtml(total, n) {
+    const tot = totalInicialEm(n);
+    const valorTotal = tot != null ? tot : total;
     if (n <= 1) {
       return `
         <span class="proposta-pay-label">Total à vista</span>
-        <span class="proposta-pay-value">${BRL.format(total)}</span>
-        <span class="proposta-pay-hint">Pix ou cartão · sem juros</span>
+        <span class="proposta-pay-value">${BRL.format(valorTotal)}</span>
+        <span class="proposta-pay-hint">Pix ou cartão${
+          curvaInicial ? " · sem juros" : ""
+        }</span>
       `;
     }
-    const parcela = Math.ceil(total / n);
+    const parcela = Math.ceil(valorTotal / n);
+    const semJuros = !curvaInicial || n <= 3;
     return `
-      <span class="proposta-pay-label">${n}× sem juros de</span>
+      <span class="proposta-pay-label">${n}× ${
+        semJuros ? "sem juros" : "com juros"
+      } de</span>
       <span class="proposta-pay-value">${BRL.format(parcela)}/mês</span>
-      <span class="proposta-pay-hint">Total: ${BRL.format(total)}</span>
+      <span class="proposta-pay-hint">Total: ${BRL.format(valorTotal)}</span>
     `;
   }
 
@@ -624,14 +710,39 @@
     set("leadRepFone", stored.repFone);
   }
 
-  function openLeadModal() {
+  /* Modo do modal de dados: "pdf" (baixar) ou "contrato" (emitir no Clicksign).
+     O submit do formulário roteia conforme este estado. */
+  let leadModalMode = "pdf";
+
+  function openLeadModal(mode) {
+    leadModalMode = ["contrato", "cobranca"].includes(mode) ? mode : "pdf";
     hydrateLeadForm();
-    $("#leadModal").hidden = false;
+    const modal = $("#leadModal");
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+    // "Pular e gerar" só faz sentido pro PDF (contrato/cobrança exigem dados)
+    const skipBtn = $("#leadSkip");
+    if (skipBtn) skipBtn.style.display = leadModalMode === "pdf" ? "" : "none";
+    // Checkbox "cobrar ao assinar" só aparece no modo contrato
+    const cobrarWrap = $("#leadCobrarWrap");
+    if (cobrarWrap) cobrarWrap.hidden = leadModalMode !== "contrato";
+    const submitBtn = $("#leadForm")?.querySelector('button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.textContent =
+        leadModalMode === "contrato"
+          ? "Emitir contrato"
+          : leadModalMode === "cobranca"
+          ? "Gerar cobrança"
+          : "Gerar PDF";
+    }
+    if (window.ODUO && ODUO.modalFocusIn) ODUO.modalFocusIn(modal);
     setTimeout(() => $("#leadEmpresa")?.focus(), 50);
   }
 
   function closeLeadModal() {
     $("#leadModal").hidden = true;
+    document.body.style.overflow = "";
+    if (window.ODUO && ODUO.modalFocusRestore) ODUO.modalFocusRestore();
   }
 
   function ensureSpace(doc, y, needed, pageH, margin) {
@@ -675,10 +786,52 @@
     };
   }
 
-  function generatePdf(lead = {}) {
-    if (!window.jspdf) {
-      alert("jsPDF ainda não carregou. Tente novamente em alguns segundos.");
+  /* Wrapper do gerar-PDF: mostra estado "Gerando...", roda em try/catch e
+     dá feedback de sucesso/erro. O setTimeout deixa o browser pintar o
+     estado de loading antes do trabalho pesado e síncrono do jsPDF. */
+  function runPdf(lead = {}) {
+    const btn = $("#propostaPdfBtn");
+    if (!pdfReady || !window.jspdf) {
+      alert(
+        "O gerador de PDF não carregou (provável falha de conexão). " +
+          "Recarregue a página e tente de novo."
+      );
       return;
+    }
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add("is-loading");
+      btn.textContent = "Gerando PDF...";
+    }
+    setTimeout(() => {
+      let ok = false;
+      try {
+        generatePdf(lead);
+        ok = true;
+      } catch (err) {
+        console.error("Falha ao gerar o PDF:", err);
+        alert(
+          "Não foi possível gerar o PDF.\n\nDetalhe: " +
+            (err && err.message ? err.message : String(err)) +
+            "\n\nTente de novo. Se continuar, recarregue a página."
+        );
+      }
+      if (btn) {
+        btn.classList.remove("is-loading");
+        btn.disabled = false;
+        if (ok) {
+          btn.textContent = "✓ PDF baixado · veja seus Downloads";
+          setTimeout(() => refreshPdfBtn(), 5000);
+        } else {
+          refreshPdfBtn();
+        }
+      }
+    }, 50);
+  }
+
+  function generatePdf(lead = {}, opts = {}) {
+    if (!window.jspdf) {
+      throw new Error("O gerador de PDF (jsPDF) não está carregado.");
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: "pt", format: "a4" });
@@ -769,8 +922,8 @@
     const groups = ODUO.buildCartGroups(cart, activeCoupon, activeCadence);
     const mensalTitleByCadence = {
       mensal: "Mensalidade · boleto bancário ou Pix",
+      trimestral: "Mensalidade · 3× no cartão de crédito sem juros",
       semestral: "Mensalidade · 6× no cartão de crédito sem juros",
-      anual: "Mensalidade · 12× no cartão de crédito sem juros",
     };
     const grpDefs = [
       { key: "mensal", title: mensalTitleByCadence[groups.bundle.cadence] || mensalTitleByCadence.mensal },
@@ -835,12 +988,12 @@
 
     if (bundle.parcelaPrice > 0) {
       // "Recorrente" só faz sentido em mensal (boleto/Pix mês a mês). Em
-      // semestral/anual o cliente pré-paga no cartão em parcelas — é
+      // trimestral/semestral o cliente pré-paga no cartão em parcelas — é
       // PERÍODO FECHADO. Título reflete isso pra não dar margem a confusão
       // sobre fidelidade ou cancelamento.
       const title =
-        bundle.cadence === "anual"
-          ? "CONTRATO ANUAL · 12× NO CARTÃO DE CRÉDITO"
+        bundle.cadence === "trimestral"
+          ? "CONTRATO TRIMESTRAL · 3× NO CARTÃO DE CRÉDITO"
           : bundle.cadence === "semestral"
           ? "CONTRATO SEMESTRAL · 6× NO CARTÃO DE CRÉDITO"
           : "ASSINATURA MENSAL · BOLETO OU PIX";
@@ -877,7 +1030,7 @@
         ]);
       }
       if (bundle.savingsTotal > 0) {
-        const periodo = bundle.cadence === "anual" ? "no ano" : "em 6 meses";
+        const periodo = bundle.cadence === "trimestral" ? "em 3 meses" : "em 6 meses";
         lines.push([
           `Economia ${periodo}`,
           BRL.format(bundle.savingsTotal),
@@ -989,7 +1142,7 @@
     // Condições de rescisão precisam ser EXATAS pra cadência contratada:
     //   - mensal (boleto/Pix recorrente): cliente paga mês a mês, pode
     //     cancelar com aviso de 30 dias. Aí sim "sem fidelidade".
-    //   - semestral/anual (parcelado no cartão): o cliente PRÉ-AUTORIZOU
+    //   - trimestral/semestral (parcelado no cartão): o cliente PRÉ-AUTORIZOU
     //     todas as parcelas no cartão na contratação. Não tem como cancelar
     //     no meio e receber de volta — é período fechado. O que existe é
     //     a NÃO-RENOVAÇÃO após o término do período.
@@ -1000,19 +1153,22 @@
         conditions.push(
           `Plano mensal (boleto/Pix recorrente): sem fidelidade mínima, cancelamento com aviso prévio de 30 dias.${avisoSDR}`
         );
+      } else if (activeCadence === "trimestral") {
+        conditions.push(
+          "Contrato trimestral: período fechado de 3 meses pago em 3 parcelas pré-autorizadas no cartão de crédito. As parcelas são contratadas no fechamento e não há cancelamento antecipado. Ao término do período, o contrato se encerra; renovação somente mediante novo acordo entre as PARTES."
+        );
       } else if (activeCadence === "semestral") {
         conditions.push(
           "Contrato semestral: período fechado de 6 meses pago em 6 parcelas pré-autorizadas no cartão de crédito. As parcelas são contratadas no fechamento e não há cancelamento antecipado. Ao término do período, o contrato se encerra; renovação somente mediante novo acordo entre as PARTES."
         );
-      } else if (activeCadence === "anual") {
-        conditions.push(
-          "Contrato anual: período fechado de 12 meses pago em 12 parcelas pré-autorizadas no cartão de crédito. As parcelas são contratadas no fechamento e não há cancelamento antecipado. Ao término do período, o contrato se encerra; renovação somente mediante novo acordo entre as PARTES."
-        );
       }
     }
     if (hasStandaloneProject) {
+      const maxProjectParcelas = groups.projetos.items
+        .filter((r) => !r.embedded)
+        .reduce((max, r) => Math.max(max, r.projectParcelas || 6), 6);
       conditions.push(
-        "Projetos pontuais (entrega única): 10% off à vista no Pix ou cartão, ou parcelado em até 6× sem juros no cartão de crédito. Cobrança única no fechamento, sem cancelamento ou devolução após o pagamento (salvo descumprimento pela CONTRATADA)."
+        `Projetos pontuais (entrega única): 10% off à vista no Pix ou cartão, ou parcelado em até ${maxProjectParcelas}× sem juros no cartão de crédito. Cobrança única no fechamento, sem cancelamento ou devolução após o pagamento (salvo descumprimento pela CONTRATADA).`
       );
     }
     if (hasHunter) {
@@ -1021,8 +1177,8 @@
       );
     }
     if (hasSDR && activeCadence === "mensal") {
-      // SDR só ganha menção específica no mensal — no semestral/anual o
-      // cliente já está preso ao período fechado independente do SDR.
+      // SDR só ganha menção específica no mensal — em 2+ meses o cliente já
+      // está preso ao período fechado independente do SDR.
       conditions.push(
         "SDR ODuo: variável de 10% sobre a 1ª locação fechada via lead trazido pelo SDR — apurada mensalmente. Aviso prévio de cancelamento: 60 dias."
       );
@@ -1050,14 +1206,210 @@
     doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.setTextColor(150, 160, 190);
-    doc.text("ODuo · Cardápio de Upsells V2.11", margin, footY);
+    doc.text("Proposta Comercial · ODuo Assessoria", margin, footY);
     doc.text("oduo.com.br", pageW - margin, footY, { align: "right" });
 
     // Anexa o contrato logo após a proposta — mesmo arquivo PDF.
     appendContract(doc, lead, groups, hoje);
 
     const fileName = `proposta-e-contrato-oduo-${ODUO.slug(lead.empresa || "lead")}-${ODUO.ymd(hoje)}.pdf`;
+    if (opts && opts.returnBase64) {
+      // data URI completo (data:application/pdf;base64,...) pro endpoint Clicksign
+      return doc.output("datauristring");
+    }
     doc.save(fileName);
+  }
+
+  /* Etapa 4 · Emite o contrato pro Clicksign: gera o mesmo PDF
+     (proposta + contrato), manda em base64 pro endpoint api/contrato/emitir,
+     que cria o documento e dispara as assinaturas (cliente + ODuo). */
+  async function emitirContrato(lead = {}) {
+    const btn = $("#propostaContratoBtn");
+    if (!pdfReady || !window.jspdf) {
+      alert("O gerador de PDF não carregou. Recarregue a página e tente de novo.");
+      return;
+    }
+    if (!lead.empresa || !lead.email) {
+      alert("Pra emitir o contrato, preencha pelo menos o nome da locadora e o e-mail do cliente.");
+      openLeadModal("contrato");
+      return;
+    }
+    // O Clicksign exige nome + sobrenome de quem assina (o representante legal)
+    const nomeAssinante = String(lead.repNome || lead.contato || "").trim();
+    if (nomeAssinante.split(/\s+/).filter(Boolean).length < 2) {
+      alert(
+        "Pra emitir o contrato, informe o NOME COMPLETO (nome e sobrenome) " +
+          "do responsável que vai assinar — no campo 'Nome do representante legal'."
+      );
+      openLeadModal("contrato");
+      return;
+    }
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add("is-loading");
+      btn.textContent = "Emitindo contrato...";
+    }
+    try {
+      const pdfBase64 = generatePdf(lead, { returnBase64: true });
+      const cobrarAoAssinar = !!(
+        $("#leadCobrarAoAssinar") && $("#leadCobrarAoAssinar").checked
+      );
+      const resp = await fetch("/api/contrato/emitir", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          pdfBase64,
+          cliente: clientePayload(lead, nomeAssinante),
+          proposta: montarResumoProposta(),
+          cobrarAoAssinar,
+        }),
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (resp.ok && data.ok) {
+        alert(
+          "✓ Contrato enviado para assinatura!\n\n" +
+            "O cliente (" + lead.email + ") e a ODuo (Lucas) vão receber o " +
+            "contrato por e-mail para assinar no Clicksign.\n\n" +
+            "Ambiente: " + (data.ambiente || "sandbox") + "."
+        );
+      } else {
+        const det = data.detalhe ? "\n\nDetalhe: " + JSON.stringify(data.detalhe) : "";
+        alert(
+          "Não foi possível emitir o contrato.\n\n" +
+            (data.error || "Erro desconhecido.") + det
+        );
+      }
+    } catch (err) {
+      console.error("Falha ao emitir contrato:", err);
+      alert(
+        "Falha de conexão ao emitir o contrato.\n\nDetalhe: " +
+          (err && err.message ? err.message : String(err))
+      );
+    }
+    if (btn) {
+      btn.classList.remove("is-loading");
+      btn.disabled = false;
+      btn.textContent = "Emitir contrato para assinatura";
+    }
+  }
+
+  /* Resumo da proposta — espelha as modalidades do carrinho. Usado tanto
+     pra persistir junto do contrato quanto pra gerar a cobrança direta. */
+  function montarResumoProposta() {
+    const g = ODUO.buildCartGroups(cart, activeCoupon, activeCadence);
+    const resumo = (arr) =>
+      (arr || []).map((i) => ({
+        nome: i.originalName || i.name,
+        valor: i.finalPrice != null ? i.finalPrice : i.value || 0,
+        modalidade: i.modId || activeCadence,
+        parcelas: i.projectParcelas || null,
+      }));
+    /* Quando o plano-base é trimestral/semestral, setups+projetos são EMBUTIDOS
+       na parcela (o cliente vê tudo em 3×/6× de parcelaPrice). Nesse caso
+       a cobrança deve ser uma só — manda o parcelaPrice como mensalTotal e
+       zera setups/projetos pra o backend não criar uma 2ª cobrança.
+       Sem embed, segue o fluxo normal (mensal + inicial separados). */
+    const b = g.bundle || {};
+    const embed = !!b.hasEmbedded;
+    curvaInicial = detectarCurvaInicial(g);
+    const parc = parseInt(installments, 10) || 1;
+    /* Investimento inicial: com curva de juros (Programa Estruturação), o
+       total varia conforme o nº de parcelas — usa a curva. Sem curva, o
+       total simples. Com embed, vai zerado (já está na parcela mensal). */
+    const projTotal = embed
+      ? 0
+      : curvaInicial
+      ? totalInicialEm(parc)
+      : (g.projetos && g.projetos.total) || 0;
+    return {
+      cadencia: activeCadence,
+      cupom: activeCoupon || null,
+      embedded: embed,
+      mensal: resumo(g.mensal && g.mensal.items),
+      mensalTotal: embed ? b.parcelaPrice || 0 : (g.mensal && g.mensal.total) || 0,
+      setups: resumo(g.setups && g.setups.items),
+      setupsTotal: embed ? 0 : (g.setups && g.setups.total) || 0,
+      projetos: resumo(g.projetos && g.projetos.items),
+      projetosTotal: projTotal,
+      // Parcelas escolhidas no dropdown do "Investimento inicial"
+      parcelasInicial: parc,
+      performance: ((g.performance && g.performance.items) || []).map((i) => ({
+        nome: i.name,
+      })),
+      emitidoEm: new Date().toISOString(),
+    };
+  }
+
+  function clientePayload(lead, contato) {
+    return {
+      empresa: lead.empresa,
+      contato: contato || lead.repNome || lead.contato || lead.empresa,
+      email: lead.email,
+      cnpj: lead.cnpj || "",
+      cidade: lead.cidade || "",
+      telefone: lead.repFone || "",
+      cpfRepresentante: lead.repCpf || "",
+    };
+  }
+
+  /* Botão "Gerar cobrança" — cria a cobrança no Asaas DIRETO, sem contrato.
+     Cobrar e contrato são ações independentes. */
+  async function gerarCobranca(lead = {}) {
+    const btn = $("#propostaCobrancaBtn");
+    if (!lead.empresa) {
+      alert("Pra gerar a cobrança, preencha pelo menos o nome da locadora.");
+      openLeadModal("cobranca");
+      return;
+    }
+    const doc = String(lead.cnpj || lead.repCpf || "").replace(/\D/g, "");
+    if (!doc) {
+      alert(
+        "Pra gerar a cobrança, informe o CNPJ da locadora (ou o CPF do " +
+          "representante) — o Asaas exige um documento pra emitir a cobrança."
+      );
+      openLeadModal("cobranca");
+      return;
+    }
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.add("is-loading");
+      btn.textContent = "Gerando cobrança...";
+    }
+    try {
+      const resp = await fetch("/api/cobranca/criar", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          cliente: clientePayload(lead),
+          proposta: montarResumoProposta(),
+        }),
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (resp.ok && data.ok) {
+        alert(
+          "✓ Cobrança criada no Asaas!\n\n" +
+            "O cliente vai receber a cobrança para pagar (boleto, Pix ou cartão).\n\n" +
+            "Ambiente: " + (data.ambiente || "sandbox") + "."
+        );
+      } else {
+        const det = data.detalhe ? "\n\nDetalhe: " + JSON.stringify(data.detalhe) : "";
+        alert(
+          "Não foi possível gerar a cobrança.\n\n" +
+            (data.error || "Erro desconhecido.") + det
+        );
+      }
+    } catch (err) {
+      console.error("Falha ao gerar cobrança:", err);
+      alert(
+        "Falha de conexão ao gerar a cobrança.\n\nDetalhe: " +
+          (err && err.message ? err.message : String(err))
+      );
+    }
+    if (btn) {
+      btn.classList.remove("is-loading");
+      btn.disabled = false;
+      btn.textContent = "Gerar cobrança (link de pagamento)";
+    }
   }
 
   // =====================================================================
@@ -1084,38 +1436,56 @@
     // template antigo do contrato NÃO existem mais e foram removidos.
     let planoBase = null;
     if (cartIds.includes("avanca")) planoBase = "Avança Locações";
-    else if (cartIds.includes("destrava")) planoBase = "Destrava";
+    else if (cartIds.includes("destrava")) planoBase = "Destrava Loc";
     const hasPlanoBase = !!planoBase;
 
     // Tipo de contrato — define qual lógica/cláusula se aplica:
     //   - "recorrente-mensal" → boleto/Pix mês a mês, sem fidelidade
-    //   - "periodo-fechado"   → semestral/anual no cartão, parcelas pré-autorizadas
-    //   - "projeto-pontual"   → sem plano-base, só projetos de entrega única
+    //   - "periodo-fechado"   → trimestral/semestral no cartão, parcelas pré-autorizadas
+    //   - "projeto-pontual"   → entrega única, cobrança única
+    //   - "performance"       → cobrança variável por resultado (ex.: Hunter de RH)
+    // A RECORRÊNCIA manda no tipo: qualquer item mensal no carrinho (mesmo
+    // sem plano-base — SEO, Artes, Vídeo, IA avulsa) define contrato
+    // recorrente. Antes só plano-base disparava recorrência, o que gerava
+    // contrato de "entrega única" para serviço contínuo.
+    const hasRecurring = groups.mensal.items.length > 0;
+    const hasPerformance = groups.performance.items.length > 0;
+    const hasProjetoOuSetup =
+      groups.projetos.items.length > 0 || groups.setups.items.length > 0;
+
     let contractType;
-    if (hasPlanoBase) {
+    if (hasRecurring) {
       contractType = cadence === "mensal" ? "recorrente-mensal" : "periodo-fechado";
-    } else if (groups.projetos.items.length > 0 || groups.setups.items.length > 0) {
+    } else if (hasProjetoOuSetup) {
       contractType = "projeto-pontual";
+    } else if (hasPerformance) {
+      contractType = "performance";
     } else {
-      contractType = "recorrente-mensal"; // fallback raro (ex.: só performance)
+      contractType = "recorrente-mensal";
     }
 
-    // Duração: deriva da cadência global (só faz sentido pra plano-base)
-    const duracaoMeses = hasPlanoBase
-      ? (cadence === "anual" ? 12 : cadence === "semestral" ? 6 : null)
-      : null;
+    /* Estruturação Comercial é um "project" no catálogo, mas roda como
+       programa de 90 dias — não entrega única em 30-45 dias. */
+    const hasEstruturacao = groups.projetos.items.some(
+      (r) => r.id === "estruturacao-comercial"
+    );
+
+    // Duração: período fechado tem 3 ou 6 meses conforme a cadência.
+    const duracaoMeses =
+      contractType === "periodo-fechado"
+        ? (cadence === "trimestral" ? 3 : 6)
+        : null;
     const recorrente = contractType === "recorrente-mensal";
 
     // Datas de início e fim
     const inicio = new Date(hoje);
     let fim = null;
     if (duracaoMeses) {
-      fim = new Date(inicio);
-      fim.setMonth(fim.getMonth() + duracaoMeses);
+      fim = addMonths(inicio, duracaoMeses);
     } else if (contractType === "projeto-pontual") {
-      // Projeto pontual: prazo de entrega ~30-45 dias
+      // Projeto pontual: ~30-45 dias · Estruturação Comercial: 90 dias.
       fim = new Date(inicio);
-      fim.setDate(fim.getDate() + 45);
+      fim.setDate(fim.getDate() + (hasEstruturacao ? 90 : 45));
     }
 
     // Valor: bundle parcela × parcelas + setups/projetos não-embutidos
@@ -1137,8 +1507,11 @@
     ];
     allRows.forEach((row) => {
       const name = row.group ? `${row.group} · ${row.name}` : row.name;
-      if (row.deliverables && row.deliverables.length > 0) {
-        entregaveis.push({ header: name, items: row.deliverables });
+      // Filtra entregas negativas ("Sem Loctus IA...") — no contrato não faz
+      // sentido listar o que NÃO é entregue como se fosse entrega.
+      const dels = (row.deliverables || []).filter((d) => !/^sem\s/i.test(d));
+      if (dels.length > 0) {
+        entregaveis.push({ header: name, items: dels });
       } else {
         entregaveis.push({ header: name, items: [row.subtitle].filter(Boolean) });
       }
@@ -1148,6 +1521,7 @@
       planoBase,
       hasPlanoBase,
       contractType,
+      hasEstruturacao,
       duracaoMeses,
       recorrente,
       cadence,
@@ -1164,6 +1538,23 @@
   function fmtDate(d) {
     if (!(d instanceof Date)) return "";
     return d.toLocaleDateString("pt-BR");
+  }
+
+  /* Soma meses sem o bug de overflow do setMonth (31/01 + 1 mês viraria
+     03/03; aqui recua pro último dia do mês correto). */
+  function addMonths(date, n) {
+    const d = new Date(date);
+    const alvo = ((d.getMonth() + n) % 12 + 12) % 12;
+    d.setMonth(d.getMonth() + n);
+    if (d.getMonth() !== alvo) d.setDate(0);
+    return d;
+  }
+
+  /* Número por extenso para os textos jurídicos (evita ternário binário
+     que imprimiria "3 (seis) meses"). */
+  function numeroExtenso(n) {
+    const mapa = { 1: "um", 2: "dois", 3: "três", 6: "seis", 12: "doze" };
+    return mapa[n] || String(n);
   }
 
   function appendContract(doc, lead, groups, hoje) {
@@ -1433,52 +1824,70 @@
     state.y += 14;
     tableHeader("QUADRO RESUMO");
 
-    // (I) Projeto contratado — só os 2 planos-base reais do catálogo.
-    // Em contrato de projeto pontual (sem plano-base), descreve o escopo
-    // textualmente em vez de marcar checkbox.
+    const maxProjectParcelas = groups.projetos.items
+      .filter((r) => !r.embedded)
+      .reduce((max, r) => Math.max(max, r.projectParcelas || 6), 6);
+
+    // (I) Projeto contratado — marca o plano-base, ou descreve os serviços
+    // textualmente quando não há plano-base.
     let projetoText;
-    if (data.contractType === "projeto-pontual") {
-      const nomes = groups.projetos.items
-        .concat(groups.setups.items)
-        .map((r) => (r.group ? `${r.group} · ${r.name}` : r.name));
-      projetoText = `Projeto pontual de entrega única: ${nomes.join("; ")}. Detalhamento no item (VI).`;
-    } else if (data.planoBase === "Avança Locações") {
-      projetoText = "[X] Avança Locações    [ ] Destrava";
-    } else if (data.planoBase === "Destrava") {
-      projetoText = "[ ] Avança Locações    [X] Destrava";
+    if (data.planoBase === "Avança Locações") {
+      projetoText = "[X] Avança Locações    [ ] Destrava Loc";
+    } else if (data.planoBase === "Destrava Loc") {
+      projetoText = "[ ] Avança Locações    [X] Destrava Loc";
     } else {
-      projetoText = "[ ] Avança Locações    [ ] Destrava";
+      const nomes = [
+        ...groups.mensal.items,
+        ...groups.projetos.items,
+        ...groups.setups.items,
+        ...groups.performance.items,
+      ].map((r) => (r.group ? `${r.group} · ${r.name}` : r.name));
+      const tipo =
+        data.contractType === "projeto-pontual"
+          ? "Projeto pontual de entrega única"
+          : data.contractType === "performance"
+          ? "Serviço por resultado"
+          : "Serviços recorrentes";
+      projetoText = `${tipo}: ${nomes.join("; ")}. Detalhamento no item (VI).`;
     }
     tableRow("(I) Projeto Contratado", projetoText);
 
     // (II) Valor e forma de pagamento
     const bundle = data.bundle;
-    let valorText = `Valor total: ${BRL.format(data.valorTotal)}.\n`;
+    let valorText;
     if (data.contractType === "projeto-pontual") {
-      valorText +=
+      valorText =
+        `Valor total: ${BRL.format(data.valorTotal)}.\n` +
         "Pagamento à vista (Pix ou cartão) com 10% de desconto, " +
-        "ou parcelado em até 6× sem juros no cartão de crédito.";
-    } else if (data.cadence === "mensal") {
-      valorText +=
-        `Pagamento mensal de ${BRL.format(bundle.parcelaPrice)}/mês via ` +
-        "boleto bancário ou Pix, recorrente enquanto durar a prestação dos serviços.";
+        `ou parcelado em até ${maxProjectParcelas}× sem juros no cartão de crédito.`;
+    } else if (data.contractType === "performance") {
+      valorText =
+        "Investimento variável, por resultado, conforme a Proposta Comercial " +
+        "que acompanha este Contrato. Não há mensalidade fixa.";
+    } else if (data.recorrente) {
+      valorText =
+        `Valor mensal: ${BRL.format(bundle.parcelaPrice)}/mês, via boleto ` +
+        "bancário ou Pix, recorrente enquanto durar a prestação dos serviços.";
     } else {
-      valorText +=
+      valorText =
+        `Valor total do período: ${BRL.format(data.valorRecorrenteTotal)}.\n` +
         `Parcelado em ${bundle.parcelas}× de ${BRL.format(bundle.parcelaPrice)} ` +
         "sem juros no cartão de crédito.";
     }
     if (data.inicialNaoEmbutido > 0 && data.contractType !== "projeto-pontual") {
       valorText +=
         `\nEntrega única (setups e projetos): ${BRL.format(data.inicialNaoEmbutido)} ` +
-        "à vista no Pix/cartão (10% off) ou em até 6× sem juros no cartão.";
+        `à vista no Pix/cartão (10% off) ou em até ${maxProjectParcelas}× sem juros no cartão.`;
     }
     tableRow("(II) Valor e Forma de Pagamento", valorText);
 
     // (III) Método de pagamento
     let metodoText;
     if (data.contractType === "projeto-pontual") {
-      metodoText = "Pix ou cartão de crédito à vista (10% off), ou cartão de crédito em até 6× sem juros.";
-    } else if (data.cadence === "mensal") {
+      metodoText = `Pix ou cartão de crédito à vista (10% off), ou cartão de crédito em até ${maxProjectParcelas}× sem juros.`;
+    } else if (data.contractType === "performance") {
+      metodoText = "Conforme a Proposta Comercial: entrada no início e saldo no fechamento de cada vaga/resultado, via cartão de crédito ou boleto bancário.";
+    } else if (data.recorrente) {
       metodoText = "Boleto bancário ou Pix com vencimento mensal (recorrente).";
     } else {
       metodoText = "Cartão de crédito com parcelamento sem juros, conforme item (II).";
@@ -1487,8 +1896,12 @@
 
     // (IV) Duração
     let duracaoText;
-    if (data.contractType === "projeto-pontual") {
+    if (data.contractType === "projeto-pontual" && data.hasEstruturacao) {
+      duracaoText = "Programa de 90 dias: diagnóstico, treinamento, implementação e acompanhamento conforme o cronograma do item (VI). Demais projetos pontuais entregues em até 30–45 dias após briefing aprovado.";
+    } else if (data.contractType === "projeto-pontual") {
       duracaoText = "Projeto pontual com entrega única em até 30–45 dias após briefing aprovado pela CONTRATANTE.";
+    } else if (data.contractType === "performance") {
+      duracaoText = "Vigência pelo prazo necessário à execução de cada vaga/resultado contratado, conforme a Proposta Comercial.";
     } else if (data.recorrente) {
       duracaoText = "Vigência por tempo indeterminado · cobrança mensal recorrente · cancelamento com aviso prévio de 30 dias.";
     } else {
@@ -1498,8 +1911,12 @@
 
     // (V) Início e fim
     let inicioFimText;
-    if (data.contractType === "projeto-pontual") {
+    if (data.contractType === "projeto-pontual" && data.hasEstruturacao) {
+      inicioFimText = `Início: ${fmtDate(data.inicio)}.    Encerramento do programa: ${fmtDate(data.fim)} (90 dias após o kickoff).`;
+    } else if (data.contractType === "projeto-pontual") {
       inicioFimText = `Início: ${fmtDate(data.inicio)}.    Entrega prevista: até ${fmtDate(data.fim)} (45 dias após briefing aprovado).`;
+    } else if (data.contractType === "performance") {
+      inicioFimText = `Início: ${fmtDate(data.inicio)}. Conclusão conforme a entrega de cada vaga/resultado contratado.`;
     } else if (data.recorrente) {
       inicioFimText = `Início: ${fmtDate(data.inicio)}. Recorrente — sem data de término fixa.`;
     } else {
@@ -1525,6 +1942,11 @@
         "Projeto pontual de entrega única, com cobrança única no fechamento. " +
         "Após confirmação do pagamento, não cabe cancelamento ou devolução, " +
         "ressalvada a hipótese de descumprimento das obrigações pela CONTRATADA.";
+    } else if (data.contractType === "performance") {
+      rescisaoText =
+        "Serviço por resultado: a cobrança segue a Proposta Comercial. " +
+        "Vagas/resultados ainda não entregues podem ser cancelados mediante " +
+        "notificação; valores referentes a entregas já concluídas não são reembolsáveis.";
     } else if (data.recorrente) {
       rescisaoText =
         "Plano mensal (boleto/Pix recorrente): sem fidelidade mínima. " +
@@ -1666,10 +2088,13 @@
             if (data.contractType === "projeto-pontual") {
               return "4.2.4. Tratando-se de contrato de projeto pontual com entrega única, a cobrança é realizada em parcela única no fechamento e não cabe cancelamento ou devolução após a confirmação do pagamento, ressalvada a hipótese de descumprimento das obrigações pela CONTRATADA.";
             }
+            if (data.contractType === "performance") {
+              return "4.2.4. Tratando-se de serviço por resultado, o cancelamento de vagas ou resultados ainda não entregues pode ser realizado mediante notificação prévia; os valores referentes a entregas já concluídas não são reembolsáveis.";
+            }
             if (data.recorrente) {
               return "4.2.4. Tratando-se de contrato mensal pago via boleto/Pix recorrente, qualquer das PARTES poderá realizar a rescisão mediante notificação prévia de 30 (trinta) dias, sem prazo mínimo de permanência.";
             }
-            return `4.2.4. Tratando-se de contrato de período fechado de ${data.duracaoMeses} (${data.duracaoMeses === 12 ? "doze" : "seis"}) meses, conforme item (V) do Quadro Resumo, pago em ${data.bundle.parcelas} (${data.bundle.parcelas === 12 ? "doze" : "seis"}) parcelas pré-autorizadas no cartão de crédito, não cabe cancelamento antecipado das parcelas já contratadas. Ao término do período firmado, o Contrato se encerra automaticamente, independentemente de notificação.`;
+            return `4.2.4. Tratando-se de contrato de período fechado de ${data.duracaoMeses} (${numeroExtenso(data.duracaoMeses)}) meses, conforme item (V) do Quadro Resumo, pago em ${data.bundle.parcelas} (${numeroExtenso(data.bundle.parcelas)}) parcelas pré-autorizadas no cartão de crédito, não cabe cancelamento antecipado das parcelas já contratadas. Ao término do período firmado, o Contrato se encerra automaticamente, independentemente de notificação.`;
           })(),
           "4.3. A inadimplência do CONTRATANTE não suspende suas obrigações contratuais. Após 10 (dez) dias de atraso no pagamento, a CONTRATADA estará autorizada a suspender os serviços e a iniciar a cobrança do débito, judicial ou extrajudicialmente.",
           "4.3.1. Todos os custos decorrentes da cobrança, incluindo custas e honorários advocatícios, serão arcados pelo CONTRATANTE, conforme detalhado na Cláusula Segunda deste instrumento.",
@@ -1677,10 +2102,13 @@
             if (data.contractType === "projeto-pontual") {
               return "4.4. O presente Contrato vigora pelo prazo necessário à execução e entrega do projeto contratado, encerrando-se automaticamente após a aceitação final pela CONTRATANTE. Não há renovação automática nem prestação continuada após a entrega.";
             }
+            if (data.contractType === "performance") {
+              return "4.4. O presente Contrato vigora pelo prazo necessário à execução das vagas/resultados contratados, encerrando-se após a entrega final. Não há renovação automática nem prestação continuada após a conclusão.";
+            }
             if (data.recorrente) {
               return "4.4. O presente Contrato terá vigência por tempo indeterminado, continuando ativo a cada mês enquanto não houver notificação de cancelamento por qualquer das PARTES, conforme item 4.2.4. Em caso de encerramento, todas as campanhas ativas de tráfego pago serão removidas.";
             }
-            return `4.4. O presente Contrato NÃO possui renovação automática. Ao término do período inicial de ${data.duracaoMeses} (${data.duracaoMeses === 12 ? "doze" : "seis"}) meses, o Contrato se encerra de pleno direito, independentemente de notificação. Eventual continuidade da prestação dos serviços dependerá da celebração de novo instrumento contratual entre as PARTES, por escrito. Em caso de encerramento, todas as campanhas ativas de tráfego pago serão removidas.`;
+            return `4.4. O presente Contrato NÃO possui renovação automática. Ao término do período inicial de ${data.duracaoMeses} (${numeroExtenso(data.duracaoMeses)}) meses, o Contrato se encerra de pleno direito, independentemente de notificação. Eventual continuidade da prestação dos serviços dependerá da celebração de novo instrumento contratual entre as PARTES, por escrito. Em caso de encerramento, todas as campanhas ativas de tráfego pago serão removidas.`;
           })(),
           "4.5. Em caso de encerramento de contrato, a CONTRATANTE receberá os acessos por todos os ativos criados pela CONTRATADA, e todas as campanhas ativas de tráfego pago e IA de Qualificação serão removidas.",
         ],
@@ -1863,14 +2291,39 @@
     render();
     bindMasks();
 
+    /* Rede de segurança: se o jsPDF carregar atrasado (ou a checagem inicial
+       pegou antes da CDN), revalida no load da página. */
+    if (!pdfReady) {
+      window.addEventListener("load", () => {
+        if (window.jspdf) {
+          pdfReady = true;
+          refreshPdfBtn();
+        }
+      });
+    }
+
     $("#propostaPdfBtn").addEventListener("click", () => {
-      if (Object.keys(cart).length === 0) return;
-      openLeadModal();
+      if (Object.keys(cart).length === 0 || !pdfReady) return;
+      openLeadModal("pdf");
     });
+    const contratoBtn = $("#propostaContratoBtn");
+    if (contratoBtn) {
+      contratoBtn.addEventListener("click", () => {
+        if (Object.keys(cart).length === 0 || !pdfReady) return;
+        openLeadModal("contrato");
+      });
+    }
+    const cobrancaBtn = $("#propostaCobrancaBtn");
+    if (cobrancaBtn) {
+      cobrancaBtn.addEventListener("click", () => {
+        if (Object.keys(cart).length === 0) return;
+        openLeadModal("cobranca");
+      });
+    }
     $("#leadCancel").addEventListener("click", closeLeadModal);
     $("#leadSkip").addEventListener("click", () => {
       closeLeadModal();
-      generatePdf({ validadeDias: 7 });
+      runPdf({ validadeDias: 7 });
     });
     $("#leadForm").addEventListener("submit", (e) => {
       e.preventDefault();
@@ -1889,7 +2342,13 @@
       };
       saveLead(lead);
       closeLeadModal();
-      generatePdf(lead);
+      if (leadModalMode === "contrato") {
+        emitirContrato(lead);
+      } else if (leadModalMode === "cobranca") {
+        gerarCobranca(lead);
+      } else {
+        runPdf(lead);
+      }
     });
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !$("#leadModal").hidden) closeLeadModal();

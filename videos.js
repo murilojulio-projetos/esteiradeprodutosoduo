@@ -89,6 +89,7 @@
 
     modal.hidden = false;
     document.body.style.overflow = "hidden";
+    if (window.ODUO) ODUO.modalFocusIn(modal);
   }
 
   function closeVideoModal() {
@@ -96,6 +97,7 @@
     if (!modal) return;
     modal.hidden = true;
     document.body.style.overflow = "";
+    if (window.ODUO) ODUO.modalFocusRestore();
     const content = $("#videoModalContent");
     if (content) {
       const v = content.querySelector("video");

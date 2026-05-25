@@ -8,22 +8,27 @@
   const STORAGE_KEY = "oduo_cart_v1";
   const COUPON_KEY = "oduo_coupon_v1";
   const CADENCE_KEY = "oduo_cadence_v1";
+  /* Customizações por item: hoje só desconfigurar o Avança (tirar entregáveis
+     removíveis pra baixar o preço). Formato:
+       { "avanca": { removed: ["gmb", "relatorio-semanal"] } } */
+  const CUSTOM_KEY = "oduo_customizations_v1";
 
   // Desconto adicional no item protagonista quando QUALQUER cupom estiver ativo.
   const COUPON_PERCENT = 5;
   const COUPON_TARGET_ID = "avanca";
 
-  // Cadências válidas globalmente. Quem manda na soma anual é esta lista.
-  const CADENCES = ["mensal", "semestral", "anual"];
-  const PARCELAS_BY_CADENCE = { mensal: 1, semestral: 6, anual: 12 };
+  // Cadências válidas globalmente. O anual saiu do sistema — o closer negocia
+  // anual direto com o cliente, fora da esteira. Restam mensal/trimestral/semestral.
+  const CADENCES = ["mensal", "trimestral", "semestral"];
+  const PARCELAS_BY_CADENCE = { mensal: 1, trimestral: 3, semestral: 6 };
   const LABEL_BY_CADENCE = {
     mensal: "Mensal",
+    trimestral: "Trimestral",
     semestral: "Semestral",
-    anual: "Anual",
   };
 
   // IDs do plano-base. Se algum deles está no carrinho com cadência
-  // anual/semestral, os projetos/setups são embutidos na mesma parcela.
+  // trimestral/semestral, os projetos/setups são embutidos na mesma parcela.
   const PLANO_BASE_IDS = ["avanca", "destrava"];
 
   const BRL = new Intl.NumberFormat("pt-BR", {
@@ -88,6 +93,71 @@
     }
   }
 
+  /* ============ Customizações (desconfigurar plano-base) ============ */
+
+  function loadCustomizations() {
+    try {
+      const raw = localStorage.getItem(CUSTOM_KEY);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      return typeof parsed === "object" && parsed ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function persistCustomizations(custom) {
+    try {
+      localStorage.setItem(CUSTOM_KEY, JSON.stringify(custom || {}));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  /** Aceita string (CORE) ou objeto {name, removeId, ...} e devolve o nome. */
+  function deliverableName(deliverable) {
+    return typeof deliverable === "string"
+      ? deliverable
+      : (deliverable && deliverable.name) || "";
+  }
+
+  /** True se a entrega tem removeId definido (= é descartável pelo cliente). */
+  function isRemovableDeliverable(deliverable) {
+    return (
+      typeof deliverable === "object" &&
+      deliverable !== null &&
+      typeof deliverable.removeId === "string"
+    );
+  }
+
+  function getRemovedIds(itemId, customizations) {
+    const c = (customizations || {})[itemId];
+    return (c && Array.isArray(c.removed)) ? c.removed : [];
+  }
+
+  /** Soma o desconto mensal das entregas removidas. */
+  function computeRemovalDiscount(item, removedIds) {
+    if (!item || !item.deliverables || !removedIds || removedIds.length === 0) return 0;
+    return item.deliverables.reduce((sum, d) => {
+      if (isRemovableDeliverable(d) && removedIds.includes(d.removeId)) {
+        return sum + (Number(d.removeDiscount) || 0);
+      }
+      return sum;
+    }, 0);
+  }
+
+  /** Toggle in-place. Retorna o objeto mutado pra chainar com persist. */
+  function toggleRemoval(itemId, removeId, customizations) {
+    if (!customizations[itemId]) customizations[itemId] = { removed: [] };
+    const removed = customizations[itemId].removed;
+    const idx = removed.indexOf(removeId);
+    if (idx >= 0) removed.splice(idx, 1);
+    else removed.push(removeId);
+    // Limpa o item se ficou vazio (mantém localStorage enxuto)
+    if (removed.length === 0) delete customizations[itemId];
+    return customizations;
+  }
+
   function findItem(itemId) {
     if (!window.ODUO_CATALOG) return null;
     for (const section of window.ODUO_CATALOG) {
@@ -106,16 +176,18 @@
   function payText(item, mod) {
     if (!mod) return "";
     if ((item.type === "recurring" || item.type === "hybrid") && mod.price > 0) {
+      if (mod.id === "trimestral") return `3× de ${BRL.format(mod.price)} no cartão`;
       if (mod.id === "semestral") return `6× de ${BRL.format(mod.price)} no cartão`;
-      if (mod.id === "anual") return `12× de ${BRL.format(mod.price)} no cartão`;
     }
     return mod.pay || "";
   }
 
-  /** Total do projeto: para 'parcelado', some o valor das 6 parcelas. */
+  /** Total do projeto: para 'parcelado', some o valor de todas as parcelas
+      lendo o número do suffix (" × 6", " × 12", etc.). */
   function computeProjectTotal(mod) {
-    if (mod.id === "parcelado" && mod.suffix && mod.suffix.includes("× 6")) {
-      return mod.price * 6;
+    if (mod.id === "parcelado" && mod.suffix) {
+      const m = mod.suffix.match(/×\s*(\d+)/);
+      if (m) return mod.price * parseInt(m[1], 10);
     }
     return mod.price;
   }
@@ -151,20 +223,23 @@
    * `globalCadence` que rege a apresentação do bloco "fechando o ano".
    *
    * Retorna além dos 4 grupos um objeto `bundle` com a leitura B2B:
-   *   - parcelas       → 1, 6 ou 12 conforme a cadência
+   *   - parcelas       → 1, 3 ou 6 conforme a cadência
    *   - parcelaPrice   → soma de (mensalidade final) de todos os recorrentes
    *   - totalContratado→ parcelaPrice × parcelas (o valor total do contrato)
-   *   - paymentLabel   → "Boleto/Pix mensal" ou "12× no cartão"
+   *   - paymentLabel   → "Boleto/Pix mensal" ou "6× no cartão"
    *
    * Itens que não têm a cadência pedida (Pacote de Artes etc.) entram no
    * cálculo do bundle pelo preço mensal, mas com nota "Acompanha o plano".
    */
-  function buildCartGroups(cart, coupon, globalCadence) {
+  function buildCartGroups(cart, coupon, globalCadence, customizations) {
     const cadence = CADENCES.includes(globalCadence) ? globalCadence : "mensal";
     const parcelas = PARCELAS_BY_CADENCE[cadence];
+    /* Customizações por item (entregas removidas pelo cliente).
+       Lido do localStorage se não vier explicitamente. */
+    const custom = customizations || loadCustomizations();
 
     // Detecta se o plano-base está no carrinho e qual a cadência DELE.
-    // Se o plano-base tá em anual/semestral, projetos/setups são embutidos
+    // Se o plano-base tá em trimestral/semestral, projetos/setups são embutidos
     // na mesma parcela do cartão (1 conta só pro cliente).
     const planoBaseInCart = PLANO_BASE_IDS.find((id) => cart[id]);
     const planoBaseMod = planoBaseInCart ? cart[planoBaseInCart] : null;
@@ -176,7 +251,7 @@
         sub:
           cadence === "mensal"
             ? "Você paga todo mês"
-            : `Fechando 1 ano · ${parcelas}× no cartão`,
+            : `${LABEL_BY_CADENCE[cadence]} · ${parcelas}× no cartão`,
         items: [],
         total: 0,
       },
@@ -217,51 +292,78 @@
         const hasRequestedCadence = item.modalities.some((m) => m.id === cadence);
         const followsBase = cadence !== "mensal" && !hasRequestedCadence;
 
-        const discount = couponDiscountFor(item.id, mod.price, coupon);
-        const finalPrice = mod.price - discount;
+        /* Customizações: cliente removeu entregas removíveis → desconto fixo
+           no preço da modalidade. Quando há remoções, o nome do plano também
+           muda pra "Avança Custom" / "Custom" pra deixar claro que não é o
+           pacote-padrão. */
+        const removedIds = getRemovedIds(item.id, custom);
+        const removalDiscount = computeRemovalDiscount(item, removedIds);
+        const effectiveModPrice = Math.max(0, mod.price - removalDiscount);
+        const customName = removedIds.length > 0 ? `${item.name} (Custom)` : null;
+
+        const discount = couponDiscountFor(item.id, effectiveModPrice, coupon);
+        const finalPrice = effectiveModPrice - discount;
         couponDiscountTotal += discount;
 
         // Para a economia: preço mensal de referência do item (se existir).
         // Cupom é só do item protagonista e só conta uma vez — aqui o mensal
         // de referência também desconta o cupom pra comparar "maçã com maçã".
         const mensalMod = item.modalities.find((m) => m.id === "mensal");
-        const mensalRef = mensalMod ? mensalMod.price - couponDiscountFor(item.id, mensalMod.price, coupon) : finalPrice;
+        const mensalRefBase = mensalMod ? mensalMod.price - removalDiscount : effectiveModPrice;
+        const mensalRef = mensalMod
+          ? mensalRefBase - couponDiscountFor(item.id, mensalRefBase, coupon)
+          : finalPrice;
         mensalEquivalentTotal += mensalRef;
         const savingsPerMonth = Math.max(0, mensalRef - finalPrice);
 
         // Subtitle padronizado pra TODOS os items recurring/hybrid:
-        // - Item com modalidade própria (anual/semestral/mensal) → usa a modalidade que ele tem
+        // - Item com modalidade própria (trimestral/semestral/mensal) → usa a modalidade que ele tem
         // - Item só-mensal que segue plano-base (followsBase) → usa a cadência da proposta
         // Parcelas seguem a cadência efetiva, não a cadência global da proposta.
         const effectiveCadence = followsBase ? cadence : mod.id;
         const effectiveParcelas = PARCELAS_BY_CADENCE[effectiveCadence] || 1;
-        const cadenceLabel = effectiveCadence === "anual"
-          ? "Anual"
-          : effectiveCadence === "semestral"
-          ? "Semestral"
-          : "Mensal";
+        const cadenceLabel = LABEL_BY_CADENCE[effectiveCadence] || "Mensal";
         const subtitle = effectiveCadence === "mensal"
           ? `${cadenceLabel} · boleto bancário ou Pix`
           : `${cadenceLabel} · ${effectiveParcelas}× no cartão de crédito sem juros`;
 
+        /* Filtra entregas removidas pra exibição (cart drawer + PDF).
+           Normaliza pra string[] pra consumidores não precisarem checar tipo. */
+        const visibleDeliverables = item.deliverables
+          ? item.deliverables
+              .filter((d) => !(isRemovableDeliverable(d) && removedIds.includes(d.removeId)))
+              .map(deliverableName)
+          : null;
+
         groups.mensal.items.push({
           id: item.id,
-          name: item.name,
+          name: customName || item.name,
+          originalName: item.name,
+          isCustom: removedIds.length > 0,
+          removedIds,
+          removalDiscount,
           group: item.group || null,
           subtitle,
-          basePrice: mod.price,
+          basePrice: effectiveModPrice,
           finalPrice,
           discount,
           mensalRef,
           savingsPerMonth,
           priceText: BRL.format(finalPrice) + "/mês",
-          basePriceText: discount > 0 ? BRL.format(mod.price) + "/mês" : null,
+          basePriceText:
+            discount > 0 || removalDiscount > 0
+              ? BRL.format(mod.price) + "/mês"
+              : null,
           couponNote:
             discount > 0
               ? `Cupom ${coupon} · -${BRL.format(discount)}/mês`
               : null,
+          removalNote:
+            removalDiscount > 0
+              ? `Personalizado · -${BRL.format(removalDiscount)}/mês`
+              : null,
           followsBase,
-          deliverables: item.deliverables || null,
+          deliverables: visibleDeliverables,
           removable: true,
         });
         groups.mensal.total += finalPrice;
@@ -289,32 +391,61 @@
           groups.setups.total += item.setup;
         }
       } else if (item.type === "project") {
-        const total = computeProjectTotal(mod);
+        /* Customizações também valem pra project (ex.: remover a IA do
+           Programa de Estruturação Comercial abate um valor fixo do total). */
+        const removedIds = getRemovedIds(item.id, custom);
+        const removalDiscount = computeRemovalDiscount(item, removedIds);
+        const rawTotal = computeProjectTotal(mod);
+        const total = Math.max(0, rawTotal - removalDiscount);
+        const customName = removedIds.length > 0 ? `${item.name} (Custom)` : null;
+
+        const parcelaMatch = (mod.suffix || "").match(/×\s*(\d+)/);
+        const projectParcelas = parcelaMatch ? parseInt(parcelaMatch[1], 10) : 6;
         const projectEmbeddedPerMonth = shouldEmbed
           ? Math.round(total / parcelas)
           : null;
+        // Parcela recalculada com o desconto aplicado
+        const parcelaValor = Math.round(total / projectParcelas);
         let subtitle;
         if (shouldEmbed) {
           subtitle = `Embutido · ${parcelas}× ${BRL.format(projectEmbeddedPerMonth)} no cartão de crédito sem juros`;
         } else if (mod.id === "avista") {
           subtitle = `À vista · 10% off no Pix ou cartão de crédito`;
         } else if (mod.id === "parcelado") {
-          subtitle = `Parcelado · 6× de ${BRL.format(mod.price)} no cartão de crédito sem juros`;
+          subtitle = `Parcelado · ${projectParcelas}× de ${BRL.format(parcelaValor)} no cartão de crédito sem juros`;
         } else {
           subtitle = mod.pay || mod.label;
         }
+
+        const visibleDeliverables = item.deliverables
+          ? item.deliverables
+              .filter((d) => !(isRemovableDeliverable(d) && removedIds.includes(d.removeId)))
+              .map(deliverableName)
+          : null;
+
         groups.projetos.items.push({
           id: item.id,
-          name: item.name,
+          name: customName || item.name,
+          originalName: item.name,
+          isCustom: removedIds.length > 0,
+          removedIds,
+          removalDiscount,
+          removalNote:
+            removalDiscount > 0
+              ? `Personalizado · -${BRL.format(removalDiscount)}`
+              : null,
+          basePriceText: removalDiscount > 0 ? BRL.format(rawTotal) : null,
           group: item.group || null,
           subtitle,
           priceText: shouldEmbed
             ? BRL.format(projectEmbeddedPerMonth) + "/mês"
             : BRL.format(total),
           value: total,
+          modId: mod.id,
+          projectParcelas,
           embedded: shouldEmbed,
           embeddedPerMonth: projectEmbeddedPerMonth,
-          deliverables: item.deliverables || null,
+          deliverables: visibleDeliverables,
           removable: true,
         });
         groups.projetos.total += total;
@@ -333,7 +464,7 @@
     });
 
     // Embute setups+projetos na mesma parcela do plano-base (quando o
-    // plano-base é anual/semestral). Caso contrário, ficam no fluxo
+    // plano-base é trimestral/semestral). Caso contrário, ficam no fluxo
     // antigo de "Entrega Única".
     const embeddedTotal = shouldEmbed
       ? groups.setups.total + groups.projetos.total
@@ -369,8 +500,8 @@
           ? "Boleto ou Pix · sem fidelidade"
           : `${parcelas}× no cartão de crédito · sem juros · período fechado`,
       contractLabel:
-        cadence === "anual"
-          ? "Fechando 1 ano"
+        cadence === "trimestral"
+          ? "Fechando 3 meses"
           : cadence === "semestral"
           ? "Fechando 6 meses"
           : "Mensalidade",
@@ -405,10 +536,104 @@
     return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
   }
 
+  /* ===================================================================
+     Acessibilidade de modais — foco preso dentro do modal aberto.
+     - modalFocusIn(el):  guarda o foco atual e move o foco pra dentro.
+     - modalFocusRestore(): devolve o foco pro elemento que abriu.
+     - O "trap" de Tab é global e automático: qualquer `.modal` visível
+       prende o Tab — os modais só precisam chamar focusIn/Restore.
+     =================================================================== */
+  let _modalLastFocus = null;
+  const FOCUSABLE =
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  function visibleFocusables(root) {
+    return Array.from(root.querySelectorAll(FOCUSABLE)).filter(
+      (el) => el.offsetParent !== null || el === document.activeElement
+    );
+  }
+
+  function modalFocusIn(modalEl) {
+    if (!modalEl) return;
+    _modalLastFocus = document.activeElement;
+    const card = modalEl.querySelector(".modal-card") || modalEl;
+    if (!card.hasAttribute("tabindex")) card.setAttribute("tabindex", "-1");
+    const first = visibleFocusables(modalEl)[0];
+    (first || card).focus();
+  }
+
+  function modalFocusRestore() {
+    const el = _modalLastFocus;
+    _modalLastFocus = null;
+    if (el && typeof el.focus === "function") {
+      try { el.focus(); } catch (e) { /* elemento saiu do DOM */ }
+    }
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab") return;
+    const modal = document.querySelector(".modal:not([hidden])");
+    if (!modal) return;
+    const f = visibleFocusables(modal);
+    if (!f.length) return;
+    const first = f[0];
+    const last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    } else if (!modal.contains(document.activeElement)) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
+  /* Diálogo de confirmação estilizado — substitui o confirm() nativo do
+     browser (popup cinza do SO que destoa e assusta no meio do pitch).
+     Retorna uma Promise<boolean>. */
+  function confirmDialog(opts) {
+    const o = opts || {};
+    return new Promise((resolve) => {
+      const overlay = document.createElement("div");
+      overlay.className = "modal confirm-modal";
+      overlay.innerHTML =
+        '<div class="modal-card confirm-card" role="alertdialog" aria-modal="true">' +
+        `<h3>${escapeHtml(o.title || "Confirmar")}</h3>` +
+        `<p>${escapeHtml(o.message || "")}</p>` +
+        '<div class="confirm-actions">' +
+        `<button type="button" class="btn btn-ghost" data-act="cancel">${escapeHtml(o.cancelLabel || "Cancelar")}</button>` +
+        `<button type="button" class="btn btn-primary" data-act="ok">${escapeHtml(o.okLabel || "Confirmar")}</button>` +
+        "</div></div>";
+      const prevFocus = document.activeElement;
+      document.body.appendChild(overlay);
+      document.body.style.overflow = "hidden";
+      function close(result) {
+        overlay.remove();
+        document.body.style.overflow = "";
+        if (prevFocus && typeof prevFocus.focus === "function") {
+          try { prevFocus.focus(); } catch (e) { /* saiu do DOM */ }
+        }
+        resolve(result);
+      }
+      overlay.querySelector('[data-act="ok"]').addEventListener("click", () => close(true));
+      overlay.querySelector('[data-act="cancel"]').addEventListener("click", () => close(false));
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) close(false);
+      });
+      overlay.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") close(false);
+      });
+      overlay.querySelector('[data-act="ok"]').focus();
+    });
+  }
+
   window.ODUO = {
     STORAGE_KEY,
     COUPON_KEY,
     CADENCE_KEY,
+    CUSTOM_KEY,
     COUPON_PERCENT,
     COUPON_TARGET_ID,
     CADENCES,
@@ -422,6 +647,13 @@
     loadCadence,
     persistCadence,
     applyCadence,
+    loadCustomizations,
+    persistCustomizations,
+    deliverableName,
+    isRemovableDeliverable,
+    getRemovedIds,
+    computeRemovalDiscount,
+    toggleRemoval,
     findItem,
     modalityOf,
     payText,
@@ -431,5 +663,8 @@
     escapeHtml,
     slug,
     ymd,
+    modalFocusIn,
+    modalFocusRestore,
+    confirmDialog,
   };
 })();

@@ -1,6 +1,6 @@
 // ODuo · Cardápio de Upsells V2.11 — dados estruturados para o front
 // Modalidades:
-//   recurring   → MRR (mensal padrão, semestral -10%/-5%, anual -15%/-10%)
+//   recurring   → MRR (só preço mensal; desconto vem da DURAÇÃO global, 1%/mês)
 //   project     → entrega única (à vista 10% off OU 6× sem juros)
 //   hybrid      → fixo + variável (SDR)
 //   performance → 100% variável (Hunter)
@@ -11,10 +11,11 @@ window.ODUO_CATALOG = [
   // ====================================================================
   {
     section: "plano-base",
+    track: "marketing",
     sectionLabel: "Plano-base · Aquisição",
-    sectionKicker: "A · MRR Core",
+    sectionKicker: "Planos-base",
     sectionDesc:
-      "A base de tudo. Comece pelo Avança — Destrava só entra como downsell se o cliente recusar.",
+      "A base de tudo: tráfego pago, IAs de atendimento e tudo que sua locadora precisa pra crescer. Escolha o plano que faz sentido no seu momento.",
     items: [
       {
         id: "avanca",
@@ -22,39 +23,59 @@ window.ODUO_CATALOG = [
         tagline: "O carro-chefe da ODuo. Tráfego + IAs + landing + GMN + relatório.",
         protagonist: true,
         type: "recurring",
+        /* Deliverables aceita 2 formatos:
+           - string  → CORE, não removível (faz parte da essência do Avança)
+           - objeto  → REMOVÍVEL com {name, removeId, removeDiscount, removeWarning}
+           Quando o cliente remove pelo menos 1, o plano vira "Avança Custom"
+           e o preço diminui pelo soma dos removeDiscount. Lógica em oduo-core.js
+           (loadCustomizations / computeRemovalDiscount). */
         deliverables: [
-          "Loctus IA de Atendimento (WhatsApp 24/7)",
-          "Loctus IA de Reativação (monetização da base)",
           "Tráfego pago profissional",
+          "Loctus IA de Atendimento (WhatsApp 24/7)",
           "Landing page otimizada",
-          "Google Meu Negócio",
+          {
+            name: "Loctus IA de Reativação (monetização da base)",
+            removeId: "ia-reativacao",
+            removeDiscount: 500,
+            removeWarning: "Sem reativar clientes parados da sua base de forma automática.",
+          },
+          {
+            name: "Google Meu Negócio",
+            removeId: "gmb",
+            removeDiscount: 200,
+            removeWarning: "Só se você já tem GMB ativo, otimizado e gerenciado.",
+          },
           "Relatório semanal com benchmark",
         ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 3297, suffix: "/mês", pay: "Boleto ou Pix mensal", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 3132, suffix: "/mês", pay: "Cartão em 6×", discount: 5, badge: "−5%" },
-          { id: "anual", label: "Anual", price: 2967, suffix: "/mês", pay: "Cartão em 12×", discount: 10, badge: "−10%", best: true },
+          { id: "trimestral", label: "Trimestral", price: 2997, suffix: "/mês", pay: "Cartão em 3×", discount: 9, badge: "−9%" },
+          { id: "semestral", label: "Semestral", price: 2797, suffix: "/mês", pay: "Cartão em 6×", discount: 15, badge: "−15%", best: true },
         ],
         note: "Sem fidelidade mínima · aviso prévio de 30 dias.",
       },
       {
         id: "destrava",
         name: "Destrava Loc",
-        tagline: "Downsell sem as IAs Loctus. Só se o cliente recusar o Avança.",
-        downsell: true,
+        tagline: "Tráfego pago, landing page e presença no Google. O essencial pra atrair clientes.",
         type: "recurring",
         deliverables: [
           "Tráfego pago profissional",
           "Landing page otimizada",
-          "Google Meu Negócio",
+          {
+            name: "Google Meu Negócio",
+            removeId: "gmb",
+            removeDiscount: 200,
+            removeWarning: "Só se você já tem GMB ativo, otimizado e gerenciado.",
+          },
           "Relatório semanal com benchmark",
           "Sem Loctus IA de Atendimento",
           "Sem Loctus IA de Reativação",
         ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 2297, suffix: "/mês", pay: "Boleto ou Pix mensal", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 2182, suffix: "/mês", pay: "Cartão em 6×", discount: 5, badge: "−5%" },
-          { id: "anual", label: "Anual", price: 2067, suffix: "/mês", pay: "Cartão em 12×", discount: 10, badge: "−10%" },
+          { id: "trimestral", label: "Trimestral", price: 2182, suffix: "/mês", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 2067, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
         ],
       },
     ],
@@ -65,10 +86,11 @@ window.ODUO_CATALOG = [
   // ====================================================================
   {
     section: "artes",
+    track: "marketing",
     sectionLabel: "Pacote de Artes",
-    sectionKicker: "B · Monetização direta · somado ao plano-base",
+    sectionKicker: "Somado ao plano-base",
     sectionDesc:
-      "Movimente as redes da sua locadora. Pagamento acompanha o boleto ou o cartão anual do plano-base.",
+      "Movimente as redes da sua locadora. Pagamento acompanha o boleto ou o cartão do plano-base.",
     items: [
       {
         id: "artes-essencial",
@@ -86,8 +108,8 @@ window.ODUO_CATALOG = [
         ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 500, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 450, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
-          { id: "anual", label: "Anual", price: 425, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+          { id: "trimestral", label: "Trimestral", price: 475, suffix: "/mês", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 450, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%", best: true },
         ],
       },
       {
@@ -109,8 +131,8 @@ window.ODUO_CATALOG = [
         ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 750, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 675, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
-          { id: "anual", label: "Anual", price: 637, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+          { id: "trimestral", label: "Trimestral", price: 712, suffix: "/mês", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 675, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%", best: true },
         ],
       },
       {
@@ -132,8 +154,8 @@ window.ODUO_CATALOG = [
         ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 1000, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 900, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
-          { id: "anual", label: "Anual", price: 850, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+          { id: "trimestral", label: "Trimestral", price: 950, suffix: "/mês", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 900, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%", best: true },
         ],
       },
     ],
@@ -144,10 +166,11 @@ window.ODUO_CATALOG = [
   // ====================================================================
   {
     section: "video",
+    track: "marketing",
     sectionLabel: "Pacote de Vídeo Recorrente",
     sectionKicker: "Monetização direta",
     sectionDesc:
-      "Vídeos curtos pra escalar autoridade nas redes. Pode acompanhar o plano anual no cartão.",
+      "Vídeos curtos pra escalar autoridade nas redes. Pode acompanhar o plano-base no cartão.",
     items: [
       {
         id: "video-4",
@@ -165,8 +188,8 @@ window.ODUO_CATALOG = [
         ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 800, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 720, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
-          { id: "anual", label: "Anual", price: 680, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+          { id: "trimestral", label: "Trimestral", price: 760, suffix: "/mês", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 720, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%", best: true },
         ],
       },
       {
@@ -188,8 +211,8 @@ window.ODUO_CATALOG = [
         ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 1500, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 1350, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
-          { id: "anual", label: "Anual", price: 1275, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+          { id: "trimestral", label: "Trimestral", price: 1425, suffix: "/mês", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 1350, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%", best: true },
         ],
       },
     ],
@@ -200,10 +223,11 @@ window.ODUO_CATALOG = [
   // ====================================================================
   {
     section: "seo",
-    sectionLabel: "Site + SEO",
-    sectionKicker: "Monetização direta · tráfego orgânico",
+    track: "marketing",
+    sectionLabel: "Site, Landing Page e SEO",
+    sectionKicker: "Presença digital · tráfego pago e orgânico",
     sectionDesc:
-      "O combo do tráfego orgânico: Site otimizado pra Google + SEO técnico contínuo. Pode acompanhar o plano anual no cartão.",
+      "Site multipages ou landing page otimizados pra tráfego pago — com manutenção mensal opcional — e SEO técnico contínuo pra ranquear no Google.",
     items: [
       {
         id: "site",
@@ -211,18 +235,78 @@ window.ODUO_CATALOG = [
         tagline: "Profissional, otimizado para tráfego pago. Até 100 equipamentos. No ar em 30 dias.",
         upgradeBenefit: "Site profissional otimizado pra converter tráfego pago e SEO. Até 100 equipamentos · no ar em 30 dias.",
         type: "project",
+        addsAddon: "site-manutencao",
         deliverables: [
           "Site profissional otimizado pra tráfego pago e conversão",
           "Cadastro de até 100 equipamentos com página individual",
           "Estrutura preparada pra SEO (pré-requisito do Pacote SEO)",
           "Briefing aprovado → no ar em 30 dias",
-          "Manutenção pós-entrega: ajustes e novas funcionalidades (R$ 200/h de desenvolvedor)",
           "Suporte técnico do time ODuo pós-publicação",
         ],
         modalities: [
           { id: "avista", label: "À vista", price: 4500, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
           { id: "parcelado", label: "Parcelado", price: 833, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 5.000", discount: 0 },
         ],
+      },
+      {
+        id: "site-manutencao",
+        hidden: true,
+        name: "Manutenção mensal do Site",
+        tagline: "Ajustes, novos equipamentos e suporte técnico todo mês — sem pagar por hora.",
+        type: "recurring",
+        deliverables: [
+          "Ajustes e pequenas melhorias no site todo mês",
+          "Atualização de equipamentos, fotos e textos no catálogo",
+          "Monitoramento de funcionamento e correções de bugs",
+          "Backup e atualizações de segurança",
+          "Suporte técnico prioritário do time ODuo (sem cobrança por hora)",
+        ],
+        modalities: [
+          { id: "mensal", label: "Mensal", price: 297, suffix: "/mês", pay: "Boleto ou Pix mensal", discount: 0 },
+          { id: "trimestral", label: "Trimestral", price: 282, suffix: "/mês", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 267, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%", best: true },
+        ],
+        note: "Aviso prévio 30 dias.",
+      },
+      {
+        id: "lp",
+        name: "Landing Page",
+        tagline: "Uma página única de alta conversão, focada em tráfego pago. No ar em ~15 dias.",
+        upgradeBenefit: "Landing page única focada em converter tráfego pago. No ar em ~15 dias.",
+        type: "project",
+        addsAddon: "lp-manutencao",
+        deliverables: [
+          "Landing page única otimizada pra conversão",
+          "Estrutura focada em tráfego pago (Google e Meta)",
+          "Formulário e botão de WhatsApp integrados",
+          "Layout responsivo (celular e desktop)",
+          "Briefing aprovado → no ar em ~15 dias",
+          "Suporte técnico do time ODuo pós-publicação",
+        ],
+        modalities: [
+          { id: "avista", label: "À vista", price: 2000, suffix: "", pay: "Cartão ou Pix · à vista", discount: 0, best: true },
+          { id: "parcelado", label: "Parcelado", price: 417, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 2.500", discount: 0 },
+        ],
+      },
+      {
+        id: "lp-manutencao",
+        hidden: true,
+        name: "Manutenção mensal da Landing Page",
+        tagline: "Ajustes, atualizações e suporte técnico da sua LP todo mês.",
+        type: "recurring",
+        deliverables: [
+          "Ajustes e melhorias na landing page todo mês",
+          "Atualização de ofertas, textos e imagens",
+          "Monitoramento de funcionamento e correções de bugs",
+          "Backup e atualizações de segurança",
+          "Suporte técnico prioritário do time ODuo",
+        ],
+        modalities: [
+          { id: "mensal", label: "Mensal", price: 297, suffix: "/mês", pay: "Boleto ou Pix mensal", discount: 0 },
+          { id: "trimestral", label: "Trimestral", price: 282, suffix: "/mês", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 267, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%", best: true },
+        ],
+        note: "Aviso prévio 30 dias.",
       },
       {
         id: "seo",
@@ -241,9 +325,64 @@ window.ODUO_CATALOG = [
         ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 1250, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 1125, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
-          { id: "anual", label: "Anual", price: 1062, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+          { id: "trimestral", label: "Trimestral", price: 1187, suffix: "/mês", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 1125, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%", best: true },
         ],
+      },
+    ],
+  },
+
+  // ====================================================================
+  // E · GOOGLE MEU NEGÓCIO — card único com toggle "+ Acompanhamento"
+  // ====================================================================
+  {
+    section: "gmb",
+    track: "marketing",
+    sectionLabel: "Google Meu Negócio",
+    sectionKicker: "Presença local · busca no Google Maps",
+    sectionDesc:
+      "Apareça no topo das buscas locais antes do concorrente. Implementação sob demanda · acompanhamento mensal opcional pra delegar a manutenção.",
+    items: [
+      {
+        id: "gmb",
+        name: "Google Meu Negócio",
+        tagline:
+          "Configuração completa + manual pra você gerenciar. Adicione o acompanhamento mensal se quiser delegar a manutenção.",
+        type: "project",
+        addsAddon: "gmb-acompanhamento",
+        deliverables: [
+          "Configuração completa do perfil GMB",
+          "Otimização de endereço, telefone, horários e categorias",
+          "Inserção de até 30 fotos profissionais do galpão e equipamentos",
+          "Conexão com Google Maps e área de cobertura",
+          "Manual de melhores práticas (publicações, respostas, fotos)",
+          "Ativo e otimizado em até 10 dias úteis",
+        ],
+        modalities: [
+          { id: "avista", label: "À vista", price: 1350, suffix: "", pay: "Cartão ou Pix · 10% off", discount: 10, best: true },
+          { id: "parcelado", label: "Parcelado", price: 250, suffix: " × 6", pay: "Cartão · 6× sem juros · total R$ 1.500", discount: 0 },
+        ],
+      },
+      {
+        id: "gmb-acompanhamento",
+        hidden: true,
+        name: "Acompanhamento mensal · GMB",
+        tagline: "Publicações semanais, respostas a avaliações e otimização contínua.",
+        type: "recurring",
+        deliverables: [
+          "Publicações semanais com fotos e novidades",
+          "Resposta a avaliações de clientes",
+          "Otimização contínua pra busca local (palavras-chave + atributos)",
+          "Inserção de novos equipamentos ao longo do mês",
+          "Relatório mensal de visualizações, cliques e ligações",
+          "Suporte do time ODuo no WhatsApp",
+        ],
+        modalities: [
+          { id: "mensal", label: "Mensal", price: 397, suffix: "/mês", pay: "Boleto ou Pix mensal", discount: 0 },
+          { id: "trimestral", label: "Trimestral", price: 377, suffix: "/mês", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 357, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%", best: true },
+        ],
+        note: "Aviso prévio 30 dias.",
       },
     ],
   },
@@ -253,8 +392,9 @@ window.ODUO_CATALOG = [
   // ====================================================================
   {
     section: "projetos",
+    track: "marketing",
     sectionLabel: "Branding e Vídeo",
-    sectionKicker: "E · Começo, meio e fim",
+    sectionKicker: "Começo, meio e fim",
     sectionDesc: "Entregas únicas. 10% off à vista ou 6× sem juros no cartão.",
     items: [
       {
@@ -314,8 +454,9 @@ window.ODUO_CATALOG = [
   // ====================================================================
   {
     section: "ia",
+    track: "marketing",
     sectionLabel: "Inteligência Artificial · Loctus",
-    sectionKicker: "F · Standalone ou Upsell de Destrava",
+    sectionKicker: "Inteligência artificial",
     sectionDesc:
       "Setup único de R$ 5.000 cobre catálogo, fluxos WhatsApp Business e 60 dias de ajuste fino. Cliente Destrava existente: sem setup.",
     items: [
@@ -336,8 +477,8 @@ window.ODUO_CATALOG = [
         ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 1000, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 900, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
-          { id: "anual", label: "Anual", price: 850, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+          { id: "trimestral", label: "Trimestral", price: 950, suffix: "/mês", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 900, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%", best: true },
         ],
       },
       {
@@ -357,8 +498,8 @@ window.ODUO_CATALOG = [
         ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 1000, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 900, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
-          { id: "anual", label: "Anual", price: 850, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+          { id: "trimestral", label: "Trimestral", price: 950, suffix: "/mês", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 900, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%", best: true },
         ],
       },
       {
@@ -378,9 +519,50 @@ window.ODUO_CATALOG = [
         ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 2000, suffix: "/mês", pay: "Boleto/Pix", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 1800, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
-          { id: "anual", label: "Anual", price: 1700, suffix: "/mês", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+          { id: "trimestral", label: "Trimestral", price: 1900, suffix: "/mês", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 1800, suffix: "/mês", pay: "Cartão em 6×", discount: 10, badge: "−10%", best: true },
         ],
+      },
+    ],
+  },
+
+  // ====================================================================
+  // ESTRUTURAÇÃO COMERCIAL — carro-chefe da aba Comercial
+  // ====================================================================
+  {
+    section: "estruturacao",
+    track: "comercial",
+    sectionLabel: "Estruturação Comercial",
+    sectionKicker: "Programa · 90 dias",
+    sectionDesc:
+      "Organiza seu comercial ponta a ponta — do orçamento que entra ao cliente que volta.",
+    items: [
+      {
+        id: "estruturacao-comercial",
+        name: "Programa Estruturação Comercial",
+        protagonist: true,
+        tagline:
+          "Cinco frentes pra estruturar seu comercial — da captação à recompra.",
+        type: "project",
+        defaultModalityId: "parcelado",
+        deliverables: [
+          "Diagnóstico Comercial Profundo — a foto real do seu comercial hoje",
+          "Treinamento Sob Medida — sua equipe operando no padrão certo",
+          "Acompanhamento de 90 dias — consultor presente até virar rotina",
+          {
+            name: "Loctus · Plataforma com IA de Atendimento 24/7",
+            removeId: "loctus-ia",
+            removeDiscount: 5000,
+            removeWarning: "Sem a IA Loctus atendendo e qualificando o orçamento 24/7.",
+          },
+          "Processo de Monetização da Base — renovação, recompra e LTV",
+          "Implementação de CRM",
+        ],
+        modalities: [
+          { id: "avista", label: "À vista", price: 16997, suffix: "", pay: "Cartão ou Pix · economia vs serviços avulsos", discount: 0, best: true },
+          { id: "parcelado", label: "Parcelado", price: 1997, suffix: " × 12", pay: "Cartão · 12× sem juros · total R$ 23.964", discount: 0 },
+        ],
+        note: "Começa pelo Diagnóstico Comercial gratuito.",
       },
     ],
   },
@@ -390,8 +572,9 @@ window.ODUO_CATALOG = [
   // ====================================================================
   {
     section: "treinamento",
+    track: "comercial",
     sectionLabel: "Treinamento Comercial",
-    sectionKicker: "G · 3 níveis · Projeto",
+    sectionKicker: "Treinamento · 3 níveis",
     sectionDesc:
       "Quando o cliente reclama de baixa conversão. Cliente oculto + diagnóstico + acompanhamento.",
     items: [
@@ -456,8 +639,9 @@ window.ODUO_CATALOG = [
   // ====================================================================
   {
     section: "comercial",
+    track: "comercial",
     sectionLabel: "Produtos Comerciais",
-    sectionKicker: "H · Performance",
+    sectionKicker: "Performance",
     sectionDesc:
       "SDR humano + recrutamento de time comercial pra escalar a operação.",
     items: [
@@ -481,8 +665,8 @@ window.ODUO_CATALOG = [
         ],
         modalities: [
           { id: "mensal", label: "Mensal", price: 3000, suffix: "/mês fixo", pay: "Boleto/Pix mensal", discount: 0 },
-          { id: "semestral", label: "Semestral", price: 2700, suffix: "/mês fixo", pay: "Cartão em 6×", discount: 10, badge: "−10%" },
-          { id: "anual", label: "Anual", price: 2550, suffix: "/mês fixo", pay: "Cartão em 12×", discount: 15, badge: "−15%", best: true },
+          { id: "trimestral", label: "Trimestral", price: 2850, suffix: "/mês fixo", pay: "Cartão em 3×", discount: 5, badge: "−5%" },
+          { id: "semestral", label: "Semestral", price: 2700, suffix: "/mês fixo", pay: "Cartão em 6×", discount: 10, badge: "−10%", best: true },
         ],
         note: "Aviso prévio 60 dias. SDR compartilhado entre até 3 clientes.",
       },

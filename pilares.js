@@ -105,7 +105,7 @@
           .map(
             (f) => `
           <div class="pilar-feature${f.highlight ? " pilar-feature-moat" : ""}">
-            ${f.highlight ? '<span class="pilar-feature-flag">MOAT ODuo</span>' : ""}
+            ${f.highlight ? '<span class="pilar-feature-flag">Diferencial ODuo</span>' : ""}
             <div class="pilar-feature-icon">${ICONS[f.icon] || ""}</div>
             <strong>${escapeHtml(f.title)}</strong>
             <span>${escapeHtml(f.desc)}</span>
@@ -142,6 +142,7 @@
     if (!modal) return;
     modal.hidden = false;
     document.body.style.overflow = "hidden";
+    if (window.ODUO) ODUO.modalFocusIn(modal);
   }
 
   function closeModal() {
@@ -149,6 +150,7 @@
     if (!modal) return;
     modal.hidden = true;
     document.body.style.overflow = "";
+    if (window.ODUO) ODUO.modalFocusRestore();
   }
 
   document.addEventListener("DOMContentLoaded", () => {

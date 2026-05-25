@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=20260519h" />
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
       defer
@@ -50,6 +50,20 @@
               disabled
             >
               Baixar proposta em PDF
+            </button>
+            <button
+              type="button"
+              class="btn btn-ghost btn-block"
+              id="propostaContratoBtn"
+            >
+              Emitir contrato para assinatura
+            </button>
+            <button
+              type="button"
+              class="btn btn-ghost btn-block"
+              id="propostaCobrancaBtn"
+            >
+              Gerar cobrança (link de pagamento)
             </button>
             <a href="index.html" class="proposta-back-link">
               ← Continuar montando minha proposta
@@ -211,6 +225,14 @@
             </label>
           </fieldset>
 
+          <label class="lead-checkbox" id="leadCobrarWrap" hidden>
+            <input type="checkbox" id="leadCobrarAoAssinar" />
+            <span>
+              Gerar a cobrança automaticamente quando o contrato for assinado
+              <small>Se desmarcado, o contrato vai só pra assinatura — a cobrança você gera depois pelo botão "Gerar cobrança".</small>
+            </span>
+          </label>
+
           <div class="modal-actions">
             <button type="button" class="btn btn-ghost" id="leadSkip">
               Pular e gerar
@@ -221,9 +243,9 @@
       </div>
     </div>
 
-    <script src="product-data.js"></script>
-    <script src="oduo-core.js"></script>
+    <script src="product-data.js?v=20260519h"></script>
+    <script src="oduo-core.js?v=20260519h"></script>
     <script src="scroll-reveal.js" defer></script>
-    <script src="proposta.js" defer></script>
+    <script src="proposta.js?v=20260519h" defer></script>
   </body>
 </html>

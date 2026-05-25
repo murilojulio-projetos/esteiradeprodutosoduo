@@ -377,6 +377,13 @@
 
     cards.forEach((card) => {
       card.addEventListener("click", () => openCaseModal(card));
+      // Os cards são <article role="button"> — teclado precisa de handler.
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openCaseModal(card);
+        }
+      });
     });
 
     /* Annotate each card with its category for CSS-based filtering */
@@ -668,6 +675,7 @@
 
     modal.hidden = false;
     document.body.style.overflow = "hidden";
+    if (window.ODUO) ODUO.modalFocusIn(modal);
 
     if (video && !videoMp4) ensureInstagramEmbed();
   }
@@ -677,6 +685,7 @@
     if (!modal) return;
     modal.hidden = true;
     document.body.style.overflow = "";
+    if (window.ODUO) ODUO.modalFocusRestore();
     const v = $("#caseModalContent")?.querySelector("video");
     if (v) v.pause();
   }

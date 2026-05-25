@@ -29,9 +29,22 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
 ## Regras de produto (V2.11)
 - **Avança Locações** é o carro-chefe. **Destrava Loc** só entra como downsell
   quando o cliente recusa o Avança.
-- 3 modalidades nos recorrentes: mensal (cheio) · semestral · anual.
-  - Avança/Destrava: −5% (sem) · −10% (anual).
-  - Demais recorrentes: −10% (sem) · −15% (anual).
+- **Cadência por botões: mensal · trimestral · semestral** — modelo ATUAL
+  (2026-05-25, parte 3: o Murilo mandou "voltar pro antigo"). Anual fora.
+  - Descontos padrão dos recorrentes: **trimestral −5% · semestral −10%**.
+  - **Avança com preços "redondos"** (gatilho, def. pelo Murilo): mensal 3.297,
+    trimestral **2.997** (−9%), semestral **2.797** (−15%).
+  - **Destrava e todos os demais** seguem o padrão **−5% / −10%**. (Tentei pôr
+    preço redondo no Destrava também (1.997/1.797 = −13%/−22%) mas o Murilo achou
+    desconto alto demais e mandou voltar pro −5/−10.)
+  - Seletor: trio de botões [Mensal · Trimestral · Semestral] no carrinho e na
+    proposta; cards do catálogo voltaram a ter os toggles de modalidade.
+    Estado em `localStorage.oduo_cadence_v1`.
+  - **Histórico desta sessão** (não repetir): anual saiu → uniformizou 5/10 →
+    virou slider/campo de "Duração do projeto" (curva acelerada −18%, depois
+    linear 1%/12%) → **revertido tudo** pro modelo de cadência a pedido do Murilo.
+    O slider/campo de duração e o CSS `.duration-*` ficaram ÓRfãos no código
+    (não são mais usados; limpar quando der).
 - Projetos: 10% off à vista **ou** 6× sem juros no cartão.
 - IAs Loctus standalone: setup único R$ 5.000 (3× sem juros).
   Cliente Destrava existente adiciona IA **sem setup**.
@@ -40,15 +53,13 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
 - Cupom: hoje aplica `−5%` em cima do **Avança Locações** (item
   protagonista). Constantes: `COUPON_PERCENT = 5` e `COUPON_TARGET_ID`
   em `oduo-core.js`. Foi 10% antes; reduzido em 2026-05-13.
-- **Cadência global da proposta** (mensal · semestral · anual): a proposta
-  inteira fecha numa mesma forma de pagamento. Trocar o seletor sincroniza
-  todos os recorrentes; itens só-mensal (Pacote de Artes) acompanham o
-  cartão do plano-base pelo mesmo preço mensal. Estado em
-  `localStorage.oduo_cadence_v1`.
+- **Cadência global da proposta**: o seletor rege a proposta inteira (todos os
+  recorrentes). Sincroniza todos via `applyCadence`. Estado em
+  `localStorage.oduo_cadence_v1`. `ODUO.loadCadence/persistCadence/CADENCES/PARCELAS_BY_CADENCE`.
 - **Embed de setups + projetos na parcela do plano-base**: quando há
-  Avança ou Destrava no carrinho com cadência **anual** ou **semestral**,
+  Avança ou Destrava no carrinho em **trimestral/semestral**,
   os setups e projetos pontuais são **embutidos** na mesma parcela do
-  cartão (preço total ÷ 12 ou ÷ 6 somado à mensalidade). O cliente vê
+  cartão (preço total ÷ 3 ou ÷ 6 somado à mensalidade). O cliente vê
   "UMA conta só". Quando o plano-base é mensal ou não há plano-base,
   setups/projetos ficam separados em "Entrega Única" (regra antiga).
   Constante `PLANO_BASE_IDS = ["avanca", "destrava"]` em `oduo-core.js`.
@@ -73,6 +84,11 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
 - (atualizar conforme surgirem)
 
 ## Pendências / próximos passos
+- **Configurar `N8N_PLANILHA_WEBHOOK_URL`** (Vercel + `.env` local) com a URL
+  de produção do nó Webhook do n8n (workflow `QRBCgWHx6gMmKBuV` em
+  nod.byduo.com.br). Sem ela, o webhook do Clicksign segue funcionando, só não
+  grava na planilha (loga "N8N_PLANILHA_WEBHOOK_URL ausente"). Ver sessão
+  2026-05-21 abaixo.
 - **Rotacionar credenciais expostas na sessão de 2026-05-13** (todas as 11
   chaves do `.env` foram digitadas em chat e devem ser tratadas como
   comprometidas). Prioridade: Asaas → Supabase → GitHub PAT → Claude → Slack
@@ -85,6 +101,94 @@ contexto que **não dá pra deduzir lendo o código** e o que foi feito por últ
   GitHub PAT, Google, Asaas (produção), n8n, Supabase.
 
 ## Histórico de sessões
+
+### 2026-05-25 (parte 2 · slider de duração substitui as cadências fixas)
+- **Virada de modelo** (pedido do Murilo, "vamos criar algo melhor"): os botões
+  de cadência (mensal/trimestral/semestral) saíram. Agora é um **slider de
+  duração de 1 a 12 meses** com o preço caindo ao vivo conforme aumenta o
+  compromisso. Marcos visuais em 3/6/12 (trimestre/semestre/ano).
+- **Curva de desconto acelerada**: 1 mês = 0% (âncora, boleto/Pix), 2–6 = 1%/mês,
+  7–12 = 2%/mês → −18% em 12 meses. Vale pra todos os recorrentes. Definida em
+  `durationDiscount(m)` no `oduo-core.js`.
+- **Pagamento**: 1 mês → assinatura mensal (UNDEFINED, boleto/Pix); 2+ → N× no
+  cartão (CREDIT_CARD, installmentCount = meses), período fechado.
+- Arquivos:
+  - `oduo-core.js`: novo modelo (MONTHS_MIN/MAX, DEFAULT_MONTHS,
+    DURATION_MILESTONES, clampMonths, durationDiscount, durationLabel,
+    loadDuration/persistDuration, normalizeRecurring). `buildCartGroups` reescrita
+    pra receber `durationMonths` e aplicar o desconto a todos os recorrentes.
+    Removidos CADENCES/PARCELAS_BY_CADENCE/LABEL_BY_CADENCE/applyCadence.
+  - `proposta.js` + `app.js`: `renderDurationSlider` (slider arrastável + campo
+    digitável + marcos) no lugar do seletor; `setGlobalMonths`; PDF, contrato e
+    bundle cards refletem meses/N×. Catálogo (app.js) não mostra mais toggles de
+    modalidade nos recorrentes (só projetos avista/parcelado).
+  - `api/cobranca/criar.js` + webhook: parcelas = `p.meses` (1 = assinatura, 2+ =
+    N× cartão). `montarResumoProposta` manda `meses`; webhook loga `meses` na planilha.
+  - `style.css`: bloco `.duration-slider` (range custom + ticks + campo).
+- **Validação**: node --check em tudo + smoke test (20 asserts) cobrindo a curva
+  e o bundle (ex.: Avança 6m = 6×3099 = 18.594; 12m = 12×2703 = 32.436; cupom).
+- **Pendências/limpeza**: modalidades trimestral/semestral em `product-data.js`
+  são dado morto (core ignora) — remover quando der; CSS `.cadence-selector`
+  ficou órfão. Webhook do n8n (`N8N_PLANILHA_WEBHOOK_URL`) segue pendente.
+- **NÃO foi pra Vercel** — tudo local, aguardando aprovação do Murilo.
+
+### 2026-05-25 (cadências: anual saiu, trimestral entrou)
+- **Mudança de produto** (pedido do Murilo): a cadência deixou de ser
+  `mensal · semestral · anual` e passou a ser `mensal · trimestral · semestral`.
+  O **anual saiu do sistema** — o closer negocia anual direto com o cliente,
+  fora da esteira. O **semestral** virou o destaque (`best`) no lugar do anual.
+- **Descontos** (decisão final do Murilo na mesma sessão): **uniforme** pra
+  todos os recorrentes — trimestral −5% (3× no cartão), semestral −10% (6×).
+  A 1ª versão tinha −3%/−5% no plano-base; o Murilo achou baixo e mandou
+  igualar tudo a 5%/10%. Preço = `floor(mensal × (1 − desconto/100))`.
+  Ex.: Avança 3297 → tri 3132 / sem 2967; Destrava 2297 → tri 2182 / sem 2067.
+- Arquivos tocados:
+  - `oduo-core.js`: `CADENCES`, `PARCELAS_BY_CADENCE` (tri=3, sem=6),
+    `LABEL_BY_CADENCE`, `payText`, `cadenceLabel` (agora usa LABEL_BY_CADENCE),
+    `contractLabel` ("Fechando 3 meses").
+  - `product-data.js`: as 15 modalidades `anual` viraram `trimestral` (preço
+    recalculado), reordenadas pra [mensal, trimestral, semestral], e o `best`
+    migrou do anual pro semestral (exceto Destrava, que nunca teve best).
+    Feito via script pontual `_transform_cadence.cjs` (já apagado).
+  - `proposta.js` / `app.js`: seletor de cadência, labels do PDF, cláusulas
+    de contrato (texto trimestral: 3 meses / 3 parcelas), economia "em 3 meses".
+  - `api/cobranca/criar.js` + `api/webhooks/clicksign.js`: `PARCELAS`
+    `{mensal:1, trimestral:3, semestral:6}` e fallback `|| 6`.
+  - `index.html`: textos da âncora e do "como funciona".
+- **Validação**: `node --check` em todos os JS + smoke test com shim de
+  browser conferindo bundle nas 3 cadências (ex.: Avança trimestral = 3×3198 =
+  9.594; semestral = 6×3132 = 18.792; economia trimestral = 297). Tudo passou.
+- Sem mais nenhuma comparação `=== "anual"` no código (verificado por grep).
+
+### 2026-05-21 (planilha de controle via n8n)
+- **Nova integração**: quando o contrato é ASSINADO (webhook Clicksign,
+  evento `auto_close`/`close`/`document_closed`), o backend dispara uma linha
+  pra uma planilha de controle no Google Sheets via webhook do n8n.
+- Arquivo: `api/webhooks/clicksign.js`. Helpers novos `enviarParaPlanilha`
+  (POST no `N8N_PLANILHA_WEBHOOK_URL`) e `montarLinhaPlanilha` (achata
+  contrato+cobrança numa linha pt-BR). Falha no n8n NÃO derruba o webhook.
+- **Captura do link de pagamento** (antes descartado): pra `subscription`
+  mensal faz `GET subscriptions/{id}/payments?limit=1` e pega `invoiceUrl`;
+  pra `payment` (plano anual/semestral ou investimento inicial) usa o
+  `invoiceUrl` da própria resposta. Link primário = inicial → senão mensal.
+- **Regra de gate** (def. pelo Murilo): a linha entra quando há assinatura OU
+  pagamento — "um dos dois, pra não encher". Como o gatilho é o webhook de
+  assinatura, todo contrato que chega já está assinado → sempre registra.
+  Contrato assinado SEM cobrança entra com `link_pagamento` em branco.
+- **Idempotência reforçada**: `processarCobranca` agora pula se status já é
+  `assinado` OU `cobranca_criada` (antes só `cobranca_criada`) — evita linha
+  duplicada quando o Clicksign reenvia o evento.
+- **Payload enviado ao n8n** (vira colunas no Sheets): `evento`, `data`,
+  `empresa`, `responsavel`, `email`, `cnpj`, `telefone`, `cidade`, `cadencia`,
+  `valor_mensal`, `valor_inicial`, `parcelas_inicial`, `link_pagamento`,
+  `status`, `asaas_customer_id`, `asaas_cobranca_id`, `document_key`,
+  `ambiente`.
+- **Pendente do lado do n8n** (workflow `QRBCgWHx6gMmKBuV`): nó Webhook (POST)
+  → nó Google Sheets (Append/Update) mapeando os campos acima. A URL de
+  produção do Webhook vai na env `N8N_PLANILHA_WEBHOOK_URL`.
+- Caminho "pagar sem contrato" (cobrança direta paga via Asaas, sem Clicksign)
+  ainda NÃO grava na planilha — exigiria um webhook Asaas (`api/webhooks/asaas.js`)
+  no evento `PAYMENT_RECEIVED/CONFIRMED`. Fica como follow-up.
 
 ### 2026-05-13 (parte 11 · header "Criativos" + projetos pra cima)
 - Divider que aparece antes da seção `artes` no cardápio mudou de
