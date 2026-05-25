@@ -8,9 +8,12 @@
    ===================================================================== */
 
 export const config = {
-  // Roda em tudo, menos auth (login Google) e webhooks (chamada
-  // server-to-server da Clicksign — não tem sessão, é validada por HMAC).
-  matcher: ["/((?!api/auth/|api/webhooks/).*)"],
+  // ⚠ GATE DE LOGIN DESATIVADO (Murilo · 2026-05-25): site PÚBLICO pra que
+  // qualquer pessoa/IA consiga acessar e baixar tudo. Com este matcher, o
+  // middleware não roda em nenhuma rota real (nada é travado).
+  // Pra REATIVAR a proteção de login, restaure:
+  //   matcher: ["/((?!api/auth/|api/webhooks/).*)"]
+  matcher: ["/__gate_desativado__"],
 };
 
 const enc = new TextEncoder();
